@@ -1,0 +1,151 @@
+nav {
+    width: 100vw;
+    height: 65px;
+    position: fixed;
+    top: 0;
+    background-color: rgb(28, 61, 32);
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 0px 10px -5px black;
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0 4rem;
+    z-index: 1;
+
+    .app-title {
+        text-decoration: none;
+        color: white;
+        font-size: 1.5rem;
+        transition: .2s;
+        margin: 0;
+
+        &:hover {
+            color: rgb(217, 160, 255);
+        }
+    }
+
+    .nav-items {
+        height: 65px;
+        display: flex;
+        align-items: center;
+        margin: 0;
+
+        .nav-item {
+            display: inline-block;
+            margin: 0 10px;
+
+            .nav-item-text {
+                text-decoration: none;
+                color: white;
+                transition: .2s;
+            }
+
+            &:hover {
+                cursor: pointer;
+
+                .nav-item-text {
+                    color: rgb(233, 199, 255);
+                }
+            }
+        }
+
+        .active {
+            color: rgb(233, 199, 255) !important;
+        }
+    }
+
+    .dropdown-list {
+        margin-left: auto;
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .dropdown-list-toggle {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            transition: .2s;
+            line-height: 40px;
+
+            .users-profile-photo {
+                max-height: 40px;
+                border: 2px solid white;
+                border-radius: 50%;
+                transition: ease-out .1s;
+                margin-right: .5rem;
+                box-shadow: 0px 0px 7px -2px black;
+            }
+
+            .icon {
+                position: relative;
+                top: 8px;
+            }
+
+            &.highlighted {
+                color: rgb(233, 199, 255);
+            }
+
+            &:hover {
+                cursor: pointer;
+                color: rgb(233, 199, 255);
+
+                .users-profile-photo {
+                    opacity: .8;
+                }
+            }
+        }
+
+        .dropdown-list-menu {
+            background-color: rgb(249, 240, 255);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 60px;
+            right: 70px;
+            transition: .3s;
+
+            a {
+                color: black;
+                padding: 5px 10px;
+                padding-right: 50px;
+                font-size: .9rem;
+                
+                .icon {
+                    transition: .2s;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                    color: rgb(141, 60, 138);
+
+                    .icon {
+                        transform: scale(120%);
+                    }
+                }
+            }
+
+            .dropdown-list-item {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+            }
+
+            &.inactive {
+                visibility: hidden;
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            &.active {
+                visibility: visible;
+                opacity: 1;
+                transform: translateY(0px);
+            }
+        }
+    }
+}
