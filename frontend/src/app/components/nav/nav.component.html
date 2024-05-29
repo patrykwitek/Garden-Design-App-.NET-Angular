@@ -1,0 +1,35 @@
+<nav>
+    <a class="app-title" routerLink="/">Park Design App</a>
+    <ul class="nav-items">
+        <ng-container *ngIf="loginService.currentUser$ | async">
+            <li class="nav-item">
+                <a class="nav-item-text" routerLink="/" routerLinkActive="active">TODO</a>
+            </li>
+        </ng-container>
+    </ul>
+    <div class="dropdown-list" clickOutside (clickOutside)="clickOutside()" *ngIf="(loginService.currentUser$ | async) as user">
+        <a [className]="'dropdown-list-toggle ' + (showDropdownMenu ? 'highlighted' : '')"
+            (click)="toggleDropdownMenu()">
+            <div>Welcome {{user.username| titlecase}}</div>
+            <mat-icon class="icon">keyboard_arrow_down</mat-icon>
+        </a>
+        <div [className]="'dropdown-list-menu ' + (showDropdownMenu ? 'active' : 'inactive')">
+            <a class="dropdown-list-item" title="my profile" routerLink="/projects/{{user.username}}">
+                <mat-icon class="icon">person</mat-icon>
+                <div>My Projects</div>
+            </a>
+            <a class="dropdown-list-item" title="edit profile" routerLink="/profile/edit">
+                <mat-icon class="icon">edit</mat-icon>
+                <div>Edit Profile</div>
+            </a>
+            <a class="dropdown-list-item" title="settings" routerLink="/settings">
+                <mat-icon class="icon">settings</mat-icon>
+                <div>Settings</div>
+            </a>
+            <a class="dropdown-list-item" title="logout" (click)="logout()">
+                <mat-icon class="icon">keyboard_return</mat-icon>
+                <div>Logout</div>
+            </a>
+        </div>
+    </div>
+</nav>
