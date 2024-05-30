@@ -29,11 +29,7 @@ export class RegisterComponent {
   private initializeForm() {
     this.registerForm = this.formBuilder.group({
       username: ['', Validators.required],
-      knownAs: ['', Validators.required],
-      gender: ['male'],
       dateOfBirth: ['', Validators.required],
-      city: ['', Validators.required],
-      country: ['', Validators.required],
       password: ['', [
         Validators.required,
         Validators.minLength(4),
@@ -60,14 +56,17 @@ export class RegisterComponent {
 
     const registerValues = { ...this.registerForm.value, dateOfBirth: dateOfBirth };
 
-    this.loginService.register(registerValues).subscribe({
-      next: () => {
-        this.router.navigateByUrl('/members');
-      },
-      error: error => {
-        this.validationErrors = error;
-      }
-    });
+    console.log(registerValues);
+    
+    // note: TODO
+    // this.loginService.register(registerValues).subscribe({
+    //   next: () => {
+    //     this.router.navigateByUrl('/members');
+    //   },
+    //   error: error => {
+    //     this.validationErrors = error;
+    //   }
+    // });
   }
 
   private getDateOnly(dateOfBirth: string | undefined) {

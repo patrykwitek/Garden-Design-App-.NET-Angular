@@ -19,6 +19,9 @@ import { TextInputComponent } from './shared-components/text-input/text-input.co
 import { AppInfoComponent } from './components/app-info/app-info.component';
 import { RegisterComponent } from './components/register/register.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { DatePickerComponent } from './shared-components/date-picker/date-picker.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,8 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
     TextInputComponent,
     AppInfoComponent,
     RegisterComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    DatePickerComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +47,9 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
     MatIconModule,
     ReactiveFormsModule,
     FormsModule,
-    SharedModule
+    BrowserAnimationsModule,
+    SharedModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

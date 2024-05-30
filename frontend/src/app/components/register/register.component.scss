@@ -1,7 +1,27 @@
 .register-container {
-    width: 900px;
+    width: 400px;
+    margin: 0 auto;
     box-shadow: 0px 0px 10px -5px rgb(28, 61, 32);
     padding: 1rem 2rem;
     background-color: #fafafa;
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+
+    .register-form {
+        .button-container {
+            .register-button {
+                width: 300px;
+                border: 1px rgb(28, 61, 32) solid;
+                background-color: rgb(28, 61, 32);
+                margin: 0;
+                color: white;
+                padding: 4px 0;
+
+                &:disabled {
+                    opacity: .8;
+                }
+            }
+        }
+    }
 }
