@@ -21,7 +21,7 @@ nav {
         margin: 0;
 
         &:hover {
-            color: rgb(217, 160, 255);
+            color: rgb(179, 213, 183);
         }
     }
 
@@ -37,7 +37,7 @@ nav {
 
             .nav-item-text {
                 text-decoration: none;
-                color: white;
+                color: rgb(176, 207, 180);
                 transition: .2s;
             }
 
@@ -45,13 +45,13 @@ nav {
                 cursor: pointer;
 
                 .nav-item-text {
-                    color: rgb(233, 199, 255);
+                    color: white;
                 }
             }
         }
 
         .active {
-            color: rgb(233, 199, 255) !important;
+            color: white !important;
         }
     }
 
@@ -85,12 +85,12 @@ nav {
             }
 
             &.highlighted {
-                color: rgb(233, 199, 255);
+                color: rgb(176, 207, 180);
             }
 
             &:hover {
                 cursor: pointer;
-                color: rgb(233, 199, 255);
+                color: rgb(176, 207, 180);
 
                 .users-profile-photo {
                     opacity: .8;
@@ -99,7 +99,7 @@ nav {
         }
 
         .dropdown-list-menu {
-            background-color: rgb(249, 240, 255);
+            background-color: rgb(176, 207, 180);
             border-radius: 5px;
             display: flex;
             flex-direction: column;
@@ -120,7 +120,7 @@ nav {
 
                 &:hover {
                     cursor: pointer;
-                    color: rgb(141, 60, 138);
+                    color: white;
 
                     .icon {
                         transform: scale(120%);

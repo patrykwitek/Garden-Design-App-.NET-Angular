@@ -1,0 +1,33 @@
+.single-input {
+    position: relative;
+    margin: 1rem 0;
+
+    input {
+        border: 1px black solid;
+        font-size: 1rem;
+        padding: 4px 10px;
+        width: 300px;
+
+        &:focus {
+            outline: none;
+            box-shadow: 0px 0px 10px -6px black;
+        }
+    }
+
+    .is-invalid {
+        border-color: rgb(171, 0, 0);
+        color: rgb(171, 0, 0);
+    }
+
+    .is-error-icon {
+        visibility: visible !important;
+    }
+
+    .error-icon {
+        position: absolute;
+        top: 5px;
+        left: calc(20vw - 35px);
+        color: rgb(171, 0, 0);
+        visibility: hidden;
+    }
+}

@@ -1,0 +1,59 @@
+.home-container {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    height: calc(100vh - 60px);
+    align-items: center;
+    background-color: rgba(28, 61, 32, 0.1);
+
+    .welcome-page {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 900px;
+        height: fit-content;
+
+        .back-to-home-page-container {
+            background-color: rgb(28, 61, 32);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            transition: .2s;
+            position: relative;
+            top: 40px;
+
+            .back-icon {
+                color: white;
+                position: relative;
+                left: 6px;
+                top: 6px;
+                transition: .2s;
+            }
+
+            &:hover {
+                background-color: white;
+                box-shadow: 0px 0px 5px -2px black;
+                cursor: pointer;
+
+                .back-icon {
+                    color: rgb(28, 61, 32);
+                    scale: 90%;
+                }
+            }
+        }
+
+        h3 {
+            color: rgb(28, 61, 32);
+            margin: 0;
+            align-self: center;
+        }
+
+        .break-line {
+            background-color: rgb(28, 61, 32);
+            width: 400px;
+            height: 2px;
+            margin: 20px 0;
+            align-self: center;
+        }
+    }
+}
