@@ -42,6 +42,7 @@ namespace backend.Controllers
             user.UserName = registerDto.Username.ToLower();
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
             user.PasswordSalt = hmac.Key;
+            user.Role = "user";
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -49,7 +50,8 @@ namespace backend.Controllers
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                Role = user.Role
             };
         }
 

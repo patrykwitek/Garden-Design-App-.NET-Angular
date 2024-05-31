@@ -20,7 +20,7 @@ export class HomeComponent {
     this.loginService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user != null) {
-          this.router.navigateByUrl(`/projects/${user.username}`);
+          this.router.navigateByUrl(`/projects`);
         }
       }
     });
