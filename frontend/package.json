@@ -23,6 +23,7 @@
     "@ng-bootstrap/ng-bootstrap": "^15.1.2",
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.3",
+    "font-awesome": "^4.7.0",
     "material-icons": "^1.13.12",
     "ngx-bootstrap": "^12.0.0",
     "ngx-spinner": "^17.0.0",

@@ -33,7 +33,7 @@ export class RegisterComponent {
       password: ['', [
         Validators.required,
         Validators.minLength(4),
-        Validators.maxLength(8)]],
+        Validators.maxLength(16)]],
       confirmPassword: ['', [
         Validators.required,
         this.matchValues('password')]]
@@ -56,17 +56,14 @@ export class RegisterComponent {
 
     const registerValues = { ...this.registerForm.value, dateOfBirth: dateOfBirth };
 
-    console.log(registerValues);
-    
-    // note: TODO
-    // this.loginService.register(registerValues).subscribe({
-    //   next: () => {
-    //     this.router.navigateByUrl('/members');
-    //   },
-    //   error: error => {
-    //     this.validationErrors = error;
-    //   }
-    // });
+    this.loginService.register(registerValues).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/projects');
+      },
+      error: error => {
+        this.validationErrors = error;
+      }
+    });
   }
 
   private getDateOnly(dateOfBirth: string | undefined) {
