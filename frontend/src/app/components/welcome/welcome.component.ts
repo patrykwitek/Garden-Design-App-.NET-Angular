@@ -25,18 +25,15 @@ export class WelcomeComponent {
       username: this.username,
       password: this.password
     };
-    
-    console.log(loginValues);
 
-    // note: todo
-    // this.loginService.login(loginValues).subscribe({
-    //   next: () => {
-    //     this.router.navigateByUrl('/projects');
-    //   },
-    //   error: error => {
-    //     this.validationErrors = error;
-    //   }
-    // });
+    this.loginService.login(loginValues).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/projects');
+      },
+      error: error => {
+        console.error(error);
+      }
+    });
   }
 
   public changeHomeMode(mode: string) {
