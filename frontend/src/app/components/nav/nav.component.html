@@ -1,5 +1,12 @@
 <nav>
-    <a class="app-title" routerLink="/">Park Design App</a>
+    <a 
+        matTooltip="Park Design App"
+        matTooltipShowDelay="500"
+        matTooltipPosition="below"
+        class="app-title" 
+        routerLink="/">
+            Park Design App
+    </a>
     <div class="dropdown-list" clickOutside (clickOutside)="clickOutside()" *ngIf="(loginService.currentUser$ | async) as user">
         <a [className]="'dropdown-list-toggle ' + (showDropdownMenu ? 'highlighted' : '')"
             (click)="toggleDropdownMenu()">
@@ -10,25 +17,55 @@
             <mat-icon class="icon">keyboard_arrow_down</mat-icon>
         </a>
         <div [className]="'dropdown-list-menu ' + (showDropdownMenu ? 'active' : 'inactive')">
-            <a class="dropdown-list-item" title="admin" routerLink="/admin" *ngIf="user.role == 'admin'" (click)="toggleDropdownMenu()">
-                <mat-icon class="icon">shield</mat-icon>
-                <div>Admin</div>
+            <a 
+                matTooltip="Admin"
+                matTooltipPosition="left"
+                matTooltipShowDelay="500"
+                class="dropdown-list-item" 
+                routerLink="/admin" 
+                *ngIf="user.role == 'admin'" 
+                (click)="toggleDropdownMenu()">
+                    <mat-icon class="icon">shield</mat-icon>
+                    <div>Admin</div>
             </a>
-            <a class="dropdown-list-item" title="my profile" routerLink="/projects" (click)="toggleDropdownMenu()">
-                <mat-icon class="icon">park</mat-icon>
-                <div>My Projects</div>
+            <a 
+                matTooltip="My projects"
+                matTooltipPosition="left"
+                matTooltipShowDelay="500"
+                class="dropdown-list-item" 
+                routerLink="/projects" 
+                (click)="toggleDropdownMenu()">
+                    <mat-icon class="icon">park</mat-icon>
+                    <div>My Projects</div>
             </a>
-            <a class="dropdown-list-item" title="edit profile" routerLink="/editProfile" (click)="toggleDropdownMenu()">
-                <mat-icon class="icon">edit</mat-icon>
-                <div>Edit Profile</div>
+            <a 
+                matTooltip="Edit Profile"
+                matTooltipPosition="left"
+                matTooltipShowDelay="500"
+                class="dropdown-list-item" 
+                routerLink="/editProfile" 
+                (click)="toggleDropdownMenu()">
+                    <mat-icon class="icon">edit</mat-icon>
+                    <div>Edit Profile</div>
             </a>
-            <a class="dropdown-list-item" title="settings" routerLink="/settings" (click)="toggleDropdownMenu()">
-                <mat-icon class="icon">settings</mat-icon>
-                <div>Settings</div>
+            <a 
+                matTooltip="Settings"
+                matTooltipPosition="left"
+                matTooltipShowDelay="500"
+                class="dropdown-list-item" 
+                routerLink="/settings" 
+                (click)="toggleDropdownMenu()">
+                    <mat-icon class="icon">settings</mat-icon>
+                    <div>Settings</div>
             </a>
-            <a class="dropdown-list-item" title="logout" (click)="logout()">
-                <mat-icon class="icon">keyboard_return</mat-icon>
-                <div>Logout</div>
+            <a 
+                matTooltip="Logout"
+                matTooltipPosition="left"
+                matTooltipShowDelay="500"
+                class="dropdown-list-item" 
+                (click)="logout()">
+                    <mat-icon class="icon">keyboard_return</mat-icon>
+                    <div>Logout</div>
             </a>
         </div>
     </div>
