@@ -25,36 +25,6 @@ nav {
         }
     }
 
-    .nav-items {
-        height: 65px;
-        display: flex;
-        align-items: center;
-        margin: 0;
-
-        .nav-item {
-            display: inline-block;
-            margin: 0 10px;
-
-            .nav-item-text {
-                text-decoration: none;
-                color: rgb(176, 207, 180);
-                transition: .2s;
-            }
-
-            &:hover {
-                cursor: pointer;
-
-                .nav-item-text {
-                    color: white;
-                }
-            }
-        }
-
-        .active {
-            color: white !important;
-        }
-    }
-
     .dropdown-list {
         margin-left: auto;
 
@@ -84,6 +54,11 @@ nav {
                 top: 8px;
             }
 
+            .account-icon {
+                position: relative;
+                top: 4px;
+            }
+
             &.highlighted {
                 color: rgb(176, 207, 180);
             }
@@ -99,19 +74,21 @@ nav {
         }
 
         .dropdown-list-menu {
-            background-color: rgb(176, 207, 180);
+            background-color: white;
             border-radius: 5px;
             display: flex;
             flex-direction: column;
             position: fixed;
-            top: 60px;
-            right: 70px;
+            top: 70px;
+            right: 40px;
             transition: .3s;
+            border: 2px rgb(28, 61, 32) solid;
+            width: 150px;
+            gap: 2px;
 
             a {
                 color: black;
-                padding: 5px 10px;
-                padding-right: 50px;
+                padding: 10px 10px;
                 font-size: .9rem;
                 
                 .icon {
@@ -120,6 +97,7 @@ nav {
 
                 &:hover {
                     cursor: pointer;
+                    background-color: rgb(176, 207, 180);
                     color: white;
 
                     .icon {

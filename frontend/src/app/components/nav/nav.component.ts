@@ -35,6 +35,7 @@ export class NavComponent {
   logout() {
     this.loginService.logout();
     this.router.navigateByUrl('/');
+    this.toggleDropdownMenu();
   }
 
   toggleDropdownMenu(): void {

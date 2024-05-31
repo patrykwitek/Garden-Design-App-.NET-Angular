@@ -24,6 +24,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { SettingsComponent } from './components/settings/settings.component';
+import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
+import { AdminComponent } from './components/admin/admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,10 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
     AppInfoComponent,
     RegisterComponent,
     WelcomeComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    SettingsComponent,
+    EditProfileComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
