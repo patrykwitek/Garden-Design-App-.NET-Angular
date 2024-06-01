@@ -1,3 +1,4 @@
+using backend.Data;
 using backend.Data.Context;
 using backend.Interfaces;
 using backend.Services;
@@ -16,6 +17,7 @@ namespace backend.Extensions
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             return services;
         }

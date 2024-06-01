@@ -41,15 +41,6 @@ nav {
             transition: .2s;
             line-height: 40px;
 
-            .users-profile-photo {
-                max-height: 40px;
-                border: 2px solid white;
-                border-radius: 50%;
-                transition: ease-out .1s;
-                margin-right: .5rem;
-                box-shadow: 0px 0px 7px -2px black;
-            }
-
             .icon {
                 position: relative;
                 top: 8px;
@@ -57,7 +48,7 @@ nav {
 
             .account-icon {
                 position: relative;
-                top: 4px;
+                top: 5px;
             }
 
             &.highlighted {

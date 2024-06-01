@@ -1,9 +1,27 @@
 <div class="welcome-page-main-container">
     <div class="home-page-buttons">
         <div class="home-page-buttons-container">
-            <button (click)="changeHomeMode('register')">Register</button>
-            <button (click)="changeHomeMode('author')">About Author</button>
-            <button (click)="changeHomeMode('app')">About App</button>
+            <button 
+                matTooltip="Sign Up"
+                matTooltipPosition="right"
+                matTooltipShowDelay="500"
+                (click)="changeHomeMode('register')">
+                    Register
+            </button>
+            <button 
+                matTooltip="About Author"
+                matTooltipPosition="right"
+                matTooltipShowDelay="500"
+                (click)="changeHomeMode('author')">
+                    About Author
+            </button>
+            <button
+                matTooltip="Application Guide"
+                matTooltipPosition="right"
+                matTooltipShowDelay="500"
+                (click)="changeHomeMode('app')">
+                    About App
+            </button>
         </div>
     </div>
     <div class="form-container">

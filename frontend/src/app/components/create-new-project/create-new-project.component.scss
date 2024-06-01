@@ -1,0 +1,89 @@
+.create-new-project-container {
+    width: 100%;
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+        h3 {
+            color: rgb(28, 61, 32);
+            margin: 0;
+            align-self: center;
+            margin-top: 20px;
+        }
+
+        .break-line {
+            background-color: rgb(28, 61, 32);
+            width: 300px;
+            height: 2px;
+            margin: 20px 0;
+            align-self: center;
+        }
+
+        .inputs-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: .5rem;
+
+            .single-input {
+                align-self: center;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+
+                label {
+                    width: 70px;
+                }
+
+                input {
+                    width: 200px;
+                    padding: 2px 6px;
+
+                    &:focus {
+                        outline: none;
+                    }
+                }
+            }
+        }
+
+        .buttons-container {
+            width: 100%;
+            align-self: center;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 1rem 0;
+            margin-top: .5rem;
+            justify-content: center;
+            gap: 2rem;
+
+            .cancel-button {
+                border: 2px rgb(255, 109, 109) solid;
+                color: rgb(255, 109, 109);
+                background-color: transparent;
+                border-radius: 5px;
+                padding: 3px 12px;
+                transition: .2s;
+
+                &:hover {
+                    color: white;
+                    background-color: rgb(255, 109, 109);
+                }
+            }
+
+            .submit-button {
+                border: 2px rgb(28, 61, 32) solid;
+                color: rgb(28, 61, 32);
+                background-color: transparent;
+                border-radius: 5px;
+                padding: 3px 12px;
+                transition: .2s;
+
+                &:hover {
+                    color: white;
+                    background-color: rgb(28, 61, 32);
+                }
+            }
+        }
+    }
+}
