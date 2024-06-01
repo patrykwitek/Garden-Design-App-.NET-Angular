@@ -28,6 +28,8 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { AdminComponent } from './components/admin/admin/admin.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CreateNewProjectComponent } from './components/create-new-project/create-new-project.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     DatePickerComponent,
     SettingsComponent,
     EditProfileComponent,
-    AdminComponent
+    AdminComponent,
+    CreateNewProjectComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +61,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     FormsModule,
     BrowserAnimationsModule,
     MatTooltipModule,
+    MatDialogModule,
     SharedModule,
     NgbModule
   ],
