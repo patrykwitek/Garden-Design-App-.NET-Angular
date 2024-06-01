@@ -4,5 +4,5 @@ export interface Project {
     dateCreated?: string;
     width: number;
     depth: number;
-    projectOwner?: string;
+    ownerUsername?: string;
 }

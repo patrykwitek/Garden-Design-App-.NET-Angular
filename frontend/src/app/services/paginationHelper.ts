@@ -22,7 +22,7 @@ export function getPaginatedResult<T>(url: string, params: HttpParams, http: Htt
 }
 
 export function getPaginationHeaders(pageNumber: number, pageSize: number): HttpParams {
-    let params = new HttpParams(); // note: http params pozwala na ustawienie parametrów query
+    let params = new HttpParams();
 
     params = params.append('pageNumber', pageNumber);
     params = params.append('pageSize', pageSize);

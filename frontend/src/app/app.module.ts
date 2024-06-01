@@ -30,6 +30,8 @@ import { AdminComponent } from './components/admin/admin/admin.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreateNewProjectComponent } from './components/create-new-project/create-new-project.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ProjectsListComponent } from './components/projects-list/projects-list.component';
+import { BackButtonComponent } from './shared-components/back-button/back-button.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     SettingsComponent,
     EditProfileComponent,
     AdminComponent,
-    CreateNewProjectComponent
+    CreateNewProjectComponent,
+    ProjectsListComponent,
+    BackButtonComponent
   ],
   imports: [
     BrowserModule,

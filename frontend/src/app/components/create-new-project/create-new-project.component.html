@@ -1,4 +1,5 @@
 <div class="create-new-project-container">
+    <app-back-button class="back" (click)="cancel()"></app-back-button>
     <form (ngSubmit)="create()">
         <h3>Create new project</h3>
         <div class="break-line"></div>
@@ -17,7 +18,6 @@
             </div>
         </div>
         <div class="buttons-container">
-            <button class="cancel-button" (click)="cancel()">Cancel</button>
             <input type="submit" value="Create" class="submit-button">
         </div>
     </form>

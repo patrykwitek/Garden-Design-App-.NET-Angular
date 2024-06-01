@@ -1,5 +1,11 @@
 .create-new-project-container {
-    width: 100%;
+    max-width: 100%;
+
+    .back {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
 
     form {
         display: flex;
@@ -56,20 +62,6 @@
             margin-top: .5rem;
             justify-content: center;
             gap: 2rem;
-
-            .cancel-button {
-                border: 2px rgb(255, 109, 109) solid;
-                color: rgb(255, 109, 109);
-                background-color: transparent;
-                border-radius: 5px;
-                padding: 3px 12px;
-                transition: .2s;
-
-                &:hover {
-                    color: white;
-                    background-color: rgb(255, 109, 109);
-                }
-            }
 
             .submit-button {
                 border: 2px rgb(28, 61, 32) solid;
