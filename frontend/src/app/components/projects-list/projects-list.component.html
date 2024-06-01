@@ -21,17 +21,41 @@
                         <td 
                             matTooltip="{{project.dateCreated | timeago}}" 
                             matTooltipShowDelay="500"
-                            matTooltipPosition="right">
+                            matTooltipPosition="below">
                                 {{project.dateCreated | date: "dd MMMM yyyy"}}
                         </td>
                         <td>{{project.ownerUsername}}</td>
                         <td>{{project.width}}</td>
                         <td>{{project.depth}}</td>
                         <td>
-                            <div>
-                                <button><mat-icon>delete</mat-icon></button>
-                                <button><mat-icon>edit</mat-icon></button>
-                                <button><mat-icon>send</mat-icon></button>
+                            <div class="actions-section">
+                                <button 
+                                    matTooltip="Delete" 
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                        <mat-icon 
+                                            class="action-icon">
+                                                delete
+                                        </mat-icon>
+                                </button>
+                                <button
+                                    matTooltip="Edit" 
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                        <mat-icon 
+                                            class="action-icon">
+                                                edit
+                                        </mat-icon>
+                                </button>
+                                <button
+                                    matTooltip="Open" 
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                        <mat-icon 
+                                            class="action-icon">
+                                                send
+                                        </mat-icon>
+                                </button>
                             </div>
                         </td>
                     </tr>
