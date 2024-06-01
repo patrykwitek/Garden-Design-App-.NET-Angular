@@ -1,0 +1,57 @@
+<div class="open-existings-projects-container">
+    <app-back-button class="back" (click)="cancel()"></app-back-button>
+    <div class="content-container">
+        <h3>Projects</h3>
+        <div class="break-line"></div>
+        <div class="projects-list-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date Created</th>
+                        <th>Author</th>
+                        <th>Width</th>
+                        <th>Depth</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let project of projects">
+                        <td>{{project.name}}</td>
+                        <td 
+                            matTooltip="{{project.dateCreated | timeago}}" 
+                            matTooltipShowDelay="500"
+                            matTooltipPosition="right">
+                                {{project.dateCreated | date: "dd MMMM yyyy"}}
+                        </td>
+                        <td>{{project.ownerUsername}}</td>
+                        <td>{{project.width}}</td>
+                        <td>{{project.depth}}</td>
+                        <td>
+                            <div>
+                                <button><mat-icon>delete</mat-icon></button>
+                                <button><mat-icon>edit</mat-icon></button>
+                                <button><mat-icon>send</mat-icon></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="pagination" class="pagination-container">
+                <pagination 
+                    [boundaryLinks]="true" 
+                    [totalItems]="pagination.totalItems" 
+                    [itemsPerPage]="pagination.itemsPerPage"
+                    [maxSize]="10"
+                    [(ngModel)]="pagination.currentPage"
+                    (pageChanged)="pageChanged($event)"
+                    previousText="&lsaquo;" 
+                    nextText="&rsaquo;" 
+                    firstText="&laquo;"
+                    lastText="&raquo;"
+                    class="pagination-styles">
+                </pagination>
+            </div>
+        </div>
+    </div>
+</div>

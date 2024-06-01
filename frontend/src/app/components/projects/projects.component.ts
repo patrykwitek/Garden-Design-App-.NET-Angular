@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CreateNewProjectComponent } from '../create-new-project/create-new-project.component';
 import { ProjectService } from 'src/app/services/project.service';
+import { ProjectsListComponent } from '../projects-list/projects-list.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-projects',
@@ -15,24 +17,34 @@ export class ProjectsComponent {
     hasBackdrop: true,
     panelClass: 'dialog',
     height: 'fit-content',
-    width: '400px'
+    width: '500px'
+  };
+
+  projectsListDialogConfig: MatDialogConfig = {
+    disableClose: false,
+    hasBackdrop: true,
+    panelClass: 'dialog',
+    height: 'fit-content',
+    width: '900px'
   };
 
   constructor(
     private dialog: MatDialog,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private toastr: ToastrService
   ) { }
 
   public createProject() {
-
     let dialogRef = this.dialog.open(CreateNewProjectComponent, this.createProjectDialogConfig);
 
     dialogRef.afterClosed().subscribe(async result => {
       if (result) {
         this.projectService.createProject(result).subscribe(
-          response => { },
+          response => {
+            this.toastr.success('New project successfully added');
+          },
           error => {
-            console.error('Error creating project', error);
+            this.toastr.error('Error creating project', error);
           }
         );
       }
@@ -40,6 +52,6 @@ export class ProjectsComponent {
   }
 
   public openExistingProjects() {
-
+    this.dialog.open(ProjectsListComponent, this.projectsListDialogConfig);
   }
 }

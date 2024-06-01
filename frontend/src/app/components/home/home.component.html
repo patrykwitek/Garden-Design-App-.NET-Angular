@@ -1,15 +1,6 @@
 <div class="home-container">
     <div class="welcome-page">
-        <div 
-            matTooltip="Back"
-            matTooltipPosition="below"
-            matTooltipShowDelay="500"
-            class="back-to-home-page-container" 
-            *ngIf="mode != 'home'" 
-            (click)="backToHomeMode()"
-            >
-                <mat-icon class="back-icon">arrow_back</mat-icon>
-        </div>
+        <app-back-button class="back-to-home-page-container" (click)="backToHomeMode()" *ngIf="mode != 'home'"></app-back-button>
         <h3 *ngIf="mode == 'home'">Welcome in Park Design App</h3>
         <h3 *ngIf="mode == 'register'">Register</h3>
         <h3 *ngIf="mode == 'author'">About Author</h3>

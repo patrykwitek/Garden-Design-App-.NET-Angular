@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Project } from 'src/app/models/project';
+import { ProjectsParams } from 'src/app/models/projectsParams';
 import { LoginService } from 'src/app/services/login.service';
+import { ProjectService } from 'src/app/services/project.service';
 
 @Component({
   selector: 'app-nav',
@@ -15,7 +18,7 @@ export class NavComponent {
   constructor(
     public loginService: LoginService,
     private router: Router,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -29,7 +32,7 @@ export class NavComponent {
         this.router.navigateByUrl('/members');
         this.model = {};
       }
-    })
+    });
   }
 
   logout() {

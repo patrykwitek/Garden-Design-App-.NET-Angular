@@ -27,6 +27,7 @@
     "material-icons": "^1.13.12",
     "ngx-bootstrap": "^12.0.0",
     "ngx-spinner": "^17.0.0",
+    "ngx-timeago": "^3.0.0",
     "ngx-toastr": "^18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
