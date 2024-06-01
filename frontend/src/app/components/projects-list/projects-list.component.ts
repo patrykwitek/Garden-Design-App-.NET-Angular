@@ -44,7 +44,7 @@ export class ProjectsListComponent implements OnInit {
           if (response.result && response.pagination) {
             this.projects = response.result;
             this.pagination = response.pagination;
-            
+
             this.projects.map(project => project.dateCreated = this.dateService.getDateOnly(project.dateCreated));
           }
         }
@@ -55,8 +55,19 @@ export class ProjectsListComponent implements OnInit {
   public pageChanged(event: any) {
     if (this.projectsParams && this.projectsParams.pageNumber !== event.page) {
       this.projectsParams.pageNumber = event.page;
+
       this.projectService.setProjectsParams(this.projectsParams);
-      this.loadProjects();
+      
+      this.projectService.getProjects(this.projectsParams).subscribe({
+        next: response => {
+          if (response.result && response.pagination) {
+            this.projects = response.result;
+            this.pagination = response.pagination;
+
+            this.projects.map(project => project.dateCreated = this.dateService.getDateOnly(project.dateCreated));
+          }
+        }
+      });
     }
   }
 

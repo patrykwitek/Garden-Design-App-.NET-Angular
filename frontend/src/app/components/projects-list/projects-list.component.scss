@@ -55,6 +55,33 @@
                         text-align: center;
                         padding: 1rem 0;
                         color: rgb(88, 88, 88);
+
+                        .actions-section {
+                            width: 100%;
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: center;
+                            gap: 5px;
+
+                            button {
+                                border: none;
+                                background-color: transparent;
+
+                                .action-icon {
+                                    position: relative;
+                                    top: 3px;
+                                    scale: 110%;
+                                    color: rgb(28, 61, 32);
+                                    transition: .2s;
+                                }
+
+                                &:hover {
+                                    .action-icon {
+                                        scale: 130%;
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     &:last-child {
@@ -67,6 +94,14 @@
 
                         td {
                             color: white;
+
+                            .actions-section {
+                                button {
+                                    .action-icon {
+                                        color: white;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
