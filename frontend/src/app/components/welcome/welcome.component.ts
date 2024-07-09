@@ -27,9 +27,7 @@ export class WelcomeComponent {
     };
 
     this.loginService.login(loginValues).subscribe({
-      next: () => {
-        this.router.navigateByUrl('/projects');
-      },
+      next: () => { },
       error: error => {
         console.error(error);
       }

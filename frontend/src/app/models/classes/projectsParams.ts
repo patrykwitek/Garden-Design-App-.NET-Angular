@@ -1,4 +1,4 @@
-import { User } from "./user";
+import { User } from "../interfaces/user";
 
 export class ProjectsParams {
     username: string;

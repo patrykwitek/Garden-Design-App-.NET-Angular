@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Project } from 'src/app/models/project';
-import { ProjectsParams } from 'src/app/models/projectsParams';
+import { EngineService } from 'src/app/services/engine.service';
 import { LoginService } from 'src/app/services/login.service';
+import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 import { ProjectService } from 'src/app/services/project.service';
 
 @Component({
@@ -18,13 +18,12 @@ export class NavComponent {
   constructor(
     public loginService: LoginService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private projectLoaderService: ProjectLoaderService,
+    private engineService: EngineService
   ) { }
 
-  ngOnInit(): void {
-  }
-
-  login() {
+  public login() {
     this.showDropdownMenu = false;
 
     this.loginService.login(this.model).subscribe({
@@ -35,23 +34,32 @@ export class NavComponent {
     });
   }
 
-  logout() {
+  public logout() {
     this.loginService.logout();
     this.router.navigateByUrl('/');
     this.toggleDropdownMenu();
   }
 
-  toggleDropdownMenu(): void {
+  public toggleDropdownMenu(): void {
     this.showDropdownMenu = !this.showDropdownMenu;
     this.changeDropdownIcon();
   }
 
-  clickOutside(): void {
+  public clickOutside(): void {
     this.showDropdownMenu = false;
     this.changeDropdownIcon();
   }
 
-  changeDropdownIcon() {
+  public goToMyProjects(): void {
+    this.router.navigateByUrl('/');
+    this.toggleDropdownMenu();
+    
+    this.engineService.dispose();
+    this.projectLoaderService.loadOpenProjectTab(true);
+    this.projectLoaderService.setProject(null);
+  }
+
+  private changeDropdownIcon() {
     const icon: Element | null = document.querySelector(".icon");
 
     if (icon !== null) {

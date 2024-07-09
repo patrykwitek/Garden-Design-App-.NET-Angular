@@ -1,6 +1,6 @@
 nav {
     width: 100vw;
-    height: 65px;
+    height: var(--nav-height);
     position: fixed;
     top: 0;
     background-color: rgb(28, 61, 32);
@@ -89,7 +89,7 @@ nav {
 
                 &:hover {
                     cursor: pointer;
-                    background-color: rgb(176, 207, 180);
+                    background-color: rgb(118, 160, 123);
                     color: white;
 
                     .icon {

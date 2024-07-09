@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "e6ItlMUCb3a4qXoUaRQ2QEAf1jSTUDPmTcyWkGu2R7e0U6PXO+K49FTf/oRUDE3muUy+Es7v5weyINrURxgXBw==",
+  "dgSpecHash": "fzZF384wkFHAhyO5rQ6IXIA/2YOR3DmFUGscefSBhxyXKMGQHwuR2B5/kzXddH/XRaCYqOczBIJvqS+Jh4E/MQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\XPS\\Desktop\\ParkDesignApp\\backend\\backend.csproj",
+  "projectFilePath": "C:\\Users\\XPS\\Desktop\\GardenDesignApp\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\XPS\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\XPS\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

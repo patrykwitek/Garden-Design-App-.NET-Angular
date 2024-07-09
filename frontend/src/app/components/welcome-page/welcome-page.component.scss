@@ -1,0 +1,35 @@
+.welcome-page-container {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    align-items: center;
+    background-color: rgba(28, 61, 32, 0.1);
+
+    .welcome-page {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 900px;
+        height: fit-content;
+
+        .back-to-home-page-container {
+            position: relative;
+            top: 40px;
+        }
+
+        h3 {
+            color: rgb(28, 61, 32);
+            margin: 0;
+            align-self: center;
+        }
+
+        .break-line {
+            background-color: rgb(28, 61, 32);
+            width: 400px;
+            height: 2px;
+            margin: 20px 0;
+            align-self: center;
+        }
+    }
+}

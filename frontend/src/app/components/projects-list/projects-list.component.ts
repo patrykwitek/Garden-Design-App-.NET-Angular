@@ -1,9 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Pagination } from 'src/app/models/pagination';
-import { Project } from 'src/app/models/project';
-import { ProjectsParams } from 'src/app/models/projectsParams';
+import { ProjectsParams } from 'src/app/models/classes/projectsParams';
+import { Pagination } from 'src/app/models/interfaces/pagination';
+import { Project } from 'src/app/models/interfaces/project';
 import { DateService } from 'src/app/services/date.service';
+import { EngineService } from 'src/app/services/engine.service';
+import { GardenService } from 'src/app/services/garden.service';
+import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 import { ProjectService } from 'src/app/services/project.service';
 
 @Component({
@@ -20,7 +23,10 @@ export class ProjectsListComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ProjectsListComponent>,
     private projectService: ProjectService,
-    private dateService: DateService
+    private projectLoaderService: ProjectLoaderService,
+    private dateService: DateService,
+    private gardenService: GardenService,
+    private engineService: EngineService
   ) {
     this.projectsParams = projectService.getProjectsParams();
   }
@@ -57,7 +63,7 @@ export class ProjectsListComponent implements OnInit {
       this.projectsParams.pageNumber = event.page;
 
       this.projectService.setProjectsParams(this.projectsParams);
-      
+
       this.projectService.getProjects(this.projectsParams).subscribe({
         next: response => {
           if (response.result && response.pagination) {
@@ -69,6 +75,14 @@ export class ProjectsListComponent implements OnInit {
         }
       });
     }
+  }
+
+  public openProject(project: Project) {
+    this.projectLoaderService.setProject(project);
+    this.gardenService.setCurrentProject(project);
+    this.projectLoaderService.loadOpenProjectTab(false);
+
+    this.dialogRef.close();
   }
 
 }

@@ -5,7 +5,7 @@
         matTooltipPosition="below"
         class="app-title" 
         routerLink="/">
-            Park Design App
+            Garden Design App
     </a>
     <div class="dropdown-list" clickOutside (clickOutside)="clickOutside()" *ngIf="(loginService.currentUser$ | async) as user">
         <a [className]="'dropdown-list-toggle ' + (showDropdownMenu ? 'highlighted' : '')"
@@ -33,8 +33,7 @@
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
                 class="dropdown-list-item" 
-                routerLink="/projects" 
-                (click)="toggleDropdownMenu()">
+                (click)="goToMyProjects()">
                     <mat-icon class="icon">park</mat-icon>
                     <div>My Projects</div>
             </a>

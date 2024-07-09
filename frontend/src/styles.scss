@@ -11,6 +11,10 @@
 /* Importing Datepicker SCSS file. */
 @import "node_modules/ngx-bootstrap/datepicker/bs-datepicker";
 
+:root {
+    --nav-height: 65px;
+}
+
 html,
 body {
     height: 100%;
