@@ -1,25 +1,25 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Project } from '../models/project';
-import { Pagination } from '../models/pagination';
-import { ProjectsParams } from '../models/projectsParams';
+import { Project } from '../models/interfaces/project';
+import { Pagination } from '../models/interfaces/pagination';
+import { ProjectsParams } from '../models/classes/projectsParams';
 import { map, of, take } from 'rxjs';
-import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { getPaginatedResult, getPaginationHeaders } from '../models/functions/paginationHelper';
 import { LoginService } from './login.service';
-import { User } from '../models/user';
+import { User } from '../models/interfaces/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
-  baseUrl = environment.apiUrl;
+  private baseUrl = environment.apiUrl;
 
-  projects: Project[] = [];
-  projectCache = new Map<any, any>();
-  pagination: Pagination | undefined;
-  projectsParams: ProjectsParams | undefined;
-  user: User | undefined;
+  private projects: Project[] = [];
+  private projectCache = new Map<any, any>();
+  private pagination: Pagination | undefined;
+  private projectsParams: ProjectsParams | undefined;
+  private user: User | undefined;
 
   constructor(
     private http: HttpClient,

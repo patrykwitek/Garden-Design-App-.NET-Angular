@@ -12,7 +12,6 @@ import { HomeComponent } from './components/home/home.component';
 import { ProjectsComponent } from './components/projects/projects.component';
 import { TestErrorsComponent } from './components/test-errors/test-errors.component';
 import { AuthorComponent } from './components/author/author.component';
-import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ServerErrorComponent } from './components/server-error/server-error.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TextInputComponent } from './shared-components/text-input/text-input.component';
@@ -32,6 +31,7 @@ import { CreateNewProjectComponent } from './components/create-new-project/creat
 import { MatDialogModule } from '@angular/material/dialog';
 import { ProjectsListComponent } from './components/projects-list/projects-list.component';
 import { BackButtonComponent } from './shared-components/back-button/back-button.component';
+import { WelcomePageComponent } from './components/welcome-page/welcome-page.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +42,6 @@ import { BackButtonComponent } from './shared-components/back-button/back-button
     ProjectsComponent,
     TestErrorsComponent,
     AuthorComponent,
-    NotFoundComponent,
     ServerErrorComponent,
     TextInputComponent,
     AppInfoComponent,
@@ -54,7 +53,8 @@ import { BackButtonComponent } from './shared-components/back-button/back-button
     AdminComponent,
     CreateNewProjectComponent,
     ProjectsListComponent,
-    BackButtonComponent
+    BackButtonComponent,
+    WelcomePageComponent
   ],
   imports: [
     BrowserModule,
