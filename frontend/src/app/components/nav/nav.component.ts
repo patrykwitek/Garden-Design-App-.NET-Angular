@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EngineService } from 'src/app/services/engine.service';
@@ -12,6 +12,8 @@ import { ProjectService } from 'src/app/services/project.service';
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent {
+  @Input() isOpenProjectTab: boolean = true;
+  
   model: any = {};
   showDropdownMenu: boolean = false;
 

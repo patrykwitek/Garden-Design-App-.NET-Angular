@@ -72,13 +72,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild("viewerCanvas")
   public set viewerCanvas(canvas: ElementRef<HTMLCanvasElement>) {
     if (canvas) {
-      // TODO: check if needed
-      // void this.preloadTextures().then(() => {
-      //   this.initializeEngine(canvas);
-      // });
-
       this.engineService.initialize(canvas.nativeElement);
-      this.gardenService.addTestCubes();
+      this.gardenService.initialize3DVisualisation();
     }
   }
 
@@ -86,9 +81,4 @@ export class HomeComponent implements OnInit, OnDestroy {
     const activeElement = document.activeElement;
     return activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
   }
-
-  private async preloadTextures(): Promise<void> {
-    // TODO: await this.textureLoaderService.loadTexture("grass_texture.png");
-  }
-
 }
