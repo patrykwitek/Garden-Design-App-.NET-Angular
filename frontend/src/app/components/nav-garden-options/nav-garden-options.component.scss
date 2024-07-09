@@ -1,0 +1,13 @@
+.nav-garden-options-container {
+    width: 60vw;
+    height: calc(var(--nav-height) - 10px);
+    background-color: rgba(255, 255, 255, 0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 0 6px -4px black;
+    color: black;
+}

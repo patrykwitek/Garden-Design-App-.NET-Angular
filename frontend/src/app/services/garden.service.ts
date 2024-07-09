@@ -16,9 +16,17 @@ export class GardenService {
     this.currentProject = project;
   }
 
-  public addTestCubes(): void {
-    if (this.currentProject) {
-      this.engineService.addTestCubes(this.currentProject?.width);
+  public initialize3DVisualisation() {
+    if (!this.currentProject) {
+      return;
     }
+
+    // TODO: choosing ground functionality 
+    this.engineService.preloadGroundTexture('green grass').then(() => {
+      this.engineService.addGrass();
+      this.engineService.addTestCube(this.currentProject!.width, this.currentProject!.depth);
+      this.engineService.setAnimating(true);
+      this.engineService.animate();
+    });
   }
 }

@@ -5,24 +5,31 @@ nav {
     top: 0;
     background-color: rgb(28, 61, 32);
     backdrop-filter: blur(10px);
-    box-shadow: 0px 0px 10px -5px black;
+    box-shadow: 0px 0px 10px -3px black;
     color: white;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     padding: 0 4rem;
     z-index: 1;
 
-    .app-title {
-        text-decoration: none;
-        color: white;
-        font-size: 1.2rem;
-        transition: .2s;
-        margin: 0;
+    .app-title-container {
+        height: var(--nav-height);
+        display: flex;
+        align-items: center;
 
-        &:hover {
-            scale: 110%;
-            color: rgb(176, 207, 180);
+        .app-title {
+            text-decoration: none;
+            color: white;
+            font-size: 1.2rem;
+            transition: .2s;
+            margin: 0;
+
+            &:hover {
+                scale: 110%;
+                color: rgb(176, 207, 180);
+            }
         }
     }
 
@@ -82,7 +89,7 @@ nav {
                 color: black;
                 padding: 10px 10px;
                 font-size: .9rem;
-                
+
                 .icon {
                     transition: .2s;
                 }
@@ -117,5 +124,11 @@ nav {
                 transform: translateY(0px);
             }
         }
+    }
+
+    &.visualisation-mode {
+        background-color: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(2px);
+        box-shadow: none;
     }
 }

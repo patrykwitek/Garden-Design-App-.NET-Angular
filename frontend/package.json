@@ -31,6 +31,7 @@
     "ngx-toastr": "^18.0.0",
     "rxjs": "~7.8.0",
     "three": "^0.166.1",
+    "three-orbitcontrols": "^2.110.3",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
   },

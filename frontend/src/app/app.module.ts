@@ -32,6 +32,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ProjectsListComponent } from './components/projects-list/projects-list.component';
 import { BackButtonComponent } from './shared-components/back-button/back-button.component';
 import { WelcomePageComponent } from './components/welcome-page/welcome-page.component';
+import { NavGardenOptionsComponent } from './components/nav-garden-options/nav-garden-options.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { WelcomePageComponent } from './components/welcome-page/welcome-page.com
     CreateNewProjectComponent,
     ProjectsListComponent,
     BackButtonComponent,
-    WelcomePageComponent
+    WelcomePageComponent,
+    NavGardenOptionsComponent
   ],
   imports: [
     BrowserModule,
