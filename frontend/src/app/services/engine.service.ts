@@ -118,6 +118,14 @@ export class EngineService {
     });
   }
 
+  public resetCameraPosition() {
+    this.camera.position.set(0, 5, 10);
+    this.camera.lookAt(0, 0, 0);
+
+    this.controls.target.set(0, 0, 0);
+    this.controls.update();
+  }
+
   private setLightSettings(): void {
     const ambientLight = new THREE.AmbientLight(0x404040, 1); // Drugi parametr to intensywność
     this.scene.add(ambientLight);
@@ -145,9 +153,10 @@ export class EngineService {
   private setCameraSettings() {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.set(0, 5, 10);
+    this.camera.lookAt(0, 0, 0);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
+    this.controls.enableDamping = false;
     this.controls.dampingFactor = 0.25;
     this.controls.screenSpacePanning = false;
     this.controls.maxPolarAngle = (Math.PI / 2) - .005;
@@ -160,7 +169,7 @@ export class EngineService {
 
     // sky link: https://opengameart.org/content/sky-box-sunny-day
     // TODO: change for another
-    
+
     const loader = new THREE.CubeTextureLoader();
     const texture = loader.load([
       'assets/textures/skybox/px.bmp', // right

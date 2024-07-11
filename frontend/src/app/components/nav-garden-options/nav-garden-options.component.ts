@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { EngineService } from 'src/app/services/engine.service';
 
 @Component({
   selector: 'app-nav-garden-options',
@@ -7,5 +8,11 @@ import { Component } from '@angular/core';
 })
 export class NavGardenOptionsComponent {
 
-  constructor() { }
+  constructor(
+    private engineService: EngineService
+  ) { }
+
+  public resetCameraPosition() {
+    this.engineService.resetCameraPosition();
+  }
 }
