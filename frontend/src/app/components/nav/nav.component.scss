@@ -130,5 +130,35 @@ nav {
         background-color: rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(2px);
         box-shadow: none;
+
+        .app-title-container {
+            .app-title {
+                &:hover {
+                    color: rgb(214, 214, 214);
+                }
+            }
+        }
+
+        .dropdown-list {
+            .dropdown-list-toggle {
+                &.highlighted {
+                    color: rgb(214, 214, 214);
+                }
+
+                &:hover {
+                    color: rgb(214, 214, 214);
+                }
+            }
+
+            .dropdown-list-menu {
+                border: 2px rgb(54, 54, 54) solid;
+
+                a {
+                    &:hover {
+                        background-color: rgba(54, 54, 54, 0.5);
+                    }
+                }
+            }
+        }
     }
 }

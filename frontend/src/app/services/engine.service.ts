@@ -20,6 +20,7 @@ export class EngineService {
 
   public initialize(canvas: HTMLCanvasElement): void {
     this.renderer = new THREE.WebGLRenderer({ canvas });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     this.scene = new THREE.Scene();
@@ -74,7 +75,7 @@ export class EngineService {
   }
 
   public addGrass(): void {
-    const geometry = new THREE.PlaneGeometry(500, 500);
+    const geometry = new THREE.PlaneGeometry(1000, 1000);
     const material = new THREE.MeshStandardMaterial({ map: this.grassTexture, side: THREE.DoubleSide });
     const plane = new THREE.Mesh(geometry, material);
     plane.rotation.x = - Math.PI / 2;
@@ -149,7 +150,7 @@ export class EngineService {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.25;
     this.controls.screenSpacePanning = false;
-    this.controls.maxPolarAngle = Math.PI / 2;
+    this.controls.maxPolarAngle = (Math.PI / 2) - .005;
 
     this.controls.minDistance = 5;
     this.controls.maxDistance = 50;
