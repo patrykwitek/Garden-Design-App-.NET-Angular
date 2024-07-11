@@ -142,7 +142,7 @@ nav {
         .dropdown-list {
             .dropdown-list-toggle {
                 &.highlighted {
-                    color: rgb(214, 214, 214);
+                    color: white;
                 }
 
                 &:hover {
@@ -151,9 +151,17 @@ nav {
             }
 
             .dropdown-list-menu {
-                border: 2px rgb(54, 54, 54) solid;
-
+                background-color: rgba(0, 0, 0, 0.3);
+                border-radius: 0;
+                top: var(--nav-height);
+                right: 30px;
+                border: none;
+                width: 170px;
+    
                 a {
+                    color: white;
+                    padding: 10px 20px;
+    
                     &:hover {
                         background-color: rgba(54, 54, 54, 0.5);
                     }
