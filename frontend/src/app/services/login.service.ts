@@ -2,14 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { User } from '../models/interfaces/user';
+import { IUser } from '../models/interfaces/i-user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
   baseUrl = environment.apiUrl;
-  private currentUserSource = new BehaviorSubject<User | null>(null);
+  private currentUserSource = new BehaviorSubject<IUser | null>(null);
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(
@@ -17,8 +17,8 @@ export class LoginService {
   ) { }
 
   public login(model: any) {
-    return this.http.post<User>(this.baseUrl + 'login/login', model).pipe(
-      map((response: User) => {
+    return this.http.post<IUser>(this.baseUrl + 'login/login', model).pipe(
+      map((response: IUser) => {
         const user = response;
 
         if (user) {
@@ -29,7 +29,7 @@ export class LoginService {
   }
 
   public register(model: any) {
-    return this.http.post<User>(this.baseUrl + 'login/register', model).pipe(
+    return this.http.post<IUser>(this.baseUrl + 'login/register', model).pipe(
       map(user => {
         if (user) {
           this.setCurrentUser(user);
@@ -38,7 +38,7 @@ export class LoginService {
     );
   }
 
-  public setCurrentUser(user: User) {
+  public setCurrentUser(user: IUser) {
     localStorage.setItem('parkDesignAppUser', JSON.stringify(user));
     this.currentUserSource.next(user);
   }

@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Project } from 'src/app/models/interfaces/project';
+import { IProject } from 'src/app/models/interfaces/i-project';
 
 @Component({
   selector: 'app-create-new-project',
@@ -14,12 +14,12 @@ export class CreateNewProjectComponent {
 
   constructor(
     public dialogRef: MatDialogRef<CreateNewProjectComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { template: Project }
+    @Inject(MAT_DIALOG_DATA) public data: { template: IProject }
   ) { }
 
   public create() {
     if (this.name && this.width && this.depth) {
-      const project: Project = {
+      const project: IProject = {
         name: this.name,
         width: this.width,
         depth: this.depth

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from './services/login.service';
-import { User } from './models/interfaces/user';
+import { IUser } from './models/interfaces/i-user';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   setCurrentUser() {
     const userString = localStorage.getItem('parkDesignAppUser');
     if (!userString) return;
-    const user: User = JSON.parse(userString);
+    const user: IUser = JSON.parse(userString);
     this.loginService.setCurrentUser(user);
   }
 }
