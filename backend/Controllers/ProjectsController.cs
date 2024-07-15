@@ -19,17 +19,20 @@ namespace backend.Controllers
         [HttpPost("create")]
         public async Task<ActionResult> CreateProject(CreateProjectDto projectDto)
         {
-            var username = User.GetUsername();
+            string username = User.GetUsername();
 
-            var projectOwner = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
+            User projectOwner = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
-            var project = new Project
+            Ground ground = (await _unitOfWork.GroundRepository.GetGroundList()).FirstOrDefault();
+
+            Project project = new Project
             {
                 Name = projectDto.Name,
                 DateCreated = DateTime.UtcNow,
                 Width = projectDto.Width,
                 Depth = projectDto.Depth,
-                User = projectOwner
+                User = projectOwner,
+                Ground = ground
             };
 
             _unitOfWork.ProjectsRepository.AddProject(project);

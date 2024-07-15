@@ -1,3 +1,4 @@
+using backend.Data;
 using backend.Data.Context;
 using backend.Extensions;
 using backend.Middleware;
@@ -34,7 +35,9 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
-    // await Seed.SeedUsers(context);
+    // TODO: await Seed.SeedUsers(context); (?)
+
+    Seed.SeedData(services);
 }
 catch (Exception ex)
 {

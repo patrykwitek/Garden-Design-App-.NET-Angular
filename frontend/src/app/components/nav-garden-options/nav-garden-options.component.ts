@@ -26,18 +26,7 @@ export class NavGardenOptionsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.groundList.push({
-      id: 1,
-      name: 'Festuca rubra',
-      img: 'festuca rubra',
-      description: 'TODO' // note: remember about translation
-    });
-    this.groundList.push({
-      id: 2,
-      name: 'Poa pratensis',
-      img: 'poa pratensis',
-      description: 'TODO'
-    });
+    this.loadGrounds();
 
     // TODO:
     // add more types of grass
@@ -54,5 +43,16 @@ export class NavGardenOptionsComponent implements OnInit {
 
   public setGround(ground: IGround) {
     this.gardenService.setGround(ground);
+  }
+
+  private loadGrounds(): void {
+    this.gardenService.getGrounds().subscribe(
+      (groundList: IGround[]) => {
+        this.groundList = groundList;
+      },
+      error => {
+        console.error('Error loading grounds', error);
+      }
+    );
   }
 }

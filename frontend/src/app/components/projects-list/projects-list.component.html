@@ -4,7 +4,10 @@
         <h3>Projects</h3>
         <div class="break-line"></div>
         <div class="projects-list-container">
-            <table>
+            <div class="no-projects-container" *ngIf="projects.length === 0">
+                <h5>No projects yet</h5>
+            </div>
+            <table *ngIf="projects.length !== 0">
                 <thead>
                     <tr>
                         <th>Name</th>

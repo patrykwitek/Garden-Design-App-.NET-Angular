@@ -33,6 +33,13 @@
             gap: 10px;
             margin-top: .5rem;
 
+            .no-projects-container {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                color: rgb(28, 61, 32);
+            }
+
             table {
                 margin: 5px 1rem;
                 font-size: 1rem;

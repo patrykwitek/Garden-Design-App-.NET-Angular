@@ -136,8 +136,8 @@ nav {
         box-shadow: none;
 
         .app-title-container {
-            .app-title {
-                &:hover {
+            &:hover {
+                .app-title {
                     color: rgb(214, 214, 214);
                 }
             }

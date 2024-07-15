@@ -4,6 +4,7 @@ namespace backend.Interfaces
     {
         IProjectsRepository ProjectsRepository { get; }
         IUserRepository UserRepository { get; }
+        IGroundRepository GroundRepository { get; }
         Task<bool> Complete();
         bool HasChanges();
     }

@@ -2,19 +2,24 @@ import { Injectable } from '@angular/core';
 import { EngineService } from './engine.service';
 import { IProject } from '../models/interfaces/i-project';
 import { IGround } from '../models/interfaces/i-ground';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GardenService {
+  private baseUrl = environment.apiUrl;
+
   private currentGroundSource = new BehaviorSubject<string | null>(null);
   public currentGround$ = this.currentGroundSource.asObservable();
 
   private currentProject: IProject | undefined;
 
   constructor(
-    private engineService: EngineService
+    private engineService: EngineService,
+    private http: HttpClient
   ) { }
 
   public setCurrentProject(project: IProject) {
@@ -26,19 +31,29 @@ export class GardenService {
       return;
     }
 
-    // TODO: change to project ground img
-    this.engineService.setGround('festuca rubra'); // note: img
-    this.currentGroundSource.next('Festuca rubra'); // note: name
+    this.engineService.setGround(this.currentProject.ground.img);
+    this.currentGroundSource.next(this.currentProject.ground.name);
 
     this.engineService.addTestCube(this.currentProject!.width, this.currentProject!.depth);
     this.engineService.setAnimating(true);
     this.engineService.animate();
   }
 
-  public setGround(ground: IGround) {
-    // TODO: backend part
+  public getGrounds(): Observable<IGround[]> {
+    return this.http.get<IGround[]>(this.baseUrl + 'solution/getGroundList');
+  }
 
-    this.engineService.setGround(ground.img);
-    this.currentGroundSource.next(ground.name);
+  public setGround(ground: IGround) {
+    if (this.currentProject) {
+      this.http.put(this.baseUrl + `solution/setGround/${this.currentProject.id}`, ground).subscribe(
+        _ => {},
+        error => {
+          console.error('Error setting the ground', error);
+        }
+      );
+
+      this.engineService.setGround(ground.img);
+      this.currentGroundSource.next(ground.name);
+    }
   }
 }
