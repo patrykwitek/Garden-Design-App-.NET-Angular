@@ -14,7 +14,7 @@ export class EngineService {
   private objects: THREE.Object3D[] = [];
   private isAnimating: boolean = false;
 
-  private grassTexture!: THREE.Texture;
+  private ground: THREE.Mesh | undefined;
 
   constructor() { }
 
@@ -61,6 +61,16 @@ export class EngineService {
       }
     });
 
+    if (this.ground) {
+      this.scene.remove(this.ground);
+      this.ground.geometry.dispose();
+      if (Array.isArray(this.ground.material)) {
+        this.ground.material.forEach(material => material.dispose());
+      } else {
+        this.ground.material.dispose();
+      }
+    }
+
     if (this.renderer) {
       this.renderer.dispose();
     }
@@ -72,16 +82,6 @@ export class EngineService {
     if (this.controls) {
       this.controls.dispose();
     }
-  }
-
-  public addGrass(): void {
-    const geometry = new THREE.PlaneGeometry(1000, 1000);
-    const material = new THREE.MeshStandardMaterial({ map: this.grassTexture, side: THREE.DoubleSide });
-    const plane = new THREE.Mesh(geometry, material);
-    plane.rotation.x = - Math.PI / 2;
-    plane.receiveShadow = true;
-    this.scene.add(plane);
-    this.objects.push(plane);
   }
 
   public addTestCube(width: number, depth: number): void {
@@ -97,24 +97,32 @@ export class EngineService {
     this.objects.push(cube);
   }
 
-  public preloadGroundTexture(textureName: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      const loader = new THREE.TextureLoader();
+  public setGround(textureName: string): void {
+    if (this.ground) {
+      this.scene.remove(this.ground);
+      this.ground.geometry.dispose();
+      if (Array.isArray(this.ground.material)) {
+        this.ground.material.forEach(material => material.dispose());
+      } else {
+        this.ground.material.dispose();
+      }
+    }
 
-      loader.load(`assets/textures/${textureName}.jpg`,
-        (texture) => {
-          texture.wrapS = THREE.RepeatWrapping;
-          texture.wrapT = THREE.RepeatWrapping;
-          texture.repeat.set(200, 200);
-          this.grassTexture = texture;
-          resolve();
-        },
-        undefined,
-        (error) => {
-          console.error('Error loading texture:', error);
-          reject(error);
-        }
-      );
+    const loader = new THREE.TextureLoader();
+    loader.load(`assets/textures/grounds/${textureName}.jpg`, (texture) => {
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(200, 200);
+
+      const geometry = new THREE.PlaneGeometry(1000, 1000);
+      const material = new THREE.MeshStandardMaterial({ map: texture, side: THREE.DoubleSide });
+      const plane = new THREE.Mesh(geometry, material);
+      plane.rotation.x = -Math.PI / 2;
+      plane.receiveShadow = true;
+
+      this.ground = plane;
+      this.scene.add(plane);
+      this.objects.push(plane);
     });
   }
 

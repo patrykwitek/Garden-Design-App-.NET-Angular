@@ -1,13 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Project } from '../models/interfaces/project';
-import { Pagination } from '../models/interfaces/pagination';
 import { ProjectsParams } from '../models/classes/projectsParams';
 import { map, of, take } from 'rxjs';
 import { getPaginatedResult, getPaginationHeaders } from '../models/functions/paginationHelper';
 import { LoginService } from './login.service';
-import { User } from '../models/interfaces/user';
+import { IProject } from '../models/interfaces/i-project';
+import { IPagination } from '../models/interfaces/i-pagination';
+import { IUser } from '../models/interfaces/i-user';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +15,11 @@ import { User } from '../models/interfaces/user';
 export class ProjectService {
   private baseUrl = environment.apiUrl;
 
-  private projects: Project[] = [];
+  private projects: IProject[] = [];
   private projectCache = new Map<any, any>();
-  private pagination: Pagination | undefined;
+  private pagination: IPagination | undefined;
   private projectsParams: ProjectsParams | undefined;
-  private user: User | undefined;
+  private user: IUser | undefined;
 
   constructor(
     private http: HttpClient,
@@ -28,7 +28,7 @@ export class ProjectService {
     this.initializeService();
   }
 
-  public createProject(project: Project) {
+  public createProject(project: IProject) {
     return this.http.post(this.baseUrl + 'projects/create', project);
   }
 
@@ -65,7 +65,7 @@ export class ProjectService {
 
     params = params.append('username', projectsParams.username);
 
-    return getPaginatedResult<Project[]>(this.baseUrl + 'projects/getProjects', params, this.http).pipe(
+    return getPaginatedResult<IProject[]>(this.baseUrl + 'projects/getProjects', params, this.http).pipe(
       map(response => {
         this.projectCache.set(Object.values(projectsParams).join('-'), response);
         return response;

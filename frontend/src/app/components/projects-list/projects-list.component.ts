@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ProjectsParams } from 'src/app/models/classes/projectsParams';
-import { Pagination } from 'src/app/models/interfaces/pagination';
-import { Project } from 'src/app/models/interfaces/project';
+import { IPagination } from 'src/app/models/interfaces/i-pagination';
+import { IProject } from 'src/app/models/interfaces/i-project';
 import { DateService } from 'src/app/services/date.service';
 import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
@@ -16,8 +16,8 @@ import { ProjectService } from 'src/app/services/project.service';
 })
 export class ProjectsListComponent implements OnInit {
 
-  projects: Project[] = [];
-  pagination: Pagination | undefined;
+  projects: IProject[] = [];
+  pagination: IPagination | undefined;
   projectsParams: ProjectsParams | undefined;
 
   constructor(
@@ -77,7 +77,7 @@ export class ProjectsListComponent implements OnInit {
     }
   }
 
-  public openProject(project: Project) {
+  public openProject(project: IProject) {
     this.projectLoaderService.setProject(project);
     this.gardenService.setCurrentProject(project);
     this.projectLoaderService.loadOpenProjectTab(false);

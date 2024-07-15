@@ -18,6 +18,7 @@ namespace backend.Data
 
         public IProjectsRepository ProjectsRepository => new ProjectsRepository(_context, _mapper);
         public IUserRepository UserRepository => new UserRepository(_context, _mapper);
+        public IGroundRepository GroundRepository => new GroundRepository(_context);
 
         public async Task<bool> Complete()
         {

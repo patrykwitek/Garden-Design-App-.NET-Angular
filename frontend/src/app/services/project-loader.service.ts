@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Project } from '../models/interfaces/project';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { IProject } from '../models/interfaces/i-project';
 
 @Injectable({
   providedIn: 'root'
@@ -8,24 +8,24 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 export class ProjectLoaderService {
 
   // TODO: fix last current project bug
-  public get lastCurrentProject(): Project {
+  public get lastCurrentProject(): IProject {
     if (this.currentProject.value == null) {
       throw new Error("No current project set up");
     }
     return this.currentProject.value;
   }
 
-  private currentProject = new BehaviorSubject<Project | null>(null);
+  private currentProject = new BehaviorSubject<IProject | null>(null);
   private isOpenProjectTab: Subject<boolean> = new Subject();
   private openProjectTab: boolean = true;
 
   constructor() { }
 
-  public setProject(project: Project | null) {
+  public setProject(project: IProject | null) {
     this.currentProject.next(project);
   }
 
-  public getCurrentProject(): Observable<Project | null> {
+  public getCurrentProject(): Observable<IProject | null> {
     return this.currentProject.asObservable();
   }
 

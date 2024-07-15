@@ -11,6 +11,8 @@
             </a>
     </div>
     <app-nav-garden-options *ngIf="!isOpenProjectTab"></app-nav-garden-options>
+    <!-- note: for testing purposes -->
+    <!-- <app-nav-garden-options></app-nav-garden-options> -->
     <div class="dropdown-list" clickOutside (clickOutside)="clickOutside()" *ngIf="(loginService.currentUser$ | async) as user">
         <a [className]="'dropdown-list-toggle ' + (showDropdownMenu ? 'highlighted' : '')"
             (click)="toggleDropdownMenu()">

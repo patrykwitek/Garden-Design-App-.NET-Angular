@@ -8,5 +8,6 @@ namespace backend.DTO
         public int Width { get; set; }
         public int Depth { get; set; }
         public string OwnerUsername { get; set; }
+        public Ground Ground{ get; set; }
     }
 }

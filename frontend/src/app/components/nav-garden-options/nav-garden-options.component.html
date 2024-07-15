@@ -1,88 +1,100 @@
 <div class="nav-garden-options-container">
-    <div 
-        class="single-option-container"
-        matTooltip="Ground"
-        matTooltipShowDelay="500"
-        matTooltipPosition="below">
-            <div class="single-option-content">
-                <div class="option-icon-container">
-                    <mat-icon class="option-icon">grass</mat-icon>
+    <div class="single-option-container">
+            <div 
+                class="single-option-content"
+                matTooltip="Ground"
+                matTooltipShowDelay="500"
+                matTooltipPosition="below"
+                (click)="toggleGroundOptions($event)">
+                    <div class="option-icon-container">
+                        <mat-icon class="option-icon">grass</mat-icon>
+                    </div>
+                    <p>Ground</p>
+            </div>
+            <div class="ground-option-container" *ngIf="showGroundOptions">
+                <div 
+                    class="single-ground-option"
+                    matTooltip={{ground.name}}
+                    matTooltipShowDelay="500"
+                    matTooltipPosition="below"
+                    *ngFor="let ground of groundList"
+                    (click)="setGround(ground)"
+                    [ngClass]="(gardenService.currentGround$ | async) === ground.name ? 'selected' : ''">
+                        <img [src]="'../../../assets/textures/grounds/' + ground.img + '.jpg'" alt={{ground.name}}>
                 </div>
-                <p>Ground</p>
             </div>
     </div>
-    <div 
-        class="single-option-container"
-        matTooltip="Reset Camera"
-        matTooltipShowDelay="500"
-        matTooltipPosition="below"
-        (click)="resetCameraPosition()">
-            <div class="single-option-content">
+    <div class="single-option-container" (click)="resetCameraPosition()">
+        <div 
+            class="single-option-content"
+            matTooltip="Reset Camera"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">photo_camera</mat-icon>
                 </div>
                 <p>Reset Camera</p>
-            </div>
+        </div>
     </div>
-    <div 
-        class="single-option-container"
-        matTooltip="Fence"
-        matTooltipShowDelay="500"
-        matTooltipPosition="below">
-            <div class="single-option-content">
+    <div class="single-option-container">
+        <div 
+            class="single-option-content"
+            matTooltip="Fence"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">fence</mat-icon>
                 </div>
                 <p>Fence</p>
-            </div>
+        </div>
     </div>
-    <div 
-        class="single-option-container"
-        matTooltip="Add Element"
-        matTooltipShowDelay="500"
-        matTooltipPosition="below">
-            <div class="single-option-content">
+    <div class="single-option-container">
+        <div 
+            class="single-option-content"
+            matTooltip="Add Element"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">eco</mat-icon>
                 </div>
                 <p>Add Element</p>
-            </div>
+        </div>
     </div>
-    <div 
-        class="single-option-container"
-        matTooltip="Remove Element"
-        matTooltipShowDelay="500"
-        matTooltipPosition="below">
-            <div class="single-option-content">
+    <div class="single-option-container">
+        <div 
+            class="single-option-content"
+            matTooltip="Remove Element"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">delete</mat-icon>
                 </div>
                 <p>Remove Element</p>
-            </div>
+        </div>
     </div>
-    <div 
-        class="single-option-container"
-        matTooltip="2D / 3D"
-        matTooltipShowDelay="500"
-        matTooltipPosition="below">
-            <div class="single-option-content">
+    <div class="single-option-container">
+        <div 
+            class="single-option-content"
+            matTooltip="2D / 3D"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">toggle_on</mat-icon>
                 </div>
                 <!-- TODO: toogle bar -->
                 <p>2D / 3D</p> 
-            </div>
+        </div>
     </div>
-    <div 
-        class="single-option-container"
-        matTooltip="PDF"
-        matTooltipShowDelay="500"
-        matTooltipPosition="below">
-            <div class="single-option-content">
+    <div class="single-option-container">
+        <div 
+            class="single-option-content"
+            matTooltip="PDF"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">picture_as_pdf</mat-icon>
                 </div>
                 <p>PDF</p>
-            </div>
+        </div>
     </div>
 </div>

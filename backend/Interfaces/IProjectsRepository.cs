@@ -9,5 +9,6 @@ namespace backend.Interfaces
         void AddProject(Project project);
         void DeleteProject(Project project);
         Task<PagedList<ProjectDto>> GetProjectsForUser(ProjectsParams projectsParams);
+        Task<Project> GetProjectByIdAsync(int id);
     }
 }

@@ -11,5 +11,6 @@ namespace backend.Entities
         public int Width { get; set; }
         public int Depth { get; set; }
         public User User { get; set; }
+        public Ground Ground { get; set; }
     }
 }
