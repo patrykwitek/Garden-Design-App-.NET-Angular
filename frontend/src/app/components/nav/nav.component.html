@@ -48,8 +48,7 @@
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
                 class="dropdown-list-item" 
-                routerLink="/editProfile" 
-                (click)="toggleDropdownMenu()">
+                (click)="goToEditProfile()">
                     <mat-icon class="icon">edit</mat-icon>
                     <div>Edit Profile</div>
             </a>
@@ -57,9 +56,8 @@
                 matTooltip="Settings"
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
-                class="dropdown-list-item" 
-                routerLink="/settings" 
-                (click)="toggleDropdownMenu()">
+                class="dropdown-list-item"
+                (click)="goToSettings()">
                     <mat-icon class="icon">settings</mat-icon>
                     <div>Settings</div>
             </a>

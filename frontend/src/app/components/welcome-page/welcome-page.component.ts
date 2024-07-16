@@ -21,7 +21,7 @@ export class WelcomePageComponent {
     this.loginService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user != null) {
-          this.router.navigateByUrl(`/projects`);
+          this.router.navigateByUrl(`/`);
         }
       }
     });

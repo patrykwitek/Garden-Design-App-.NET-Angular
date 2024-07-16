@@ -5,6 +5,9 @@ import { EngineService } from 'src/app/services/engine.service';
 import { LoginService } from 'src/app/services/login.service';
 import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 import { ProjectService } from 'src/app/services/project.service';
+import { SettingsComponent } from '../settings/settings.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { EditProfileComponent } from '../edit-profile/edit-profile.component';
 
 @Component({
   selector: 'app-nav',
@@ -22,7 +25,8 @@ export class NavComponent {
     private router: Router,
     private toastr: ToastrService,
     private projectLoaderService: ProjectLoaderService,
-    private engineService: EngineService
+    private engineService: EngineService,
+    private dialog: MatDialog
   ) { }
 
   public login() {
@@ -30,7 +34,7 @@ export class NavComponent {
 
     this.loginService.login(this.model).subscribe({
       next: () => {
-        this.router.navigateByUrl('/members');
+        this.router.navigateByUrl('/');
         this.model = {};
       }
     });
@@ -59,6 +63,36 @@ export class NavComponent {
     this.engineService.dispose();
     this.projectLoaderService.loadOpenProjectTab(true);
     this.projectLoaderService.setProject(null);
+  }
+
+  public goToSettings(): void {
+    this.toggleDropdownMenu();
+
+    const dialogConfig: MatDialogConfig = {
+      disableClose: false,
+      hasBackdrop: true,
+      panelClass: 'dialog',
+      backdropClass: 'dialog-backdrop',
+      height: 'fit-content',
+      width: '500px'
+    };
+
+    this.dialog.open(SettingsComponent, dialogConfig);
+  }
+
+  public goToEditProfile(): void {
+    this.toggleDropdownMenu();
+
+    const dialogConfig: MatDialogConfig = {
+      disableClose: false,
+      hasBackdrop: true,
+      panelClass: 'dialog',
+      backdropClass: 'dialog-backdrop',
+      height: 'fit-content',
+      width: '800px'
+    };
+
+    this.dialog.open(EditProfileComponent, dialogConfig);
   }
 
   private changeDropdownIcon() {

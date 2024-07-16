@@ -58,7 +58,7 @@ export class RegisterComponent {
 
     this.loginService.register(registerValues).subscribe({
       next: () => {
-        this.router.navigateByUrl('/projects');
+        this.router.navigateByUrl('/');
       },
       error: error => {
         this.validationErrors = error;

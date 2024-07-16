@@ -16,9 +16,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [authGuard],
     children: [
-      { path: 'settings', component: SettingsComponent },
-      { path: 'editProfile', component: EditProfileComponent },
-      { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
+      { path: 'admin', component: AdminComponent, canActivate: [adminGuard] }
     ]
   },
   { path: 'errors-testing', component: TestErrorsComponent },

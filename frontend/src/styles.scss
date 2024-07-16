@@ -24,3 +24,8 @@ body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.dialog-backdrop {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+}

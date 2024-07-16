@@ -16,6 +16,7 @@ export class ProjectsComponent {
     disableClose: false,
     hasBackdrop: true,
     panelClass: 'dialog',
+    backdropClass: 'dialog-backdrop',
     height: 'fit-content',
     width: '500px'
   };
@@ -24,6 +25,7 @@ export class ProjectsComponent {
     disableClose: false,
     hasBackdrop: true,
     panelClass: 'dialog',
+    backdropClass: 'dialog-backdrop',
     height: 'fit-content',
     width: '900px'
   };
