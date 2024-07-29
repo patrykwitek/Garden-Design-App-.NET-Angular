@@ -39,12 +39,12 @@ export class LoginService {
   }
 
   public setCurrentUser(user: IUser) {
-    localStorage.setItem('parkDesignAppUser', JSON.stringify(user));
+    localStorage.setItem('gardenDesignAppUser', JSON.stringify(user));
     this.currentUserSource.next(user);
   }
 
   public logout() {
-    localStorage.removeItem('parkDesignAppUser');
+    localStorage.removeItem('gardenDesignAppUser');
     this.currentUserSource.next(null);
   }
 }

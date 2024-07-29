@@ -1,30 +1,34 @@
 <nav [ngClass]="!isOpenProjectTab ? 'visualisation-mode' : ''">
     <div 
         class="app-title-container" 
-        matTooltip="Park Design App"
+        matTooltip="{{'GardenDesignApp' | translate}}"
         matTooltipShowDelay="500"
         matTooltipPosition="below">
             <a 
                 class="app-title" 
                 routerLink="/">
-                    Garden Design App
+                    {{"GardenDesignApp" | translate}}
             </a>
     </div>
     <app-nav-garden-options *ngIf="!isOpenProjectTab"></app-nav-garden-options>
     <!-- note: for testing purposes -->
     <!-- <app-nav-garden-options></app-nav-garden-options> -->
     <div class="dropdown-list" clickOutside (clickOutside)="clickOutside()" *ngIf="(loginService.currentUser$ | async) as user">
-        <a [className]="'dropdown-list-toggle ' + (showDropdownMenu ? 'highlighted' : '')"
-            (click)="toggleDropdownMenu()">
-            <div>
-                <mat-icon class="account-icon">person</mat-icon>
-                {{user.username | titlecase}}
-            </div>
-            <mat-icon class="icon">keyboard_arrow_down</mat-icon>
+        <a 
+            [className]="'dropdown-list-toggle ' + (showDropdownMenu ? 'highlighted' : '')"
+            (click)="toggleDropdownMenu()"
+            matTooltip="{{'Menu' | translate}}"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
+                <div>
+                    <mat-icon class="account-icon">person</mat-icon>
+                    {{user.username | titlecase}}
+                </div>
+                <mat-icon class="icon">keyboard_arrow_down</mat-icon>
         </a>
         <div [className]="'dropdown-list-menu ' + (showDropdownMenu ? 'active' : 'inactive')">
             <a 
-                matTooltip="Admin"
+                matTooltip="{{'Admin' | translate}}"
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
                 class="dropdown-list-item" 
@@ -32,43 +36,43 @@
                 *ngIf="user.role == 'admin'" 
                 (click)="toggleDropdownMenu()">
                     <mat-icon class="icon">shield</mat-icon>
-                    <div>Admin</div>
+                    <div>{{"Admin" | translate}}</div>
             </a>
             <a 
-                matTooltip="My projects"
+                matTooltip="{{'MyProjects' | translate}}"
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
                 class="dropdown-list-item" 
                 (click)="goToMyProjects()">
                     <mat-icon class="icon">park</mat-icon>
-                    <div>My Projects</div>
+                    <div>{{"MyProjects" | translate}}</div>
             </a>
             <a 
-                matTooltip="Edit Profile"
+                matTooltip="{{'EditProfile' | translate}}"
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
                 class="dropdown-list-item" 
                 (click)="goToEditProfile()">
                     <mat-icon class="icon">edit</mat-icon>
-                    <div>Edit Profile</div>
+                    <div>{{"EditProfile" | translate}}</div>
             </a>
             <a 
-                matTooltip="Settings"
+                matTooltip="{{'Settings' | translate}}"
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
                 class="dropdown-list-item"
                 (click)="goToSettings()">
                     <mat-icon class="icon">settings</mat-icon>
-                    <div>Settings</div>
+                    <div>{{"Settings" | translate}}</div>
             </a>
             <a 
-                matTooltip="Logout"
+                matTooltip="{{'Logout' | translate}}"
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
                 class="dropdown-list-item" 
                 (click)="logout()">
                     <mat-icon class="icon">keyboard_return</mat-icon>
-                    <div>Logout</div>
+                    <div>{{"Logout" | translate}}</div>
             </a>
         </div>
     </div>

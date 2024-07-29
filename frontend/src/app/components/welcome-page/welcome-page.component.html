@@ -2,10 +2,10 @@
     <div class="welcome-page">
         <app-back-button class="back-to-home-page-container" (click)="backToHomeMode()"
             *ngIf="mode != 'home'"></app-back-button>
-        <h3 *ngIf="mode == 'home'">Welcome in Park Design App</h3>
-        <h3 *ngIf="mode == 'register'">Register</h3>
-        <h3 *ngIf="mode == 'author'">About Author</h3>
-        <h3 *ngIf="mode == 'app'">Application Guide</h3>
+        <h3 *ngIf="mode == 'home'">{{"WelcomeInGardenDesignApp" | translate}}</h3>
+        <h3 *ngIf="mode == 'register'">{{"Register" | translate}}</h3>
+        <h3 *ngIf="mode == 'author'">{{"AboutAuthor" | translate}}</h3>
+        <h3 *ngIf="mode == 'app'">{{"ApplicationGuide" | translate}}</h3>
         <div class="break-line"></div>
         <app-welcome (changeMode)="setDisplayMode($event)" *ngIf="mode == 'home'"></app-welcome>
         <app-register *ngIf="mode == 'register'"></app-register>

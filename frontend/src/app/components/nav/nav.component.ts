@@ -5,9 +5,9 @@ import { EngineService } from 'src/app/services/engine.service';
 import { LoginService } from 'src/app/services/login.service';
 import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 import { ProjectService } from 'src/app/services/project.service';
-import { SettingsComponent } from '../settings/settings.component';
+import { SettingsComponent } from '../../dialogs/settings/settings.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { EditProfileComponent } from '../edit-profile/edit-profile.component';
+import { EditProfileComponent } from '../../dialogs/edit-profile/edit-profile.component';
 
 @Component({
   selector: 'app-nav',

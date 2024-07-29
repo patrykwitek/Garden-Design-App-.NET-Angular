@@ -2,25 +2,25 @@
     <div class="home-page-buttons">
         <div class="home-page-buttons-container">
             <button 
-                matTooltip="Sign Up"
+                matTooltip="{{'SignUp' | translate}}"
                 matTooltipPosition="right"
                 matTooltipShowDelay="500"
                 (click)="changeHomeMode('register')">
-                    Register
+                    {{"Register" | translate}}
             </button>
             <button 
-                matTooltip="About Author"
+                matTooltip="{{'AboutAuthor' | translate}}"
                 matTooltipPosition="right"
                 matTooltipShowDelay="500"
                 (click)="changeHomeMode('author')">
-                    About Author
+                    {{"AboutAuthor" | translate}}
             </button>
             <button
-                matTooltip="Application Guide"
+                matTooltip="{{'ApplicationGuide' | translate}}"
                 matTooltipPosition="right"
                 matTooltipShowDelay="500"
                 (click)="changeHomeMode('app')">
-                    About App
+                    {{"AboutApp" | translate}}
             </button>
         </div>
     </div>
@@ -29,12 +29,12 @@
             <div class="input-container">
                 <input 
                     type="text"
-                    placeholder="Username"
+                    placeholder="{{'Username' | translate}}"
                     name="username"
                     [(ngModel)]="username" />
                 <input 
                     type="password"
-                    placeholder="Password"
+                    placeholder="{{'Password' | translate}}"
                     name="password"
                     [(ngModel)]="password" />
             </div>
@@ -44,7 +44,7 @@
                     type="submit"
                     [disabled]="!username || !password"
                     (click)="login()">
-                        Login
+                        {{"Login" | translate}}
                 </button>
             </div>
         </form>
