@@ -4,8 +4,35 @@
         <h3>{{"Settings" | translate}}</h3>
         <div class="break-line"></div>
         <div class="settings-options-container">
-            <p>{{"Language" | translate}}:</p>
-            <p>{{"DarkMode" | translate}}:</p>
+            <div class="language-section">
+                <p>{{"Language" | translate}}:</p>
+                <div class="flags-section">
+                    <div
+                        matTooltip="English"
+                        matTooltipShowDelay="500"
+                        matTooltipPosition="below"
+                        class="single-flag" 
+                        [ngClass]="currentLang === 'en' ? 'active' : ''"
+                        (click)="changeLang('en')">
+                            <img src="../../../assets/images/flags/flag gb.png" alt="English">
+                    </div>
+                    <div
+                        matTooltip="Polski"
+                        matTooltipShowDelay="500"
+                        matTooltipPosition="below"
+                        class="single-flag" 
+                        [ngClass]="currentLang === 'pl' ? 'active' : ''"
+                        (click)="changeLang('pl')">
+                            <img src="../../../assets/images/flags/flag poland.png" alt="Polish">
+                    </div>
+                </div>
+            </div>
+            <div class="dark-mode-section">
+                <p>{{"DarkMode" | translate}}:</p>
+                <div class="toggle-switch" [ngClass]="isDarkMode ? 'active-toggle-switch' : ''" (click)="toggleTheme()">
+                    <div class="toggle-ball" [ngClass]="isDarkMode ? 'active-toggle-ball' : ''"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

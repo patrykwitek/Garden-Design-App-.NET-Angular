@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
 
     const languageString = localStorage.getItem('garden-design-app-language');
     if (!languageString) {
-      this.translateService.use('pl');
+      this.translateService.use('en');
     }
     else {
       const language: Language = JSON.parse(languageString);
