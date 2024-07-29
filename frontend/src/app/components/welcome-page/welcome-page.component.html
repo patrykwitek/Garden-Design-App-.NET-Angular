@@ -11,5 +11,25 @@
         <app-register *ngIf="mode == 'register'"></app-register>
         <app-author *ngIf="mode == 'author'"></app-author>
         <app-app-info *ngIf="mode == 'app'"></app-app-info>
+        <div class="flags-section">
+            <div
+                matTooltip="English"
+                matTooltipShowDelay="500"
+                matTooltipPosition="below"
+                class="single-flag" 
+                [ngClass]="currentLang === 'en' ? 'active' : ''"
+                (click)="changeLang('en')">
+                    <img src="../../../assets/images/flags/flag gb.png" alt="English">
+            </div>
+            <div
+                matTooltip="Polski"
+                matTooltipShowDelay="500"
+                matTooltipPosition="below"
+                class="single-flag" 
+                [ngClass]="currentLang === 'pl' ? 'active' : ''"
+                (click)="changeLang('pl')">
+                    <img src="../../../assets/images/flags/flag poland.png" alt="Polish">
+            </div>
+        </div>
     </div>
 </div>
