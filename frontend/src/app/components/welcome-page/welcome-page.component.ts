@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs';
+import { Language } from 'src/app/models/types/language';
 import { LoginService } from 'src/app/services/login.service';
 import { HomeDisplayMode } from 'src/app/types/home-display-mode';
 
@@ -10,11 +12,13 @@ import { HomeDisplayMode } from 'src/app/types/home-display-mode';
   styleUrls: ['./welcome-page.component.scss']
 })
 export class WelcomePageComponent {
-  mode: HomeDisplayMode = "home";
+  public mode: HomeDisplayMode = "home";
+  public currentLang: string | undefined;
 
   constructor(
     public loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private translateService: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -25,6 +29,8 @@ export class WelcomePageComponent {
         }
       }
     });
+
+    this.currentLang = this.translateService.currentLang;
   }
 
   public backToHomeMode() {
@@ -33,5 +39,10 @@ export class WelcomePageComponent {
 
   public setDisplayMode(event: HomeDisplayMode) {
     this.mode = event;
+  }
+
+  public changeLang(lang: Language) {
+    this.currentLang = lang;
+    this.translateService.use(lang);
   }
 }
