@@ -43,6 +43,7 @@ namespace backend.Controllers
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
             user.PasswordSalt = hmac.Key;
             user.Role = "user";
+            user.Language = "en";
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -51,7 +52,8 @@ namespace backend.Controllers
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                Role = user.Role
+                Role = user.Role,
+                Language = user.Language
             };
         }
 
@@ -75,7 +77,8 @@ namespace backend.Controllers
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                Role = user.Role
+                Role = user.Role,
+                Language = user.Language
             };
         }
 
