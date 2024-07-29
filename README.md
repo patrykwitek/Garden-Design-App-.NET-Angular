@@ -136,7 +136,17 @@ https://github.com/user-attachments/assets/9c9b2efa-033c-4b70-88a8-acdbe076d0d2
 <a name="translations"></a>
 ## 14. Translations 💁‍♂️
 
-*This functionality will come in the future*
+### **For logged-in user:**
+
+The application supports English and Polish translations. Logged-in user can change application language in settings tab. After that, the selected language will be assigned to user's account (not local storage), so after changing the device, the language will be the same as previously selected.
+
+https://github.com/user-attachments/assets/b29b2d64-3cb6-49f7-b597-92d20c64e4de
+
+### **For not logged-in user:**
+
+A non-logged-in user can select the language on the welcome page.
+
+https://github.com/user-attachments/assets/139caae6-188f-4d82-b39e-f70667bc457e
 
 <a name="lightdarkmode"></a>
 ## 15. Light & Dark Mode 🌙
