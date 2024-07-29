@@ -3,22 +3,22 @@
         type={{type}}
         [class.is-invalid]="control.touched && control.invalid"
         [formControl]="control"
-        placeholder={{label}}>
+        placeholder="{{label | translate}}">
     <mat-icon 
         class="error-icon"
         [class.is-error-icon]="ngControl.touched && ngControl.invalid">
         error
     </mat-icon>
     <div class="invalid-feedback" *ngIf="control.errors?.['required']">
-        Please enter a {{label}}
+        {{"PleaseEnterA" | translate}} {{label | translate}}
     </div>
     <div class="invalid-feedback" *ngIf="control.errors?.['minlength']">
-        {{label}} must be at least {{control.errors?.['minlength'].requiredLength}} characters
+        {{label | translate}} {{"MustBeAtLeast" | translate}} {{control.errors?.['minlength'].requiredLength}} {{"Characters" | translate}}
     </div>
     <div class="invalid-feedback" *ngIf="control.errors?.['maxlength']">
-        {{label}} must be at most {{control.errors?.['maxlength'].requiredLength}} characters
+        {{label | translate}} {{"MustBeAtMost" | translate}} {{control.errors?.['maxlength'].requiredLength}} {{"Characters" | translate}}
     </div>
     <div class="invalid-feedback" *ngIf="control.errors?.['notMatching']">
-        Confirm password must match password
+        {{"ConfirmPasswordError" | translate}}
     </div>
 </div>

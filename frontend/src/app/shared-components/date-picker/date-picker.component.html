@@ -3,7 +3,7 @@
         type="text"
         [class.is-invalid]="control.touched && control.invalid"
         [formControl]="control"
-        placeholder="{{label}}"
+        placeholder="{{label | translate}}"
         bsDatepicker
         [bsConfig]="bsConfig"
         [maxDate]="maxDate">
@@ -13,6 +13,6 @@
         error
     </mat-icon>
     <div class="invalid-feedback" *ngIf="control.errors?.['required']">
-        {{label}} is required
+        {{label | translate}} {{"IsRequired" | translate}}
     </div>
 </div>

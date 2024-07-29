@@ -48,14 +48,10 @@ nav {
         .dropdown-list-toggle {
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
             gap: 5px;
             transition: .2s;
-            line-height: 40px;
-
-            .icon {
-                position: relative;
-                top: 8px;
-            }
+            line-height: var(--nav-height);
 
             .account-icon {
                 position: relative;

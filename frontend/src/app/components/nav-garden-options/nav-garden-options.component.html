@@ -2,14 +2,14 @@
     <div class="single-option-container">
             <div 
                 class="single-option-content"
-                matTooltip="Ground"
+                matTooltip="{{'Ground' | translate}}"
                 matTooltipShowDelay="500"
                 matTooltipPosition="below"
                 (click)="toggleGroundOptions($event)">
                     <div class="option-icon-container">
                         <mat-icon class="option-icon">grass</mat-icon>
                     </div>
-                    <p>Ground</p>
+                    <p>{{"Ground" | translate}}</p>
             </div>
             <div class="ground-option-container" *ngIf="showGroundOptions">
                 <div 
@@ -27,49 +27,61 @@
     <div class="single-option-container" (click)="resetCameraPosition()">
         <div 
             class="single-option-content"
-            matTooltip="Reset Camera"
+            matTooltip="{{'ResetCamera' | translate}}"
             matTooltipShowDelay="500"
             matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">photo_camera</mat-icon>
                 </div>
-                <p>Reset Camera</p>
+                <p>{{"ResetCamera" | translate}}</p>
         </div>
     </div>
     <div class="single-option-container">
         <div 
             class="single-option-content"
-            matTooltip="Fence"
+            matTooltip="{{'Fence' | translate}}"
             matTooltipShowDelay="500"
             matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">fence</mat-icon>
                 </div>
-                <p>Fence</p>
+                <p>{{"Fence" | translate}}</p>
         </div>
     </div>
     <div class="single-option-container">
         <div 
             class="single-option-content"
-            matTooltip="Add Element"
+            matTooltip="{{'AddElement' | translate}}"
             matTooltipShowDelay="500"
             matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">eco</mat-icon>
                 </div>
-                <p>Add Element</p>
+                <p>{{"AddElement" | translate}}</p>
         </div>
     </div>
     <div class="single-option-container">
         <div 
             class="single-option-content"
-            matTooltip="Remove Element"
+            matTooltip="{{'RemoveElement' | translate}}"
             matTooltipShowDelay="500"
             matTooltipPosition="below">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">delete</mat-icon>
                 </div>
-                <p>Remove Element</p>
+                <p>{{"RemoveElement" | translate}}</p>
+        </div>
+    </div>
+    <div class="single-option-container">
+        <div 
+            class="single-option-content"
+            matTooltip="{{'Environment' | translate}}"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
+                <div class="option-icon-container">
+                    <mat-icon class="option-icon">location_city</mat-icon>
+                </div>
+                <p>{{"Environment" | translate}}</p>
         </div>
     </div>
     <div class="single-option-container">

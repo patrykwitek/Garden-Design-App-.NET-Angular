@@ -1,20 +1,20 @@
 <div class="open-existings-projects-container">
     <app-back-button class="back" (click)="cancel()"></app-back-button>
     <div class="content-container">
-        <h3>Projects</h3>
+        <h3>{{"Projects" | translate}}</h3>
         <div class="break-line"></div>
         <div class="projects-list-container">
             <div class="no-projects-container" *ngIf="projects.length === 0">
-                <h5>No projects yet</h5>
+                <h5>{{"NoProjectsYet" | translate}}</h5>
             </div>
             <table *ngIf="projects.length !== 0">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Date Created</th>
-                        <th>Author</th>
-                        <th>Width</th>
-                        <th>Depth</th>
+                        <th>{{"Name" | translate}}</th>
+                        <th>{{"DateCreated" | translate}}</th>
+                        <th>{{"Author" | translate}}</th>
+                        <th>{{"CreateNew" | translate}}</th>
+                        <th>{{"Depth" | translate}}</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -33,7 +33,7 @@
                         <td>
                             <div class="actions-section">
                                 <button 
-                                    matTooltip="Delete" 
+                                    matTooltip="{{'Delete' | translate}}"
                                     matTooltipShowDelay="500"
                                     matTooltipPosition="below">
                                         <mat-icon 
@@ -42,7 +42,7 @@
                                         </mat-icon>
                                 </button>
                                 <button
-                                    matTooltip="Edit" 
+                                    matTooltip="{{'Edit' | translate}}"
                                     matTooltipShowDelay="500"
                                     matTooltipPosition="below">
                                         <mat-icon 
@@ -51,7 +51,7 @@
                                         </mat-icon>
                                 </button>
                                 <button
-                                    matTooltip="Open" 
+                                    matTooltip="{{'Open' | translate}}"
                                     matTooltipShowDelay="500"
                                     matTooltipPosition="below"
                                     (click)="openProject(project)">

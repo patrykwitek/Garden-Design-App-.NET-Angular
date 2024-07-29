@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { CreateNewProjectComponent } from '../create-new-project/create-new-project.component';
+import { CreateNewProjectComponent } from '../../dialogs/create-new-project/create-new-project.component';
 import { ProjectService } from 'src/app/services/project.service';
-import { ProjectsListComponent } from '../projects-list/projects-list.component';
+import { ProjectsListComponent } from '../../dialogs/projects-list/projects-list.component';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
