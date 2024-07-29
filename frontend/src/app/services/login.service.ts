@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IUser } from '../models/interfaces/i-user';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class LoginService {
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private translateService: TranslateService
   ) { }
 
   public login(model: any) {
@@ -39,12 +41,14 @@ export class LoginService {
   }
 
   public setCurrentUser(user: IUser) {
-    localStorage.setItem('gardenDesignAppUser', JSON.stringify(user));
+    localStorage.setItem('garden-design-app-user', JSON.stringify(user));
     this.currentUserSource.next(user);
+    this.translateService.use(user.language);
   }
 
   public logout() {
-    localStorage.removeItem('gardenDesignAppUser');
+    localStorage.removeItem('garden-design-app-user');
     this.currentUserSource.next(null);
+    this.translateService.use('en');
   }
 }
