@@ -1,0 +1,6 @@
+<div class="toggle-switch" [ngClass]="isDarkMode ? 'active-toggle-switch' : ''" (click)="toggleTheme()">
+    <div class="toggle-ball" [ngClass]="isDarkMode ? 'active-toggle-ball' : ''">
+        <mat-icon *ngIf="!isDarkMode" class="theme-icon">wb_sunny</mat-icon>
+        <mat-icon *ngIf="isDarkMode" class="theme-icon">dark_mode</mat-icon>
+    </div>
+</div>

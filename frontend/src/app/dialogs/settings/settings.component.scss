@@ -1,6 +1,6 @@
 .settings-container {
     max-width: 100%;
-    background-color: rgba(28, 61, 32, 0.1);
+    background-color: var(--dialog-color);
     padding-bottom: 1rem;
 
     .back {
@@ -14,14 +14,14 @@
         flex-direction: column;
 
         h3 {
-            color: rgb(28, 61, 32);
+            color: var(--header-font-color);
             margin: 0;
             align-self: center;
             margin-top: 20px;
         }
 
         .break-line {
-            background-color: rgb(28, 61, 32);
+            background-color: var(--header-font-color);
             width: 300px;
             height: 2px;
             margin: 20px 0;
@@ -45,6 +45,7 @@
 
                 p {
                     margin: 0;
+                    color: var(--label-color);
                 }
 
                 .flags-section {
@@ -66,12 +67,12 @@
                         }
 
                         &.active {
-                            border: 2px rgb(118, 160, 123) solid;
+                            border: 2px var(--flag-border) solid;
                         }
 
                         &:hover {
                             cursor: pointer;
-                            border: 2px rgb(118, 160, 123) solid;
+                            border: 2px var(--flag-border) solid;
                         }
                     }
                 }
@@ -86,6 +87,7 @@
 
                 p {
                     margin: 0;
+                    color: var(--label-color);
                 }
 
                 .toggle-switch {
@@ -106,14 +108,25 @@
                         left: 1px;
                         transition: .2s;
 
+                        .theme-icon {
+                            scale: 70%;
+                            color: rgb(255, 255, 255);
+                            position: relative;
+                            right: 1px;
+                        }
+
                         &.active-toggle-ball {
-                            background-color: rgba(12, 12, 12, 0.5);
+                            background-color: var(--dialog-color);
                             transform: translateX(15px);
+
+                            .theme-icon {
+                                right: 0;
+                            }
                         }
                     }
 
                     &.active-toggle-switch {
-                        background-color: rgba(12, 12, 12, 0.3);
+                        background-color: rgb(119, 119, 119);
                     }
 
                     &:hover {

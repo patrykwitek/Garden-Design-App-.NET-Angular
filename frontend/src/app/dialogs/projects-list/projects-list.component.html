@@ -65,7 +65,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div *ngIf="pagination" class="pagination-container">
+            <div *ngIf="pagination && projects.length != 0" class="pagination-container">
                 <pagination 
                     [boundaryLinks]="true" 
                     [totalItems]="pagination.totalItems" 

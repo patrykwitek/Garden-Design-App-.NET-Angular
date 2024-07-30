@@ -1,7 +1,8 @@
 .about-author-container {
     width: 900px;
-    box-shadow: 0px 0px 10px -5px rgb(28, 61, 32);
+    box-shadow: 0px 0px 10px -5px var(--box-shadow);
     padding: 1rem 2rem;
-    background-color: #fafafa;
+    background-color: var(--projects-bg-color);
     border-radius: 10px;
+    color: var(--label-color);
 }

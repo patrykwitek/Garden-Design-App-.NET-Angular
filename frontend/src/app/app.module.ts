@@ -33,6 +33,7 @@ import { ProjectsListComponent } from './dialogs/projects-list/projects-list.com
 import { BackButtonComponent } from './shared-components/back-button/back-button.component';
 import { WelcomePageComponent } from './components/welcome-page/welcome-page.component';
 import { NavGardenOptionsComponent } from './components/nav-garden-options/nav-garden-options.component';
+import { ThemeToogleSwitchComponent } from './shared-components/theme-toogle-switch/theme-toogle-switch.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { NavGardenOptionsComponent } from './components/nav-garden-options/nav-g
     ProjectsListComponent,
     BackButtonComponent,
     WelcomePageComponent,
-    NavGardenOptionsComponent
+    NavGardenOptionsComponent,
+    ThemeToogleSwitchComponent
   ],
   imports: [
     BrowserModule,

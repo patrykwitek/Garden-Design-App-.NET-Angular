@@ -4,7 +4,13 @@
     justify-content: center;
     height: 100vh;
     align-items: center;
-    background-color: rgba(28, 61, 32, 0.1);
+    background-color: var(--background-color-one);
+
+    .theme-switch {
+        position: absolute;
+        top: 1rem;
+        right: 2rem;
+    }
 
     .welcome-page {
         display: flex;
@@ -19,13 +25,13 @@
         }
 
         h3 {
-            color: rgb(28, 61, 32);
+            color: var(--header-font-color);
             margin: 0;
             align-self: center;
         }
 
         .break-line {
-            background-color: rgb(28, 61, 32);
+            background-color: var(--header-font-color);
             width: 400px;
             height: 2px;
             margin: 20px 0;
@@ -53,12 +59,12 @@
                 }
 
                 &.active {
-                    border: 2px rgb(118, 160, 123) solid;
+                    border: 2px var(--flag-border) solid;
                 }
 
                 &:hover {
                     cursor: pointer;
-                    border: 2px rgb(118, 160, 123) solid;
+                    border: 2px var(--flag-border) solid;
                 }
             }
         }

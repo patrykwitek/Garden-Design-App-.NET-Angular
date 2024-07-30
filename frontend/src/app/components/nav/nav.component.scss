@@ -3,7 +3,7 @@ nav {
     height: var(--nav-height);
     position: fixed;
     top: 0;
-    background-color: rgb(28, 61, 32);
+    background-color: var(--navbar-color);
     backdrop-filter: blur(10px);
     box-shadow: 0px 0px 10px -3px black;
     color: white;
@@ -32,7 +32,7 @@ nav {
 
             .app-title {
                 scale: 110%;
-                color: rgb(176, 207, 180);
+                color: var(--navbar-title-color);
             }
         }
     }
@@ -59,12 +59,12 @@ nav {
             }
 
             &.highlighted {
-                color: rgb(176, 207, 180);
+                color: var(--navbar-title-color);;
             }
 
             &:hover {
                 cursor: pointer;
-                color: rgb(176, 207, 180);
+                color: var(--navbar-title-color);;
 
                 .users-profile-photo {
                     opacity: .8;
@@ -73,7 +73,7 @@ nav {
         }
 
         .dropdown-list-menu {
-            background-color: white;
+            background-color: var(--navbar-menu-bg);
             border-radius: 5px;
             display: flex;
             flex-direction: column;
@@ -81,12 +81,12 @@ nav {
             top: 70px;
             right: 40px;
             transition: .3s;
-            border: 2px rgb(28, 61, 32) solid;
+            border: 2px var(--navbar-menu-border) solid;
             width: 150px;
             gap: 2px;
 
             a {
-                color: black;
+                color: var(--navbar-menu-font);
                 padding: 10px 10px;
                 font-size: .9rem;
 
@@ -96,7 +96,7 @@ nav {
 
                 &:hover {
                     cursor: pointer;
-                    background-color: rgb(118, 160, 123);
+                    background-color: var(--navbar-menu-hover);
                     color: white;
 
                     .icon {

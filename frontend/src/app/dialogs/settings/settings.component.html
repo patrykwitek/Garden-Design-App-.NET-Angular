@@ -29,9 +29,7 @@
             </div>
             <div class="dark-mode-section">
                 <p>{{"DarkMode" | translate}}:</p>
-                <div class="toggle-switch" [ngClass]="isDarkMode ? 'active-toggle-switch' : ''" (click)="toggleTheme()">
-                    <div class="toggle-ball" [ngClass]="isDarkMode ? 'active-toggle-ball' : ''"></div>
-                </div>
+                <app-theme-toogle-switch></app-theme-toogle-switch>
             </div>
         </div>
     </div>

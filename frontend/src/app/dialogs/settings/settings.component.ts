@@ -27,6 +27,7 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentLang = this.translateService.currentLang;
+    this.isDarkMode = this.themeService.isDarkMode();
   }
 
   public cancel() {
