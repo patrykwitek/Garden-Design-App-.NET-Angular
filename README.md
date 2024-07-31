@@ -20,7 +20,7 @@
 13. [Admin Role](#admin)
 14. [Translations](#translations)
 15. [Light & Dark Mode](#lightdarkmode)
-16. [Errors handling](#errors)
+16. [Setting Environment](#environment)
 
 <a name="preview"></a>
 ## 1. Preview & Description 👀
@@ -70,19 +70,9 @@ https://github.com/user-attachments/assets/a6ec2348-032f-45c2-bfcb-3a3d8644ed9c
 <a name="projects"></a>
 ## 4. User's Projects 🧑‍💻
 
-### Adding projects
-
-Users can create their own designs. At the moment, he or she can give them width and depth, but the functionality for creating a new design will be extended in the future.
+Users can create their own designs. At the moment, garden designer can set their width and depth, but the functionality for creating a new design will be extended in the future. Project owners can also delete and edit projects.
 
 https://github.com/user-attachments/assets/96d7864d-bb5c-4b5b-b971-9e60eac9b506
-
-### Editing projects
-
-*This functionality will come in the future*
-
-### Removing projects
-
-*This functionality will come in the future*
 
 <a name="adding"></a>
 ## 5. Adding Elements 🌿
@@ -151,10 +141,14 @@ https://github.com/user-attachments/assets/139caae6-188f-4d82-b39e-f70667bc457e
 <a name="lightdarkmode"></a>
 ## 15. Light & Dark Mode 🌙
 
-*This functionality will come in the future*
+The garden designer has the option to change the mode from light to dark (night) to work comfortably in the evening. When changing the dark mode, in addition to changing the interface colours to darker, the sky changes from day to night.
 
-<a name="errors"></a>
-## 16. Errors handling 🚑
+The dark mode information is stored in local storage, so the application will remember the state saved by the user.
+
+https://github.com/user-attachments/assets/c29f7d42-4b4c-4b0b-a7bf-3c9149eca66c
+
+<a name="environment"></a>
+## 16. Setting environment 🏙️
 
 *This functionality will come in the future*
 
