@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { EngineService } from 'src/app/services/engine.service';
 import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
@@ -10,7 +11,8 @@ export class ThemeToogleSwitchComponent implements OnInit {
   public isDarkMode: boolean | undefined;
 
   constructor(
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private engineService: EngineService
   ) { }
 
   ngOnInit(): void {
@@ -22,5 +24,7 @@ export class ThemeToogleSwitchComponent implements OnInit {
     this.isDarkMode = !this.isDarkMode;
 
     localStorage.setItem('garden-design-app-dark-mode', JSON.stringify(this.isDarkMode));
+    this.engineService.addSky();
+    this.engineService.setLightSettings();
   }
 }
