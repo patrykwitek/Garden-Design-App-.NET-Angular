@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { ThemeService } from './theme.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,9 @@ export class EngineService {
 
   private ground: THREE.Mesh | undefined;
 
-  constructor() { }
+  constructor(
+    private themeService: ThemeService
+  ) { }
 
   public initialize(canvas: HTMLCanvasElement): void {
     this.renderer = new THREE.WebGLRenderer({ canvas });
@@ -134,11 +137,41 @@ export class EngineService {
     this.controls.update();
   }
 
-  private setLightSettings(): void {
-    const ambientLight = new THREE.AmbientLight(0x404040, 1); // Drugi parametr to intensywność
+  public addSky(): void {
+    // sky box links: 
+    // https://opengameart.org/content/sky-box-sunny-day
+    // https://opengameart.org/content/space-skybox-0
+    // TODO: change for another (?)
+
+    const themeMode = this.themeService.isDarkMode() ? 'night' : 'day';
+
+    const loader = new THREE.CubeTextureLoader();
+    const texture = loader.load([
+      `assets/textures/skyboxes/${themeMode}/px.bmp`, // right
+      `assets/textures/skyboxes/${themeMode}/nx.bmp`, // left
+      `assets/textures/skyboxes/${themeMode}/py.bmp`, // top
+      `assets/textures/skyboxes/${themeMode}/ny.bmp`, // bottom
+      `assets/textures/skyboxes/${themeMode}/pz.bmp`, // front
+      `assets/textures/skyboxes/${themeMode}/nz.bmp`  // back
+    ]);
+
+    this.scene.background = texture;
+  }
+
+  public setLightSettings(): void {
+    const existingLights = this.scene.children.filter(object => object instanceof THREE.Light);
+    existingLights.forEach(light => this.scene.remove(light));
+
+    const isDarkMode: boolean = this.themeService.isDarkMode();
+
+    const ambientIntensity: number = isDarkMode ? .4 : 1;
+    const directionalIntensity: number = isDarkMode ? .5 : 1;
+    const secondaryIntensity: number = isDarkMode ? .2 : .5;
+
+    const ambientLight = new THREE.AmbientLight(0x404040, ambientIntensity);
     this.scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, directionalIntensity);
     directionalLight.position.set(5, 10, 15);
     directionalLight.castShadow = true;
 
@@ -153,7 +186,7 @@ export class EngineService {
 
     this.scene.add(directionalLight);
 
-    const secondaryLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const secondaryLight = new THREE.DirectionalLight(0xffffff, secondaryIntensity);
     secondaryLight.position.set(-5, 10, -15);
     this.scene.add(secondaryLight);
   }
@@ -171,23 +204,5 @@ export class EngineService {
 
     this.controls.minDistance = 5;
     this.controls.maxDistance = 50;
-  }
-
-  private addSky(): void {
-
-    // sky link: https://opengameart.org/content/sky-box-sunny-day
-    // TODO: change for another
-
-    const loader = new THREE.CubeTextureLoader();
-    const texture = loader.load([
-      'assets/textures/skybox/px.bmp', // right
-      'assets/textures/skybox/nx.bmp', // left
-      'assets/textures/skybox/py.bmp', // top
-      'assets/textures/skybox/ny.bmp', // bottom
-      'assets/textures/skybox/pz.bmp', // front
-      'assets/textures/skybox/nz.bmp'  // back
-    ]);
-
-    this.scene.background = texture;
   }
 }

@@ -12,13 +12,13 @@
         height: fit-content;
 
         h3 {
-            color: rgb(28, 61, 32);
+            color: var(--header-font-color);
             margin: 0;
             align-self: center;
         }
 
         .break-line {
-            background-color: rgb(28, 61, 32);
+            background-color: var(--header-font-color);
             width: 400px;
             height: 2px;
             margin: 20px 0;
@@ -27,9 +27,9 @@
 
         .buttons-container {
             width: 400px;
-            box-shadow: 0px 0px 10px -5px rgb(28, 61, 32);
+            box-shadow: 0px 0px 10px -5px var(--box-shadow);
             padding: 2rem 2rem;
-            background-color: #fafafa;
+            background-color: var(--projects-bg-color);
             border-radius: 10px;
             display: flex;
             flex-direction: column;
@@ -37,9 +37,9 @@
             gap: 20px;
 
             button {
-                background-color: rgb(28, 61, 32);
+                background-color: var(--button-projects-color);
                 padding: 5px 1rem;
-                border: 1px rgb(28, 61, 32) solid;
+                border: 1px var(--header-font-color) solid;
                 border-radius: 20px;
                 font-size: 1.3rem;
                 color: white;
@@ -47,7 +47,7 @@
 
                 &:hover {
                     scale: 105%;
-                    color: rgb(28, 61, 32);
+                    color: var(--hover-button);
                     background-color: white;
                 }
             }

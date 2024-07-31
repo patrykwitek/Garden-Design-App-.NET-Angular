@@ -1,6 +1,7 @@
 .open-existings-projects-container {
     max-width: 100%;
-    background-color: rgba(28, 61, 32, 0.1);
+    background-color: var(--dialog-color);
+    padding: 1rem 0;
 
     .back {
         position: absolute;
@@ -13,14 +14,13 @@
         flex-direction: column;
 
         h3 {
-            color: rgb(28, 61, 32);
+            color: var(--header-font-color);
             margin: 0;
             align-self: center;
-            margin-top: 20px;
         }
 
         .break-line {
-            background-color: rgb(28, 61, 32);
+            background-color: var(--header-font-color);
             width: 300px;
             height: 2px;
             margin: 20px 0;
@@ -37,21 +37,21 @@
                 width: 100%;
                 display: flex;
                 justify-content: center;
-                color: rgb(28, 61, 32);
+                color: var(--header-font-color);
             }
 
             table {
                 margin: 5px 1rem;
                 font-size: 1rem;
                 background-color: white;
-                box-shadow: 0px 0px 10px -4px black;
+                box-shadow: 0px 0px 10px -4px var(--dark-box-shadow);
 
                 tr {
                     margin-bottom: .5rem;
-                    border-bottom: 1px rgb(158, 158, 158) solid;
+                    border-bottom: 1px var(--projects-table-tr-color) solid;
 
                     th {
-                        background-color: rgb(28, 61, 32);
+                        background-color: var(--hover-button);
                         font-weight: bold;
                         padding: 1rem 0;
                         text-align: center;
@@ -78,7 +78,7 @@
                                     position: relative;
                                     top: 3px;
                                     scale: 110%;
-                                    color: rgb(28, 61, 32);
+                                    color: var(--hover-button);
                                     transition: .2s;
                                 }
 
@@ -97,7 +97,7 @@
                     }
 
                     &:hover {
-                        background-color: rgb(95, 148, 99);
+                        background-color: var(--projects-table-bg-hover);
 
                         td {
                             color: white;
@@ -121,24 +121,25 @@
                 margin-top: 2rem;
 
                 .pagination-styles::ng-deep .page-item.active .page-link {
-                    color: white;
-                    background-color: rgb(28, 61, 32) !important;
-                    border: 1px rgb(28, 61, 32) solid;
+                    color: var(--bright-label-color);
+                    background-color: var(--header-font-color) !important;
+                    border: 1px var(--header-font-color) solid;
 
                     &:hover {
-                        color: rgb(28, 61, 32);
-                        background-color: white !important;
+                        color: var(--header-font-color);
+                        background-color: var(--bright-label-color) !important;
                     }
                 }
 
                 .pagination-styles::ng-deep .page-item .page-link {
-                    color: white;
-                    background-color: rgba(28, 61, 32, 0.4) !important;
-
+                    color: var(--bright-label-color);
+                    background-color: var(--pagination-bg-color) !important;
+                    border: none;
+                    
                     &:hover {
-                        color: white;
-                        background-color: rgb(28, 61, 32) !important;
-                        border: 1px rgb(28, 61, 32) solid;
+                        color: var(--bright-label-color);
+                        background-color: var(--header-font-color) !important;
+                        border: 1px var(--hover-button) solid;
                     }
                 }
             }

@@ -1,12 +1,12 @@
 .back-container {
-    background-color: rgb(28, 61, 32);
+    background-color: var(--header-font-color);
     border-radius: 50%;
     width: 35px;
     height: 35px;
     transition: .2s;
 
     .back-icon {
-        color: white;
+        color: var(--back-button-arrow);
         position: relative;
         left: 6px;
         top: 6px;
@@ -14,12 +14,12 @@
     }
 
     &:hover {
-        background-color: white;
+        background-color: var(--back-button-bg-hover);
         box-shadow: 0px 0px 5px -2px black;
         cursor: pointer;
 
         .back-icon {
-            color: rgb(28, 61, 32);
+            color: var(--header-font-color);
             scale: 90%;
         }
     }

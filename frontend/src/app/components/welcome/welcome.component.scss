@@ -8,9 +8,9 @@
 
     .form-container {
         width: 400px;
-        box-shadow: 0px 0px 10px -5px rgb(28, 61, 32);
+        box-shadow: 0px 0px 10px -5px var(--box-shadow);
         padding: 2rem 2rem;
-        background-color: #fafafa;
+        background-color: var(--projects-bg-color);
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -46,8 +46,8 @@
             .login-buttons-container {
                 .login-button {
                     width: 300px;
-                    border: 1px rgb(28, 61, 32) solid;
-                    background-color: rgb(28, 61, 32);
+                    border: 1px var(--navbar-color) solid;
+                    background-color: var(--navbar-color);
                     margin: 0;
                     color: white;
                     padding: 4px 0;
@@ -62,9 +62,9 @@
 
     .home-page-buttons {
         width: 400px;
-        box-shadow: 0px 0px 10px -5px rgb(28, 61, 32);
+        box-shadow: 0px 0px 10px -5px var(--box-shadow);
         padding: 2rem 2rem;
-        background-color: #fafafa;
+        background-color: var(--projects-bg-color);
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -79,16 +79,16 @@
             button {
                 align-self: center;
                 width: 70%;
-                background-color: rgb(28, 61, 32);
+                background-color: var(--navbar-color);
                 color: white;
-                border: 1px rgb(28, 61, 32) solid;
+                border: 1px var(--navbar-color) solid;
                 transition: .2s;
                 padding: 3px 5px;
                 border-radius: 5px;
 
                 &:hover {
-                    background-color: transparent;
-                    color: rgb(28, 61, 32);
+                    background-color: var(--welcome-button-bg-hover);
+                    color: var(--hover-button);
                     scale: 105%;
                 }
             }
@@ -99,9 +99,10 @@
         align-self: center;
         width: 820px;
         height: 250px;
-        box-shadow: 0px 0px 10px -5px rgb(28, 61, 32);
+        box-shadow: 0px 0px 10px -5px var(--box-shadow);
         padding: 1rem 2rem;
-        background-color: #fafafa;
+        background-color: var(--projects-bg-color);
         border-radius: 10px;
+        color: var(--label-color);
     }
 }

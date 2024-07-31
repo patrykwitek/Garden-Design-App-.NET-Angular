@@ -1,6 +1,6 @@
 .edit-profile-container {
     max-width: 100%;
-    background-color: rgba(28, 61, 32, 0.1);
+    background-color: var(--dialog-color);
     padding-bottom: 1rem;
 
     .back {
@@ -14,14 +14,14 @@
         flex-direction: column;
 
         h3 {
-            color: rgb(28, 61, 32);
+            color: var(--header-font-color);
             margin: 0;
             align-self: center;
             margin-top: 20px;
         }
 
         .break-line {
-            background-color: rgb(28, 61, 32);
+            background-color: var(--header-font-color);
             width: 300px;
             height: 2px;
             margin: 20px 0;

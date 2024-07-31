@@ -4,6 +4,7 @@ import { IUser } from './models/interfaces/i-user';
 import { TranslateService } from '@ngx-translate/core';
 import { Language } from './models/types/language';
 import { take } from 'rxjs';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private translateService: TranslateService,
+    private themeService: ThemeService
   ) { }
 
   ngOnInit(): void {
@@ -24,13 +26,21 @@ export class AppComponent implements OnInit {
     this.setCurrentUser();
 
     // note: dark mode
-    // TODO
+    const isDarkModeString = localStorage.getItem('garden-design-app-dark-mode');
+    if (!isDarkModeString) {
+      localStorage.setItem('garden-design-app-dark-mode', JSON.stringify(false));
+    }
+    else {
+      const isDarkMode: boolean = JSON.parse(isDarkModeString);
+      this.themeService.setMode(isDarkMode);
+      this.themeService.refreshPage();
+    }
   }
 
   private setCurrentUser() {
     const userString = localStorage.getItem('garden-design-app-user');
 
-    if (!userString){
+    if (!userString) {
       this.translateService.use('en');
       return;
     }
