@@ -34,7 +34,7 @@ export class GardenService {
     this.engineService.setGround(this.currentProject.ground.img);
     this.currentGroundSource.next(this.currentProject.ground.name);
 
-    this.engineService.addTestCube(this.currentProject!.width, this.currentProject!.depth);
+    this.engineService.addFence(this.currentProject!.width, this.currentProject!.depth);
     this.engineService.setAnimating(true);
     this.engineService.animate();
   }

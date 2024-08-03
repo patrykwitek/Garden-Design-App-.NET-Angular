@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { ThemeService } from './theme.service';
+import { ConstantHelper } from '../utils/constant-helper';
+import { CSG } from 'three-csg-ts';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +28,7 @@ export class EngineService {
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.localClippingEnabled = true;
 
     this.scene = new THREE.Scene();
 
@@ -87,17 +91,146 @@ export class EngineService {
     }
   }
 
-  public addTestCube(width: number, depth: number): void {
-    // TODO: this is temporary method to test, delete it later
+  public addFence(width: number, depth: number): void {
+    const loader = new GLTFLoader();
+    loader.load('../../assets/3d models/wooden fence/scene.gltf', (gltf) => {
+      const originFence = gltf.scene.clone();
 
-    const geometry = new THREE.BoxGeometry(width, 1, depth);
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ff73 });
-    const cube = new THREE.Mesh(geometry, material);
-    cube.position.copy(new THREE.Vector3(0, 0, 0));
-    cube.castShadow = true;
-    cube.receiveShadow = true;
-    this.scene.add(cube);
-    this.objects.push(cube);
+      const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(originFence);
+      const size: THREE.Vector3 = new THREE.Vector3();
+      boundingBox.getSize(size);
+
+      const originalWidth: number = size.x;
+      const originalHeight: number = size.y;
+      const originalDepth: number = size.z;
+
+      const scaleX: number = ConstantHelper.fenceWidth / originalWidth;
+      const scaleY: number = ConstantHelper.fenceHeight / originalHeight;
+      const scaleZ: number = ConstantHelper.fenceDepth / originalDepth;
+
+      originFence.scale.set(scaleX, scaleY, scaleZ);
+
+      const fencesXNumber: number = width / ConstantHelper.fenceWidth;
+      const fencesYNumber: number = depth / ConstantHelper.fenceWidth;
+
+      let xPosition: number = -(width / 2) + (ConstantHelper.fenceWidth / 2);
+      let yPosition: number = -(depth / 2) + (ConstantHelper.fenceWidth / 2);
+
+      const yFrontPosition: number = depth / 2;
+      const yBackPosition: number = -(depth / 2);
+
+      for (let i = 0; i < fencesXNumber; i++) {
+        const clippingPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (width / 2));
+
+        // note: back
+        let singleFenceBack: THREE.Group<THREE.Object3DEventMap>;
+
+        if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
+          singleFenceBack = gltf.scene.clone();
+          singleFenceBack.scale.set(scaleX, scaleY, scaleZ);
+
+          singleFenceBack.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [clippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          singleFenceBack = originFence.clone();
+        }
+
+        singleFenceBack.rotation.y = Math.PI;
+        singleFenceBack.position.set(xPosition, ConstantHelper.fenceHeight / 2, yBackPosition);
+
+        this.scene.add(singleFenceBack);
+        this.objects.push(singleFenceBack);
+
+        // note: front
+        let singleFenceFront;
+
+        if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
+          singleFenceFront = gltf.scene.clone();
+          singleFenceFront.scale.set(scaleX, scaleY, scaleZ);
+
+          singleFenceFront.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [clippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          singleFenceFront = originFence.clone();
+        }
+
+        singleFenceFront.position.set(xPosition, ConstantHelper.fenceHeight / 2, yFrontPosition);
+
+        this.scene.add(singleFenceFront);
+        this.objects.push(singleFenceFront);
+
+        xPosition += ConstantHelper.fenceWidth;
+      }
+
+      for (let i = 0; i < fencesYNumber; i++) {
+        const clippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), (depth / 2));
+
+        // note: left
+        let singleFenceLeft: THREE.Group<THREE.Object3DEventMap>;
+
+        if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
+          singleFenceLeft = gltf.scene.clone();
+          singleFenceLeft.scale.set(scaleX, scaleY, scaleZ);
+
+          singleFenceLeft.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [clippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          singleFenceLeft = originFence.clone();
+        }
+
+        singleFenceLeft.rotation.y = Math.PI + (Math.PI / 2);
+        singleFenceLeft.position.set(-(width / 2), ConstantHelper.fenceHeight / 2, yPosition);
+
+        this.scene.add(singleFenceLeft);
+        this.objects.push(singleFenceLeft);
+
+        // note: right
+        let singleFenceRight: THREE.Group<THREE.Object3DEventMap>;
+
+        if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
+          singleFenceRight = gltf.scene.clone();
+          singleFenceRight.scale.set(scaleX, scaleY, scaleZ);
+
+          singleFenceRight.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [clippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          singleFenceRight = originFence.clone();
+        }
+
+        singleFenceRight.rotation.y = (Math.PI / 2);
+        singleFenceRight.position.set(width / 2, ConstantHelper.fenceHeight / 2, yPosition);
+
+        this.scene.add(singleFenceRight);
+        this.objects.push(singleFenceRight);
+
+        yPosition += ConstantHelper.fenceWidth;
+      }
+    }, undefined, function (error) {
+      console.error('Error loading fence model: ' + error);
+    });
+
+    // note: for testing
+    // this.buildTestBorder(width, depth);
   }
 
   public setGround(textureName: string): void {
@@ -204,5 +337,16 @@ export class EngineService {
 
     this.controls.minDistance = 5;
     this.controls.maxDistance = 50;
+  }
+
+  private buildTestBorder(width: number, depth: number): void {
+    const geometry = new THREE.BoxGeometry(width, 1, depth);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ff73 });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.position.copy(new THREE.Vector3(0, 0, 0));
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    this.scene.add(cube);
+    this.objects.push(cube);
   }
 }
