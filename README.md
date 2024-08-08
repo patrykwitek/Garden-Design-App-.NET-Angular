@@ -116,7 +116,9 @@ https://github.com/user-attachments/assets/9c9b2efa-033c-4b70-88a8-acdbe076d0d2
 <a name="edit"></a>
 ## 12. Profile Edit ✍️
 
-*This functionality will come in the future*
+In the top options bar, the user has the option of setting a fence.
+
+https://github.com/user-attachments/assets/df4820c3-e6b3-47f9-ac84-1e0c5c12ff32
 
 <a name="admin"></a>
 ## 13. Admin Role 🛡️
