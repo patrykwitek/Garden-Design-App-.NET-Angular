@@ -37,6 +37,7 @@ namespace backend.Repositories
         {
             var query = _context.Projects
                 .Include(project => project.Ground)
+                .Include(project => project.Fence)
                 .AsQueryable();
 
             query = query.Where(project => project.User.UserName == projectsParams.Username);
@@ -50,6 +51,7 @@ namespace backend.Repositories
         {
             return await _context.Projects
                 .Include(project => project.Ground)
+                .Include(project => project.Fence)
                 .FirstOrDefaultAsync(project => project.Id == id);
         }
     }

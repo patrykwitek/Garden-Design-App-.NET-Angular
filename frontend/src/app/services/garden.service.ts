@@ -5,6 +5,7 @@ import { IGround } from '../models/interfaces/i-ground';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { IFence } from '../models/interfaces/i-fence';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,9 @@ export class GardenService {
 
   private currentGroundSource = new BehaviorSubject<string | null>(null);
   public currentGround$ = this.currentGroundSource.asObservable();
+
+  private currentFenceSource = new BehaviorSubject<string | null>(null);
+  public currentFence$ = this.currentFenceSource.asObservable();
 
   private currentProject: IProject | undefined;
 
@@ -34,7 +38,9 @@ export class GardenService {
     this.engineService.setGround(this.currentProject.ground.img);
     this.currentGroundSource.next(this.currentProject.ground.name);
 
-    this.engineService.addFence(this.currentProject!.width, this.currentProject!.depth);
+    this.engineService.setFence(this.currentProject.width, this.currentProject.depth, this.currentProject.fence.name.toLowerCase());
+    this.currentFenceSource.next(this.currentProject.fence.name);
+
     this.engineService.setAnimating(true);
     this.engineService.animate();
   }
@@ -43,17 +49,35 @@ export class GardenService {
     return this.http.get<IGround[]>(this.baseUrl + 'solution/getGroundList');
   }
 
+  public getFences(): Observable<IFence[]> {
+    return this.http.get<IFence[]>(this.baseUrl + 'solution/getFenceList');
+  }
+
   public setGround(ground: IGround) {
     if (this.currentProject) {
       this.http.put(this.baseUrl + `solution/setGround/${this.currentProject.id}`, ground).subscribe(
         _ => {},
         error => {
-          console.error('Error setting the ground', error);
+          console.error('Error setting the ground: ', error);
         }
       );
 
       this.engineService.setGround(ground.img);
       this.currentGroundSource.next(ground.name);
+    }
+  }
+
+  public setFence(fence: IFence) {
+    if (this.currentProject) {
+      this.http.put(this.baseUrl + `solution/setFence/${this.currentProject.id}`, fence).subscribe(
+        _ => {},
+        error => {
+          console.error('Error setting the fence: ', error);
+        }
+      );
+
+      this.engineService.setFence(this.currentProject!.width, this.currentProject!.depth, fence.name.toLowerCase());
+      this.currentFenceSource.next(fence.name);
     }
   }
 }

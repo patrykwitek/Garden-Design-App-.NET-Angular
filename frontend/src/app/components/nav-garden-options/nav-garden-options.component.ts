@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IFence } from 'src/app/models/interfaces/i-fence';
 import { IGround } from 'src/app/models/interfaces/i-ground';
 import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
@@ -18,7 +19,9 @@ export class NavGardenOptionsComponent implements OnInit {
   // https://www.freepik.com/free-vector/several-green-grass-borders-realistic-design_1089459.htm#page=9&query=grass%20texture&position=47&from_view=keyword&track=ais_user&uuid=92b0530b-1e3a-49d6-a527-793251936cf9
 
   public groundList: IGround[] = [];
+  public fenceList: IFence[] = [];
   public showGroundOptions: boolean = false;
+  public showFenceOptions: boolean = false;
 
   constructor(
     public gardenService: GardenService,
@@ -27,6 +30,7 @@ export class NavGardenOptionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadGrounds();
+    this.loadFences();
 
     // TODO:
     // add more types of grass
@@ -34,6 +38,11 @@ export class NavGardenOptionsComponent implements OnInit {
 
   public toggleGroundOptions(event: Event): void {
     this.showGroundOptions = !this.showGroundOptions;
+    event.stopPropagation();
+  }
+
+  public toggleFenceOptions(event: Event): void {
+    this.showFenceOptions = !this.showFenceOptions;
     event.stopPropagation();
   }
 
@@ -45,13 +54,28 @@ export class NavGardenOptionsComponent implements OnInit {
     this.gardenService.setGround(ground);
   }
 
+  public setFence(fence: IFence) {
+    this.gardenService.setFence(fence);
+  }
+
   private loadGrounds(): void {
     this.gardenService.getGrounds().subscribe(
       (groundList: IGround[]) => {
         this.groundList = groundList;
       },
       error => {
-        console.error('Error loading grounds', error);
+        console.error('Error loading grounds: ', error);
+      }
+    );
+  }
+
+  private loadFences(): void {
+    this.gardenService.getFences().subscribe(
+      (fenceList: IFence[]) => {
+        this.fenceList = fenceList;
+      },
+      error => {
+        console.error('Error loading fences: ', error);
       }
     );
   }

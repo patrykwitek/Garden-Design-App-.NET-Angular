@@ -11,9 +11,9 @@
                     </div>
                     <p>{{"Ground" | translate}}</p>
             </div>
-            <div class="ground-option-container" *ngIf="showGroundOptions">
+            <div class="option-container" *ngIf="showGroundOptions">
                 <div 
-                    class="single-ground-option"
+                    class="single-option"
                     matTooltip={{ground.name}}
                     matTooltipShowDelay="500"
                     matTooltipPosition="below"
@@ -41,11 +41,24 @@
             class="single-option-content"
             matTooltip="{{'Fence' | translate}}"
             matTooltipShowDelay="500"
-            matTooltipPosition="below">
+            matTooltipPosition="below"
+            (click)="toggleFenceOptions($event)">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">fence</mat-icon>
                 </div>
                 <p>{{"Fence" | translate}}</p>
+        </div>
+        <div class="option-container" *ngIf="showFenceOptions">
+            <div 
+                class="single-option"
+                matTooltip="{{fence.name | translate}}"
+                matTooltipShowDelay="500"
+                matTooltipPosition="below"
+                *ngFor="let fence of fenceList"
+                (click)="setFence(fence)"
+                [ngClass]="(gardenService.currentFence$ | async) === fence.name ? 'selected' : ''">
+                    <img [src]="'../../../assets/textures/fences/' + fence.img + '.png'" alt={{fence.name}}>
+            </div>
         </div>
     </div>
     <div class="single-option-container">

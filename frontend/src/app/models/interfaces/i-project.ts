@@ -1,3 +1,4 @@
+import { IFence } from "./i-fence";
 import { IGround } from "./i-ground";
 
 export interface IProject {
@@ -7,5 +8,6 @@ export interface IProject {
     width: number;
     depth: number;
     ground: IGround;
+    fence: IFence;
     ownerUsername?: string;
 }
