@@ -94,7 +94,9 @@ https://github.com/user-attachments/assets/52948a83-ff8c-4254-9ed0-10a47f54fe5b
 <a name="fence"></a>
 ## 8. Setting Fence 🧱
 
-*This functionality will come in the future*
+In the top options bar, the user has the option of setting a fence.
+
+https://github.com/user-attachments/assets/df4820c3-e6b3-47f9-ac84-1e0c5c12ff32
 
 <a name="camera"></a>
 ## 9. Reset Camera 🎥
@@ -116,9 +118,7 @@ https://github.com/user-attachments/assets/9c9b2efa-033c-4b70-88a8-acdbe076d0d2
 <a name="edit"></a>
 ## 12. Profile Edit ✍️
 
-In the top options bar, the user has the option of setting a fence.
-
-https://github.com/user-attachments/assets/df4820c3-e6b3-47f9-ac84-1e0c5c12ff32
+*This functionality will come in the future*
 
 <a name="admin"></a>
 ## 13. Admin Role 🛡️
