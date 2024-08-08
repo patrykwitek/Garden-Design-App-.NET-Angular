@@ -24,6 +24,7 @@ namespace backend.Controllers
             User projectOwner = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
             Ground ground = (await _unitOfWork.GroundRepository.GetGroundList()).FirstOrDefault();
+            Fence fence = (await _unitOfWork.FenceRepository.GetFenceList()).FirstOrDefault();
 
             Project project = new Project
             {
@@ -32,7 +33,8 @@ namespace backend.Controllers
                 Width = projectDto.Width,
                 Depth = projectDto.Depth,
                 User = projectOwner,
-                Ground = ground
+                Ground = ground,
+                Fence = fence
             };
 
             _unitOfWork.ProjectsRepository.AddProject(project);

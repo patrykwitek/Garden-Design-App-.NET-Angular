@@ -17,6 +17,23 @@ namespace backend.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.31");
 
+            modelBuilder.Entity("backend.Entities.Fence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Img")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Fences");
+                });
+
             modelBuilder.Entity("backend.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -27,6 +44,9 @@ namespace backend.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Depth")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FenceId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("GroundId")
@@ -42,6 +62,8 @@ namespace backend.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FenceId");
 
                     b.HasIndex("GroundId");
 
@@ -101,6 +123,10 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Entities.Project", b =>
                 {
+                    b.HasOne("backend.Entities.Fence", "Fence")
+                        .WithMany()
+                        .HasForeignKey("FenceId");
+
                     b.HasOne("backend.Ground", "Ground")
                         .WithMany()
                         .HasForeignKey("GroundId");
@@ -108,6 +134,8 @@ namespace backend.Migrations
                     b.HasOne("backend.Entities.User", "User")
                         .WithMany("Projects")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Fence");
 
                     b.Navigation("Ground");
 

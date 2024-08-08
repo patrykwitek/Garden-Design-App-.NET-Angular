@@ -60,10 +60,10 @@
             }
         }
 
-        .ground-option-container {
+        .option-container {
             position: absolute;
             top: calc(100% + 10px);
-            left: -40px;
+            left: -48px;
             background-color: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(2px);
             display: flex;
@@ -71,7 +71,7 @@
             padding: 0 10px;
             color: white;
 
-            .single-ground-option {
+            .single-option {
                 display: flex;
                 flex-direction: column;
                 padding: 5px 10px;

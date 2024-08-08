@@ -12,6 +12,7 @@ public class DataContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Project> Projects { get; set; }
     public DbSet<Ground> Grounds { get; set; }
+    public DbSet<Fence> Fences { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
