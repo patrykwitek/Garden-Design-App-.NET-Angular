@@ -23,6 +23,9 @@ export class EngineService {
   private ground: THREE.Mesh | undefined;
   private fence: any | undefined;
 
+  private width: number | undefined;
+  private depth: number | undefined;
+
   constructor(
     private themeService: ThemeService
   ) { }
@@ -94,7 +97,7 @@ export class EngineService {
     }
   }
 
-  public setFence(width: number, depth: number, fenceType: string): void {
+  public setFence(fenceType: string): void {
     // fences links:
     // https://www.cgtrader.com/free-3d-models/exterior/other/cc0-wood-fence
     // https://free3d.com/3d-model/-rectangular-box-hedge--896206.html
@@ -116,15 +119,17 @@ export class EngineService {
     });
 
     const fence = ConstantHelper.getFenceByType(fenceType);
-    
-    if (fence.destination.fileName.includes('.gltf') || fence.destination.fileName.includes('.glf')) {
-      this.loadFenceFromGTLF(width, depth, fence);
-    }
-    else if (fence.destination.fileName.includes('.obj') || (fence.destination.fileName.includes('.mlt'))) {
-      this.loadFenceFromOBJ(width, depth, fence);
-    }
-    else {
-      throw new Error("Unsupported model extension");
+
+    if (this.width && this.depth) {
+      if (fence.destination.fileName.includes('.gltf') || fence.destination.fileName.includes('.glf')) {
+        this.loadFenceFromGTLF(this.width, this.depth, fence);
+      }
+      else if (fence.destination.fileName.includes('.obj') || (fence.destination.fileName.includes('.mlt'))) {
+        this.loadFenceFromOBJ(this.width, this.depth, fence);
+      }
+      else {
+        throw new Error("Unsupported model extension");
+      }
     }
 
     // note: for testing
@@ -160,12 +165,21 @@ export class EngineService {
     });
   }
 
-  public resetCameraPosition() {
-    this.camera.position.set(0, 5, 10);
-    this.camera.lookAt(0, 0, 0);
+  public setGardenDimensions(width: number, depth: number) {
+    this.width = width;
+    this.depth = depth;
+  }
 
-    this.controls.target.set(0, 0, 0);
-    this.controls.update();
+  public resetCameraPosition() {
+    if (this.width && this.depth) {
+      const cameraYPosition: number = ((this.width > this.depth) ? this.width : this.depth * 1.5) / 2;
+
+      this.camera.position.set(0, 5, cameraYPosition);
+      this.camera.lookAt(0, 0, 0);
+
+      this.controls.target.set(0, 0, 0);
+      this.controls.update();
+    }
   }
 
   public addSky(): void {
