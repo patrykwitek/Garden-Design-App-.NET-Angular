@@ -20,6 +20,7 @@ namespace backend.Data
         public IUserRepository UserRepository => new UserRepository(_context, _mapper);
         public IGroundRepository GroundRepository => new GroundRepository(_context);
         public IFenceRepository FenceRepository => new FenceRepository(_context);
+        public IEntranceRepository EntranceRepository => new EntranceRepository(_context, _mapper);
 
         public async Task<bool> Complete()
         {

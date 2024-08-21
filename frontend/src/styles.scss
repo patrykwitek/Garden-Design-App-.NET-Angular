@@ -36,6 +36,7 @@
     --navbar-menu-font: black;
     --navbar-menu-hover: rgb(118, 160, 123);
     --welcome-button-bg-hover: transparent;
+    --cancel-button-bg: rgb(255, 42, 63);
 }
 
 body.dark-mode {
@@ -62,6 +63,7 @@ body.dark-mode {
     --navbar-menu-font: white;
     --navbar-menu-hover: rgb(75, 75, 75);
     --welcome-button-bg-hover: white;
+    --cancel-button-bg: white;
 }
 
 html,

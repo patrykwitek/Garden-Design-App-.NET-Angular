@@ -10,7 +10,7 @@
                     {{"GardenDesignApp" | translate}}
             </a>
     </div>
-    <app-nav-garden-options *ngIf="!isOpenProjectTab"></app-nav-garden-options>
+    <app-nav-garden-options *ngIf="!isOpenProjectTab" (isOpenEntranceTool)="receiveEntranceTool($event)"></app-nav-garden-options>
     <!-- note: for testing purposes -->
     <!-- <app-nav-garden-options></app-nav-garden-options> -->
     <div class="dropdown-list" clickOutside (clickOutside)="clickOutside()" *ngIf="(loginService.currentUser$ | async) as user">
@@ -77,3 +77,13 @@
         </div>
     </div>
 </nav>
+<div class="entrance-tool" *ngIf="isOpenEntranceTool">
+    <div class="value-section" *ngIf="entrancePositionX">
+        {{entrancePositionX}} m
+    </div>
+    <div class="tool-section">
+        <button class="entrance-tool-button cancel-button" (click)="closeEntranceTool()">{{'Cancel' | translate}}</button>
+        <input type="range" class="slider" [min]="entrancePositionMin" [max]="entrancePositionMax" [step]="0.1" [(ngModel)]="entrancePositionX" (ngModelChange)="onEntrancePositionChange($event)">
+        <button class="entrance-tool-button" (click)="applyEntrancePosition()">{{'Add' | translate}}</button>
+    </div>
+</div>
