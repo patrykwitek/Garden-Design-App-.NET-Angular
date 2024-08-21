@@ -37,12 +37,13 @@ export class GardenService {
     }
 
     this.engineService.setGardenDimensions(this.currentProject.width, this.currentProject.depth);
+    this.engineService.setCurrentProject(this.currentProject.id);
     this.engineService.resetCameraPosition();
 
     this.engineService.setGround(this.currentProject.ground.img);
     this.currentGroundSource.next(this.currentProject.ground.name);
 
-    this.engineService.setFence(this.currentProject.fence.name.toLowerCase(), this.currentProject.id);
+    this.engineService.setFence(this.currentProject.fence.name.toLowerCase());
     this.currentFenceSource.next(this.currentProject.fence.name);
 
     this.engineService.setAnimating(true);
@@ -80,7 +81,7 @@ export class GardenService {
         }
       );
 
-      this.engineService.setFence(fence.name.toLowerCase(), this.currentProject.id);
+      this.engineService.setFence(fence.name.toLowerCase());
       this.currentFenceSource.next(fence.name);
     }
   }

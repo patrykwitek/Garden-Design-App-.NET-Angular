@@ -38,6 +38,9 @@ export class EngineService {
   private noEntranceWestFence: THREE.Group<THREE.Object3DEventMap> | undefined;
   private noEntranceEastFence: THREE.Group<THREE.Object3DEventMap> | undefined;
 
+  private fenceType: string | undefined;
+  private currentProjectId: string | undefined;
+
   constructor(
     private themeService: ThemeService,
     private http: HttpClient
@@ -58,7 +61,7 @@ export class EngineService {
     this.addSky();
 
     // note: for testing purposes
-    this.addTemporaryCompass();
+    // this.addTemporaryCompass();
   }
 
   public animate(): void {
@@ -115,7 +118,9 @@ export class EngineService {
     }
   }
 
-  public async setFence(fenceType: string, projectId: string | undefined): Promise<void> {
+  public async setFence(fenceType: string): Promise<void> {
+    this.fenceType = fenceType;
+
     // fences links:
     // https://www.cgtrader.com/free-3d-models/exterior/other/cc0-wood-fence
     // https://free3d.com/3d-model/-rectangular-box-hedge--896206.html
@@ -150,9 +155,9 @@ export class EngineService {
       }
     }
 
-    this.loadEntrances(projectId);
+    this.loadEntrances();
 
-    // note: for testing
+    // note: for testing purposes
     // this.buildTestBorder(width, depth);
   }
 
@@ -188,6 +193,10 @@ export class EngineService {
   public setGardenDimensions(width: number, depth: number) {
     this.width = width;
     this.depth = depth;
+  }
+
+  public setCurrentProject(projectId: string | undefined) {
+    this.currentProjectId = projectId;
   }
 
   public resetCameraPosition() {
@@ -370,8 +379,13 @@ export class EngineService {
     }
   }
 
-  private async loadEntrances(projectId: string | undefined) {
-    await this.getEntrancesForProject(projectId).subscribe(
+  public setEntrance(direction: Direction) {
+    // TODO: optimise this method
+    if (this.fenceType) this.setFence(this.fenceType);
+  }
+
+  private async loadEntrances() {
+    await this.getEntrancesForProject(this.currentProjectId).subscribe(
       (entrances: IEntrance[]) => {
         this.cutFencesForEntrances(entrances);
       },

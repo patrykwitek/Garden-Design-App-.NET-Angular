@@ -156,7 +156,7 @@ export class NavComponent {
       }
     );
 
-    // TODO: this.engineService.setEntrance(...);
+    this.engineService.setEntrance(entranceDirection);
 
     this.isOpenEntranceTool = false;
     this.engineService.resetCameraPosition();
