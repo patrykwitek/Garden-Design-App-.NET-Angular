@@ -21,6 +21,7 @@
 14. [Translations](#translations)
 15. [Light & Dark Mode](#lightdarkmode)
 16. [Setting Environment](#environment)
+17. [Adding Entrance](#entrance)
 
 <a name="preview"></a>
 ## 1. Preview & Description 👀
@@ -33,7 +34,7 @@ Application uses ASP.NET as backend and Angular as frontend. WebGL was used to c
 
 Inspiration for the project came from my first programming job at Idealogic company, where I had been creating software for designing houses also using WebGL.
 
-![preview](https://github.com/user-attachments/assets/ed238907-07cb-4206-9558-08c1298522b0)
+![preview](https://github.com/user-attachments/assets/364c4cf5-216d-498a-8673-9fde2e48a073)
 
 <a name="installation"></a>
 ## 2. Installation 🛒
@@ -103,7 +104,7 @@ https://github.com/user-attachments/assets/df4820c3-e6b3-47f9-ac84-1e0c5c12ff32
 
 When the user "flies away" with the camera too far or to a place far away, they can quickly return to the centre of a particular garden by clicking the "Reset Camera" button.
 
-https://github.com/user-attachments/assets/9c9b2efa-033c-4b70-88a8-acdbe076d0d2
+https://github.com/user-attachments/assets/edd0350e-e93e-498d-95fd-82c96382ea16
 
 <a name="2d"></a>
 ## 10. 2D Mode 🦅
@@ -154,6 +155,11 @@ https://github.com/user-attachments/assets/c29f7d42-4b4c-4b0b-a7bf-3c9149eca66c
 
 *This functionality will come in the future*
 
+<a name="entrance"></a>
+## 16. Adding entrance 🚪
+
+Thanks to the entrance tool, the user can add entrances from all sides of the garden.
+
+https://github.com/user-attachments/assets/108e00ca-473e-4465-8044-79e6df60b0a0
 
 [🔼 Back to top](#top)
-
