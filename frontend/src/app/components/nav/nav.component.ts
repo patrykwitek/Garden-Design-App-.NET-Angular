@@ -1,13 +1,19 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { EngineService } from 'src/app/services/engine.service';
 import { LoginService } from 'src/app/services/login.service';
 import { ProjectLoaderService } from 'src/app/services/project-loader.service';
-import { ProjectService } from 'src/app/services/project.service';
 import { SettingsComponent } from '../../dialogs/settings/settings.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { EditProfileComponent } from '../../dialogs/edit-profile/edit-profile.component';
+import { Direction } from 'src/app/models/types/direction';
+import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
+import { GardenService } from 'src/app/services/garden.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { IProject } from 'src/app/models/interfaces/i-project';
+import { IEntrance } from 'src/app/models/interfaces/i-entrance';
+import { ConstantHelper } from 'src/app/utils/constant-helper';
 
 @Component({
   selector: 'app-nav',
@@ -16,17 +22,24 @@ import { EditProfileComponent } from '../../dialogs/edit-profile/edit-profile.co
 })
 export class NavComponent {
   @Input() isOpenProjectTab: boolean = true;
-  
-  model: any = {};
-  showDropdownMenu: boolean = false;
+
+  public model: any = {};
+  public showDropdownMenu: boolean = false;
+
+  public isOpenEntranceTool: boolean = false;
+  public entrancePositionX: number | undefined;
+  public entrancePositionMin: number = ConstantHelper.entranceWidth / 2;
+  public entrancePositionMax: number | undefined;
 
   constructor(
     public loginService: LoginService,
     private router: Router,
-    private toastr: ToastrService,
     private projectLoaderService: ProjectLoaderService,
     private engineService: EngineService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private entranceTool: EntranceToolService,
+    private gardenService: GardenService,
+    private http: HttpClient
   ) { }
 
   public login() {
@@ -58,8 +71,9 @@ export class NavComponent {
 
   public goToMyProjects(): void {
     this.router.navigateByUrl('/');
+    this.isOpenEntranceTool = false;
     this.toggleDropdownMenu();
-    
+
     this.engineService.dispose();
     this.projectLoaderService.loadOpenProjectTab(true);
     this.projectLoaderService.setProject(null);
@@ -93,6 +107,60 @@ export class NavComponent {
     };
 
     this.dialog.open(EditProfileComponent, dialogConfig);
+  }
+
+  public receiveEntranceTool(direction: Direction) {
+    this.isOpenEntranceTool = true;
+    const currentProject = this.gardenService.getCurrentProject();
+
+    if (direction == 'North' || direction == 'South') {
+      this.entrancePositionX = currentProject.width / 2;
+      this.entrancePositionMax = currentProject.width - (ConstantHelper.entranceWidth / 2);
+    }
+    else if (direction == 'West' || direction == 'East') {
+      this.entrancePositionX = currentProject.depth / 2;
+      this.entrancePositionMax = currentProject.depth - (ConstantHelper.entranceWidth / 2);
+    }
+  }
+
+  public closeEntranceTool() {
+    this.isOpenEntranceTool = false;
+    this.entrancePositionX = 50;
+    this.engineService.resetCameraPosition();
+    this.entranceTool.clearVisualisation();
+  }
+
+  public onEntrancePositionChange(newValue: number) {
+    this.entrancePositionX = newValue;
+    this.entranceTool.changeEntranceVisualisationPosition(this.entrancePositionX);
+  }
+
+  public applyEntrancePosition() {
+    const entranceDirection: Direction | undefined = this.entranceTool.entranceDirection;
+    const entrancePosition: number | undefined = this.entrancePositionX;
+
+    if(!entranceDirection || !entrancePosition) return;
+    
+    const entrance: IEntrance = {
+      direction: entranceDirection,
+      position: entrancePosition
+    };
+
+    const currentProject: IProject = this.gardenService.getCurrentProject();
+    const baseUrl: string = environment.apiUrl;
+    
+    this.http.put(baseUrl + `solution/setEntrance/${currentProject.id}`, entrance).subscribe(
+      _ => { },
+      error => {
+        console.error('Error setting the entrance: ', error);
+      }
+    );
+
+    this.engineService.setEntrance(entranceDirection);
+
+    this.isOpenEntranceTool = false;
+    this.engineService.resetCameraPosition();
+    this.entranceTool.clearVisualisation();
   }
 
   private changeDropdownIcon() {

@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { IFence } from '../models/interfaces/i-fence';
+import { IEntrance } from '../models/interfaces/i-entrance';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,7 @@ export class GardenService {
     }
 
     this.engineService.setGardenDimensions(this.currentProject.width, this.currentProject.depth);
+    this.engineService.setCurrentProject(this.currentProject.id);
     this.engineService.resetCameraPosition();
 
     this.engineService.setGround(this.currentProject.ground.img);
@@ -59,7 +61,7 @@ export class GardenService {
   public setGround(ground: IGround) {
     if (this.currentProject) {
       this.http.put(this.baseUrl + `solution/setGround/${this.currentProject.id}`, ground).subscribe(
-        _ => {},
+        _ => { },
         error => {
           console.error('Error setting the ground: ', error);
         }
@@ -73,7 +75,7 @@ export class GardenService {
   public setFence(fence: IFence) {
     if (this.currentProject) {
       this.http.put(this.baseUrl + `solution/setFence/${this.currentProject.id}`, fence).subscribe(
-        _ => {},
+        _ => { },
         error => {
           console.error('Error setting the fence: ', error);
         }
@@ -82,5 +84,10 @@ export class GardenService {
       this.engineService.setFence(fence.name.toLowerCase());
       this.currentFenceSource.next(fence.name);
     }
+  }
+
+  public getCurrentProject(): IProject {
+    if (this.currentProject) return this.currentProject;
+    throw new Error("No current project loaded");
   }
 }

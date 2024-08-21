@@ -123,11 +123,9 @@
                 .pagination-styles::ng-deep .page-item.active .page-link {
                     color: var(--bright-label-color);
                     background-color: var(--header-font-color) !important;
-                    border: 1px var(--header-font-color) solid;
 
                     &:hover {
                         color: var(--header-font-color);
-                        background-color: var(--bright-label-color) !important;
                     }
                 }
 
@@ -139,7 +137,6 @@
                     &:hover {
                         color: var(--bright-label-color);
                         background-color: var(--header-font-color) !important;
-                        border: 1px var(--hover-button) solid;
                     }
                 }
             }

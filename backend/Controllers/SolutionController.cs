@@ -1,4 +1,5 @@
-﻿using backend.Entities;
+﻿using backend.DTO;
+using backend.Entities;
 using backend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +41,7 @@ public class SolutionController : BaseApiController
     {
         var project = await _unitOfWork.ProjectsRepository.GetProjectByIdAsync(projectId);
 
-        if (project == null)
+        if (project is null)
         {
             return NotFound("Project not found.");
         }
@@ -55,5 +56,36 @@ public class SolutionController : BaseApiController
     public async Task<ActionResult<IEnumerable<Fence>>> GetFences()
     {
         return await _unitOfWork.FenceRepository.GetFenceList();
+    }
+
+    [HttpPut("setEntrance/{projectId}")]
+    public async Task<IActionResult> SetEntrance(int projectId, [FromBody] EntranceDto entranceDto)
+    {
+        var project = await _unitOfWork.ProjectsRepository.GetProjectByIdAsync(projectId);
+
+        if (project is null)
+        {
+            return NotFound("Project not found.");
+        }
+
+        Entrance entrance = new Entrance
+        {
+            Direction = entranceDto.Direction,
+            Position = entranceDto.Position,
+            ProjectId = projectId
+        };
+        
+        _unitOfWork.EntranceRepository.AddEntrance(entrance);
+        project.Entrances.Add(entrance);
+        
+        await _unitOfWork.Complete();
+
+        return Ok(project);
+    }
+    
+    [HttpGet("getEntrancesForProject/{projectId}")]
+    public async Task<ActionResult<IEnumerable<EntranceDto>>> GetEntrancesForProject(int projectId)
+    {
+        return await _unitOfWork.EntranceRepository.GetEntranceListForProject(projectId);
     }
 }

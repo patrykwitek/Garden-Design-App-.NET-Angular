@@ -49,5 +49,11 @@
     "Environment": "Environment",
     "Entrance": "Entrance",
     "Wooden": "Wooden",
-    "Hedge": "Hedge"
+    "Hedge": "Hedge",
+    "North": "North",
+    "South": "South",
+    "East": "East",
+    "West": "West",
+    "Add": "Add",
+    "Cancel": "Cancel"
 }

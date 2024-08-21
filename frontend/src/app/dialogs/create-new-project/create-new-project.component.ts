@@ -57,7 +57,8 @@ export class CreateNewProjectComponent implements OnInit {
         width: this.width,
         depth: this.depth,
         ground: this.groundList[0],
-        fence: this.fenceList[0]
+        fence: this.fenceList[0],
+        entrances: []
       }
 
       this.dialogRef.close(project);

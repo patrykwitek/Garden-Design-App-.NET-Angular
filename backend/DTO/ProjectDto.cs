@@ -12,5 +12,6 @@ namespace backend.DTO
         public string OwnerUsername { get; set; }
         public Ground Ground{ get; set; }
         public Fence Fence { get; set; }
+        public List<EntranceDto> Entrances { get; set; }
     }
 }

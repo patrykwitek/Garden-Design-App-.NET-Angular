@@ -13,8 +13,8 @@
         .button-container {
             .register-button {
                 width: 300px;
-                border: 1px rgb(28, 61, 32) solid;
-                background-color: rgb(28, 61, 32);
+                border: 1px var(--navbar-color) solid;
+                background-color: var(--navbar-color);
                 margin: 0;
                 color: white;
                 padding: 4px 0;

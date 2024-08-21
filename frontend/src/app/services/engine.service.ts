@@ -7,6 +7,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { ThemeService } from './theme.service';
 import { ConstantHelper } from '../utils/constant-helper';
 import { Fence } from '../models/types/fence';
+import { Direction } from '../models/types/direction';
+import { HttpClient } from '@angular/common/http';
+import { IEntrance } from '../models/interfaces/i-entrance';
+import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
+import { gsap } from 'gsap';
 
 @Injectable({
   providedIn: 'root'
@@ -21,13 +27,23 @@ export class EngineService {
   private isAnimating: boolean = false;
 
   private ground: THREE.Mesh | undefined;
-  private fence: any | undefined;
 
   private width: number | undefined;
   private depth: number | undefined;
 
+  private entranceVisualisation: THREE.Mesh | undefined;
+
+  private noEntranceNorthFence: THREE.Group<THREE.Object3DEventMap> | undefined;
+  private noEntranceSouthFence: THREE.Group<THREE.Object3DEventMap> | undefined;
+  private noEntranceWestFence: THREE.Group<THREE.Object3DEventMap> | undefined;
+  private noEntranceEastFence: THREE.Group<THREE.Object3DEventMap> | undefined;
+
+  private fenceType: string | undefined;
+  private currentProjectId: string | undefined;
+
   constructor(
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private http: HttpClient
   ) { }
 
   public initialize(canvas: HTMLCanvasElement): void {
@@ -35,12 +51,17 @@ export class EngineService {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.localClippingEnabled = true;
+    this.renderer.shadowMap.enabled = true;
+    window.addEventListener('resize', () => this.onWindowResize());
 
     this.scene = new THREE.Scene();
 
     this.setCameraSettings();
     this.setLightSettings();
     this.addSky();
+
+    // note: for testing purposes
+    // this.addTemporaryCompass();
   }
 
   public animate(): void {
@@ -97,13 +118,15 @@ export class EngineService {
     }
   }
 
-  public setFence(fenceType: string): void {
+  public async setFence(fenceType: string): Promise<void> {
+    this.fenceType = fenceType;
+
     // fences links:
     // https://www.cgtrader.com/free-3d-models/exterior/other/cc0-wood-fence
     // https://free3d.com/3d-model/-rectangular-box-hedge--896206.html
 
     this.objects = this.objects.filter(obj => {
-      if (obj['userData']['type'] === 'fence') {
+      if ((obj.userData['type'] === 'north-fence-group') || (obj.userData['type'] === 'south-fence-group') || (obj.userData['type'] === 'west-fence-group') || (obj.userData['type'] === 'east-fence-group')) {
         this.scene.remove(obj);
         if (obj instanceof THREE.Mesh) {
           obj.geometry.dispose();
@@ -122,17 +145,19 @@ export class EngineService {
 
     if (this.width && this.depth) {
       if (fence.destination.fileName.includes('.gltf') || fence.destination.fileName.includes('.glf')) {
-        this.loadFenceFromGTLF(this.width, this.depth, fence);
+        await this.loadFenceFromGTLF(this.width, this.depth, fence);
       }
       else if (fence.destination.fileName.includes('.obj') || (fence.destination.fileName.includes('.mlt'))) {
-        this.loadFenceFromOBJ(this.width, this.depth, fence);
+        await this.loadFenceFromOBJ(this.width, this.depth, fence);
       }
       else {
-        throw new Error("Unsupported model extension");
+        throw new Error("Unsupported model file extension");
       }
     }
 
-    // note: for testing
+    this.loadEntrances();
+
+    // note: for testing purposes
     // this.buildTestBorder(width, depth);
   }
 
@@ -170,12 +195,67 @@ export class EngineService {
     this.depth = depth;
   }
 
+  public setCurrentProject(projectId: string | undefined) {
+    this.currentProjectId = projectId;
+  }
+
   public resetCameraPosition() {
     if (this.width && this.depth) {
-      const cameraYPosition: number = ((this.width > this.depth) ? this.width : this.depth * 1.5) / 2;
+      const cameraYPosition: number = -(this.depth / 2) - (this.width / 3);
 
-      this.camera.position.set(0, 5, cameraYPosition);
+      gsap.to(this.camera.position, {
+        duration: 1,
+        x: 0,
+        y: 5,
+        z: cameraYPosition,
+        onUpdate: () => {
+          this.camera.lookAt(0, 0, 0);
+        }
+      });
+
+      this.controls.enableRotate = true;
+      this.controls.enableZoom = true;
+      this.controls.enablePan = true;
+
+      this.controls.target.set(0, 0, 0);
+      this.controls.update();
+    }
+  }
+
+  public setCamera(direction: Direction) {
+    if (this.width && this.depth) {
+      let x: number = 0;
+      let y: number = 1;
+      let z: number = 0;
+
+      switch (direction) {
+        case "North": {
+          z = (this.depth / 2) + (this.width / 2.5);
+          break;
+        }
+        case "South": {
+          z = -(this.depth / 2) - (this.width / 2.5);
+          break;
+        }
+        case "East": {
+          x = -(this.width / 2) - (this.depth / 2.2);
+          break;
+        }
+        case "West": {
+          x = (this.width / 2) + (this.depth / 2.2);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+
+      this.camera.position.set(x, y, z);
       this.camera.lookAt(0, 0, 0);
+
+      this.controls.enableRotate = false;
+      this.controls.enableZoom = false;
+      this.controls.enablePan = false;
 
       this.controls.target.set(0, 0, 0);
       this.controls.update();
@@ -236,9 +316,342 @@ export class EngineService {
     this.scene.add(secondaryLight);
   }
 
+  public initializeEntranceVisualisation(x: number, y: number, direction: Direction) {
+    this.clearEntranceVisualisation();
+
+    const geometry = new THREE.BoxGeometry(ConstantHelper.entranceWidth, 1.5, .2);
+    const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    this.entranceVisualisation = new THREE.Mesh(geometry, material);
+    this.entranceVisualisation.userData['type'] = 'entranceVisualisation';
+
+    this.entranceVisualisation.position.x = x;
+    this.entranceVisualisation.position.y = .75;
+    this.entranceVisualisation.position.z = y;
+
+    if (direction === 'West' || direction === 'East') {
+      this.entranceVisualisation.rotation.y = Math.PI / 2;
+    }
+
+    this.scene.add(this.entranceVisualisation);
+    this.objects.push(this.entranceVisualisation);
+  }
+
+  public clearEntranceVisualisation() {
+    this.objects = this.objects.filter(obj => {
+      if (obj.userData['type'] === 'entranceVisualisation') {
+        this.scene.remove(obj);
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach(material => material.dispose());
+          } else {
+            obj.material.dispose();
+          }
+        }
+        return false;
+      }
+      return true;
+    });
+  }
+
+  public changeEntranceVisualisationPosition(newPosition: number, direction: Direction) {
+    if (this.entranceVisualisation && this.width && this.depth) {
+      let offset: number = 0;
+
+      if (direction === 'South') {
+        offset = (this.width / 2);
+        newPosition = -newPosition;
+        this.entranceVisualisation.position.x = newPosition + offset;
+      }
+      else if (direction === 'North') {
+        offset = -(this.width / 2);
+        this.entranceVisualisation.position.x = newPosition + offset;
+      }
+      else if (direction === 'West') {
+        offset = (this.depth / 2);
+        newPosition = -newPosition;
+        this.entranceVisualisation.position.z = newPosition + offset;
+      }
+      else if (direction === 'East') {
+        offset = -(this.depth / 2);
+        this.entranceVisualisation.position.z = newPosition + offset;
+      }
+    }
+  }
+
+  public setEntrance(direction: Direction) {
+    // TODO: optimise this method
+    if (this.fenceType) this.setFence(this.fenceType);
+  }
+
+  private async loadEntrances() {
+    await this.getEntrancesForProject(this.currentProjectId).subscribe(
+      (entrances: IEntrance[]) => {
+        this.cutFencesForEntrances(entrances);
+      },
+      error => {
+        console.error('Error loading entrances: ', error);
+      }
+    );
+  }
+
+  private getEntrancesForProject(projectId: string | undefined): Observable<IEntrance[]> {
+    const baseUrl = environment.apiUrl;
+    return this.http.get<IEntrance[]>(baseUrl + `solution/getEntrancesForProject/${projectId}`);
+  }
+
+  private cutFencesForEntrances(entrances: IEntrance[]): void {
+    entrances = entrances.sort((a, b) => a.position - b.position);
+
+    let northEntrances: IEntrance[] = entrances.filter(entrance => entrance.direction === 'North');
+
+    let southEntrances: IEntrance[] = entrances.filter(entrance => entrance.direction === 'South');
+
+    let westEntrances: IEntrance[] = entrances.filter(entrance => entrance.direction === 'West');
+
+    let eastEntrances: IEntrance[] = entrances.filter(entrance => entrance.direction === 'East');
+
+    if (northEntrances.length !== 0) {
+      const northFenceGroup = this.noEntranceNorthFence;
+
+      this.objects = this.objects.filter(obj => {
+        if ((obj.userData['type'] === 'north-fence-group')) {
+          this.scene.remove(obj);
+          if (obj instanceof THREE.Mesh) {
+            obj.geometry.dispose();
+            if (Array.isArray(obj.material)) {
+              obj.material.forEach(material => material.dispose());
+            } else {
+              obj.material.dispose();
+            }
+          }
+          return false;
+        }
+        return true;
+      });
+
+      northEntrances.map(entrance => entrance.position = this.width! - entrance.position);
+      northEntrances.sort((a, b) => a.position - b.position);
+
+      for (let i = 0; i <= northEntrances.length; i++) {
+        const singleNorthFence = northFenceGroup!.clone();
+        let cuts: any[] = [];
+
+        if (i === 0) {
+          const cut1 = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (this.width! / 2));
+          const cut2 = new THREE.Plane(new THREE.Vector3(1, 0, 0), -(this.width! / 2) + northEntrances[i].position - (ConstantHelper.entranceWidth / 2));
+
+          cuts.push(cut1);
+          cuts.push(cut2);
+        }
+        else if (i !== northEntrances.length) {
+          const cut1 = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (this.width! / 2) - northEntrances[i - 1].position - (ConstantHelper.entranceWidth / 2));
+          const cut2 = new THREE.Plane(new THREE.Vector3(1, 0, 0), -(this.width! / 2) + northEntrances[i].position - (ConstantHelper.entranceWidth / 2));
+
+          cuts.push(cut1);
+          cuts.push(cut2);
+        }
+        else {
+          const cut = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (this.width! / 2) - northEntrances[i - 1].position - (ConstantHelper.entranceWidth / 2));
+          cuts.push(cut);
+        }
+
+        singleNorthFence.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material = child.material.clone();
+            child.material.clippingPlanes = cuts;
+            child.material.clipShadows = true;
+          }
+        });
+
+        this.objects.push(singleNorthFence);
+        this.scene.add(singleNorthFence);
+      }
+    }
+
+    if (southEntrances.length !== 0) {
+      const southFenceGroup = this.noEntranceSouthFence;
+
+      this.objects = this.objects.filter(obj => {
+        if ((obj.userData['type'] === 'south-fence-group')) {
+          this.scene.remove(obj);
+          if (obj instanceof THREE.Mesh) {
+            obj.geometry.dispose();
+            if (Array.isArray(obj.material)) {
+              obj.material.forEach(material => material.dispose());
+            } else {
+              obj.material.dispose();
+            }
+          }
+          return false;
+        }
+        return true;
+      });
+
+      for (let i = 0; i <= southEntrances.length; i++) {
+        const singleSouthFence = southFenceGroup!.clone();
+        let cuts: any[] = [];
+
+        if (i === 0) {
+          const cut1 = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (this.width! / 2));
+          const cut2 = new THREE.Plane(new THREE.Vector3(1, 0, 0), -(this.width! / 2) + southEntrances[i].position - (ConstantHelper.entranceWidth / 2));
+
+          cuts.push(cut1);
+          cuts.push(cut2);
+        }
+        else if (i !== southEntrances.length) {
+          const cut1 = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (this.width! / 2) - southEntrances[i - 1].position - (ConstantHelper.entranceWidth / 2));
+          const cut2 = new THREE.Plane(new THREE.Vector3(1, 0, 0), -(this.width! / 2) + southEntrances[i].position - (ConstantHelper.entranceWidth / 2));
+
+          cuts.push(cut1);
+          cuts.push(cut2);
+        }
+        else {
+          const cut = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (this.width! / 2) - southEntrances[i - 1].position - (ConstantHelper.entranceWidth / 2));
+          cuts.push(cut);
+        }
+
+        singleSouthFence.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material = child.material.clone();
+            child.material.clippingPlanes = cuts;
+            child.material.clipShadows = true;
+          }
+        });
+
+        this.objects.push(singleSouthFence);
+        this.scene.add(singleSouthFence);
+      }
+    }
+
+    if (westEntrances.length !== 0) {
+      const westFenceGroup = this.noEntranceWestFence;
+
+      this.objects = this.objects.filter(obj => {
+        if ((obj.userData['type'] === 'west-fence-group')) {
+          this.scene.remove(obj);
+          if (obj instanceof THREE.Mesh) {
+            obj.geometry.dispose();
+            if (Array.isArray(obj.material)) {
+              obj.material.forEach(material => material.dispose());
+            } else {
+              obj.material.dispose();
+            }
+          }
+          return false;
+        }
+        return true;
+      });
+
+      for (let i = 0; i <= westEntrances.length; i++) {
+        const singleWestFence = westFenceGroup!.clone();
+        let cuts: any[] = [];
+
+        if (i === 0) {
+          const cut1 = new THREE.Plane(new THREE.Vector3(0, 0, -1), (this.depth! / 2));
+          const cut2 = new THREE.Plane(new THREE.Vector3(0, 0, 1), -(this.depth! / 2) + westEntrances[i].position - (ConstantHelper.entranceWidth / 2));
+
+          cuts.push(cut1);
+          cuts.push(cut2);
+        }
+        else if (i !== westEntrances.length) {
+          const cut1 = new THREE.Plane(new THREE.Vector3(0, 0, -1), (this.depth! / 2) - westEntrances[i - 1].position - (ConstantHelper.entranceWidth / 2));
+          const cut2 = new THREE.Plane(new THREE.Vector3(0, 0, 1), -(this.depth! / 2) + westEntrances[i].position - (ConstantHelper.entranceWidth / 2));
+
+          cuts.push(cut1);
+          cuts.push(cut2);
+        }
+        else {
+          const cut = new THREE.Plane(new THREE.Vector3(0, 0, -1), (this.depth! / 2) - westEntrances[i - 1].position - (ConstantHelper.entranceWidth / 2));
+          cuts.push(cut);
+        }
+
+        singleWestFence.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material = child.material.clone();
+            child.material.clippingPlanes = cuts;
+            child.material.clipShadows = true;
+          }
+        });
+
+        this.objects.push(singleWestFence);
+        this.scene.add(singleWestFence);
+      }
+    }
+
+    if (eastEntrances.length !== 0) {
+      const eastFenceGroup = this.noEntranceEastFence;
+
+      this.objects = this.objects.filter(obj => {
+        if ((obj.userData['type'] === 'east-fence-group')) {
+          this.scene.remove(obj);
+          if (obj instanceof THREE.Mesh) {
+            obj.geometry.dispose();
+            if (Array.isArray(obj.material)) {
+              obj.material.forEach(material => material.dispose());
+            } else {
+              obj.material.dispose();
+            }
+          }
+          return false;
+        }
+        return true;
+      });
+
+      eastEntrances.map(entrance => entrance.position = this.depth! - entrance.position);
+      eastEntrances.sort((a, b) => a.position - b.position);
+
+      for (let i = 0; i <= eastEntrances.length; i++) {
+        const singleEastFence = eastFenceGroup!.clone();
+        let cuts: any[] = [];
+
+        if (i === 0) {
+          const cut1 = new THREE.Plane(new THREE.Vector3(0, 0, -1), (this.depth! / 2));
+          const cut2 = new THREE.Plane(new THREE.Vector3(0, 0, 1), -(this.depth! / 2) + eastEntrances[i].position - (ConstantHelper.entranceWidth / 2));
+
+          cuts.push(cut1);
+          cuts.push(cut2);
+        }
+        else if (i !== eastEntrances.length) {
+          const cut1 = new THREE.Plane(new THREE.Vector3(0, 0, -1), (this.depth! / 2) - eastEntrances[i - 1].position - (ConstantHelper.entranceWidth / 2));
+          const cut2 = new THREE.Plane(new THREE.Vector3(0, 0, 1), -(this.depth! / 2) + eastEntrances[i].position - (ConstantHelper.entranceWidth / 2));
+
+          cuts.push(cut1);
+          cuts.push(cut2);
+        }
+        else {
+          const cut = new THREE.Plane(new THREE.Vector3(0, 0, -1), (this.depth! / 2) - eastEntrances[i - 1].position - (ConstantHelper.entranceWidth / 2));
+          cuts.push(cut);
+        }
+
+        singleEastFence.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material = child.material.clone();
+            child.material.clippingPlanes = cuts;
+            child.material.clipShadows = true;
+          }
+        });
+
+        this.objects.push(singleEastFence);
+        this.scene.add(singleEastFence);
+      }
+    }
+  }
+
+  private onWindowResize(): void {
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+    if (this.camera instanceof THREE.PerspectiveCamera) {
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+    }
+
+    this.renderer.render(this.scene, this.camera);
+  }
+
   private setCameraSettings() {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.set(0, 5, 10);
+    this.camera.position.set(0, 5, -10);
     this.camera.lookAt(0, 0, 0);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -262,165 +675,11 @@ export class EngineService {
     this.objects.push(cube);
   }
 
-  private loadFenceFromGTLF(width: number, depth: number, fence: Fence) {
-    const loader: GLTFLoader = new GLTFLoader();
-    loader.load(`../../assets/3d models/${fence.destination.folderName}/${fence.destination.fileName}`, (gltf) => {
-      const originFence = gltf.scene.clone();
-
-      const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(originFence);
-      const size: THREE.Vector3 = new THREE.Vector3();
-      boundingBox.getSize(size);
-
-      const originalWidth: number = size.x;
-      const originalHeight: number = size.y;
-      const originalDepth: number = size.z;
-
-      const scaleX: number = fence.width / originalWidth;
-      const scaleY: number = fence.height / originalHeight;
-      const scaleZ: number = fence.depth / originalDepth;
-
-      originFence.scale.set(scaleX, scaleY, scaleZ);
-
-      const fencesXNumber: number = width / fence.width;
-      const fencesYNumber: number = depth / fence.width;
-
-      let xPosition: number = -(width / 2) + (fence.width / 2);
-      let yPosition: number = -(depth / 2) + (fence.width / 2);
-
-      const yFrontPosition: number = depth / 2;
-      const yBackPosition: number = -(depth / 2);
-
-      for (let i = 0; i < fencesXNumber; i++) {
-        const clippingPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (width / 2));
-
-        // note: back
-        let singleFenceBack: THREE.Group<THREE.Object3DEventMap>;
-
-        if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
-          singleFenceBack = gltf.scene.clone();
-          singleFenceBack.scale.set(scaleX, scaleY, scaleZ);
-
-          singleFenceBack.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.material = child.material.clone();
-              child.material.clippingPlanes = [clippingPlane];
-              child.material.clipShadows = true;
-            }
-          });
-        } else {
-          singleFenceBack = originFence.clone();
-        }
-
-        singleFenceBack.rotation.y = Math.PI;
-        singleFenceBack.position.set(xPosition, fence.positionZ, yBackPosition);
-
-        singleFenceBack['userData']['type'] = 'fence';
-        this.scene.add(singleFenceBack);
-        this.objects.push(singleFenceBack);
-
-        // note: front
-        let singleFenceFront;
-
-        if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
-          singleFenceFront = gltf.scene.clone();
-          singleFenceFront.scale.set(scaleX, scaleY, scaleZ);
-
-          singleFenceFront.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.material = child.material.clone();
-              child.material.clippingPlanes = [clippingPlane];
-              child.material.clipShadows = true;
-            }
-          });
-        } else {
-          singleFenceFront = originFence.clone();
-        }
-
-        singleFenceFront.position.set(xPosition, fence.positionZ, yFrontPosition);
-
-        singleFenceFront['userData']['type'] = 'fence';
-        this.scene.add(singleFenceFront);
-        this.objects.push(singleFenceFront);
-
-        xPosition += fence.width;
-      }
-
-      for (let i = 0; i < fencesYNumber; i++) {
-        const clippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), (depth / 2));
-
-        // note: left
-        let singleFenceLeft: THREE.Group<THREE.Object3DEventMap>;
-
-        if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
-          singleFenceLeft = gltf.scene.clone();
-          singleFenceLeft.scale.set(scaleX, scaleY, scaleZ);
-
-          singleFenceLeft.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.material = child.material.clone();
-              child.material.clippingPlanes = [clippingPlane];
-              child.material.clipShadows = true;
-            }
-          });
-        } else {
-          singleFenceLeft = originFence.clone();
-        }
-
-        singleFenceLeft.rotation.y = Math.PI + (Math.PI / 2);
-        singleFenceLeft.position.set(-(width / 2), fence.positionZ, yPosition);
-
-        singleFenceLeft['userData']['type'] = 'fence';
-        this.scene.add(singleFenceLeft);
-        this.objects.push(singleFenceLeft);
-
-        // note: right
-        let singleFenceRight: THREE.Group<THREE.Object3DEventMap>;
-
-        if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
-          singleFenceRight = gltf.scene.clone();
-          singleFenceRight.scale.set(scaleX, scaleY, scaleZ);
-
-          singleFenceRight.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.material = child.material.clone();
-              child.material.clippingPlanes = [clippingPlane];
-              child.material.clipShadows = true;
-            }
-          });
-        } else {
-          singleFenceRight = originFence.clone();
-        }
-
-        singleFenceRight.rotation.y = (Math.PI / 2);
-        singleFenceRight.position.set(width / 2, fence.positionZ, yPosition);
-
-        singleFenceRight['userData']['type'] = 'fence';
-        this.scene.add(singleFenceRight);
-        this.objects.push(singleFenceRight);
-
-        yPosition += fence.width;
-      }
-    }, undefined, function (error) {
-      console.error('Error loading fence model: ' + error);
-    });
-  }
-
-  private loadFenceFromOBJ(width: number, depth: number, fence: Fence) {
-    const fileName: string = fence.destination.fileName.slice(0, -4);
-
-    const loader: MTLLoader = new MTLLoader();
-    loader.load(`../../assets/3d models/${fence.destination.folderName}/${fileName}.mtl`, (materials) => {
-      materials.preload();
-      const objLoader = new OBJLoader();
-      objLoader.setMaterials(materials);
-      objLoader.load(`../../assets/3d models/${fence.destination.folderName}/${fileName}.obj`, (fenceModel) => {
-        fenceModel.traverse((child) => {
-          if (child instanceof THREE.Mesh) {
-            child.material.needsUpdate = true;
-          }
-        });
-
-        const originFence = fenceModel.clone();
+  private async loadFenceFromGTLF(width: number, depth: number, fence: Fence) {
+    return new Promise<void>((resolve, reject) => {
+      const loader: GLTFLoader = new GLTFLoader();
+      loader.load(`../../assets/3d models/${fence.destination.folderName}/${fence.destination.fileName}`, (gltf) => {
+        const originFence = gltf.scene.clone();
 
         const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(originFence);
         const size: THREE.Vector3 = new THREE.Vector3();
@@ -445,39 +704,26 @@ export class EngineService {
         const yFrontPosition: number = depth / 2;
         const yBackPosition: number = -(depth / 2);
 
+        const northFenceGroup = new THREE.Group();
+        northFenceGroup.userData['type'] = 'north-fence-group';
+
+        const southFenceGroup = new THREE.Group();
+        southFenceGroup.userData['type'] = 'south-fence-group';
+
+        const westFenceGroup = new THREE.Group();
+        westFenceGroup.userData['type'] = 'west-fence-group';
+
+        const eastFenceGroup = new THREE.Group();
+        eastFenceGroup.userData['type'] = 'east-fence-group';
+
         for (let i = 0; i < fencesXNumber; i++) {
           const clippingPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (width / 2));
 
-          // note: back
-          let singleFenceBack: THREE.Group<THREE.Object3DEventMap>;
+          // note: front - south
+          let singleFenceFront: THREE.Group<THREE.Object3DEventMap>;
 
           if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
-            singleFenceBack = fenceModel.clone();
-            singleFenceBack.scale.set(scaleX, scaleY, scaleZ);
-
-            singleFenceBack.traverse((child) => {
-              if (child instanceof THREE.Mesh) {
-                child.material = child.material.clone();
-                child.material.clippingPlanes = [clippingPlane];
-                child.material.clipShadows = true;
-              }
-            });
-          } else {
-            singleFenceBack = originFence.clone();
-          }
-
-          singleFenceBack.rotation.y = Math.PI;
-          singleFenceBack.position.set(xPosition, fence.positionZ, yBackPosition);
-
-          singleFenceBack['userData']['type'] = 'fence';
-          this.scene.add(singleFenceBack);
-          this.objects.push(singleFenceBack);
-
-          // note: front
-          let singleFenceFront;
-
-          if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
-            singleFenceFront = fenceModel.clone();
+            singleFenceFront = gltf.scene.clone();
             singleFenceFront.scale.set(scaleX, scaleY, scaleZ);
 
             singleFenceFront.traverse((child) => {
@@ -491,11 +737,34 @@ export class EngineService {
             singleFenceFront = originFence.clone();
           }
 
-          singleFenceFront.position.set(xPosition, fence.positionZ, yFrontPosition);
+          singleFenceFront.rotation.y = Math.PI;
+          singleFenceFront.position.set(xPosition, fence.positionZ, yBackPosition);
 
-          singleFenceFront['userData']['type'] = 'fence';
-          this.scene.add(singleFenceFront);
-          this.objects.push(singleFenceFront);
+          singleFenceFront.userData['type'] = 'fence-south';
+          southFenceGroup.add(singleFenceFront);
+
+          // note: back - north
+          let singleFenceBack;
+
+          if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
+            singleFenceBack = gltf.scene.clone();
+            singleFenceBack.scale.set(scaleX, scaleY, scaleZ);
+
+            singleFenceBack.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                child.material = child.material.clone();
+                child.material.clippingPlanes = [clippingPlane];
+                child.material.clipShadows = true;
+              }
+            });
+          } else {
+            singleFenceBack = originFence.clone();
+          }
+
+          singleFenceBack.position.set(xPosition, fence.positionZ, yFrontPosition);
+
+          singleFenceBack.userData['type'] = 'fence-north';
+          northFenceGroup.add(singleFenceBack);
 
           xPosition += fence.width;
         }
@@ -503,11 +772,35 @@ export class EngineService {
         for (let i = 0; i < fencesYNumber; i++) {
           const clippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), (depth / 2));
 
-          // note: left
+          // note: right - east
+          let singleFenceRight2: THREE.Group<THREE.Object3DEventMap>;
+
+          if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
+            singleFenceRight2 = gltf.scene.clone();
+            singleFenceRight2.scale.set(scaleX, scaleY, scaleZ);
+
+            singleFenceRight2.traverse((child) => {
+              if (child instanceof THREE.Mesh) {
+                child.material = child.material.clone();
+                child.material.clippingPlanes = [clippingPlane];
+                child.material.clipShadows = true;
+              }
+            });
+          } else {
+            singleFenceRight2 = originFence.clone();
+          }
+
+          singleFenceRight2.rotation.y = Math.PI + (Math.PI / 2);
+          singleFenceRight2.position.set(-(width / 2), fence.positionZ, yPosition);
+
+          singleFenceRight2.userData['type'] = 'fence-east';
+          eastFenceGroup.add(singleFenceRight2);
+
+          // note: left - east
           let singleFenceLeft: THREE.Group<THREE.Object3DEventMap>;
 
           if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
-            singleFenceLeft = fenceModel.clone();
+            singleFenceLeft = gltf.scene.clone();
             singleFenceLeft.scale.set(scaleX, scaleY, scaleZ);
 
             singleFenceLeft.traverse((child) => {
@@ -521,41 +814,226 @@ export class EngineService {
             singleFenceLeft = originFence.clone();
           }
 
-          singleFenceLeft.rotation.y = Math.PI + (Math.PI / 2);
-          singleFenceLeft.position.set(-(width / 2), fence.positionZ, yPosition);
+          singleFenceLeft.rotation.y = (Math.PI / 2);
+          singleFenceLeft.position.set(width / 2, fence.positionZ, yPosition);
 
-          singleFenceLeft['userData']['type'] = 'fence';
-          this.scene.add(singleFenceLeft);
-          this.objects.push(singleFenceLeft);
-
-          // note: right
-          let singleFenceRight: THREE.Group<THREE.Object3DEventMap>;
-
-          if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
-            singleFenceRight = fenceModel.clone();
-            singleFenceRight.scale.set(scaleX, scaleY, scaleZ);
-
-            singleFenceRight.traverse((child) => {
-              if (child instanceof THREE.Mesh) {
-                child.material = child.material.clone();
-                child.material.clippingPlanes = [clippingPlane];
-                child.material.clipShadows = true;
-              }
-            });
-          } else {
-            singleFenceRight = originFence.clone();
-          }
-
-          singleFenceRight.rotation.y = (Math.PI / 2);
-          singleFenceRight.position.set(width / 2, fence.positionZ, yPosition);
-
-          singleFenceRight['userData']['type'] = 'fence';
-          this.scene.add(singleFenceRight);
-          this.objects.push(singleFenceRight);
+          singleFenceLeft.userData['type'] = 'fence-west';
+          westFenceGroup.add(singleFenceLeft);
 
           yPosition += fence.width;
         }
+
+        this.scene.add(northFenceGroup);
+        this.objects.push(northFenceGroup);
+        this.noEntranceNorthFence = northFenceGroup;
+
+        this.scene.add(southFenceGroup);
+        this.objects.push(southFenceGroup);
+        this.noEntranceSouthFence = southFenceGroup;
+
+        this.scene.add(westFenceGroup);
+        this.objects.push(westFenceGroup);
+        this.noEntranceWestFence = westFenceGroup;
+
+        this.scene.add(eastFenceGroup);
+        this.objects.push(eastFenceGroup);
+        this.noEntranceEastFence = eastFenceGroup;
+
+        resolve();
+      }, undefined, function (error) {
+        console.error('Error loading fence model: ' + error);
+        reject(error);
       });
     });
+  }
+
+  private async loadFenceFromOBJ(width: number, depth: number, fence: Fence) {
+    return new Promise<void>((resolve, reject) => {
+      const fileName: string = fence.destination.fileName.slice(0, -4);
+
+      const loader: MTLLoader = new MTLLoader();
+      loader.load(`../../assets/3d models/${fence.destination.folderName}/${fileName}.mtl`, (materials) => {
+        materials.preload();
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load(`../../assets/3d models/${fence.destination.folderName}/${fileName}.obj`, (fenceModel) => {
+          fenceModel.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material.needsUpdate = true;
+            }
+          });
+
+          const originFence = fenceModel.clone();
+
+          const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(originFence);
+          const size: THREE.Vector3 = new THREE.Vector3();
+          boundingBox.getSize(size);
+
+          const originalWidth: number = size.x;
+          const originalHeight: number = size.y;
+          const originalDepth: number = size.z;
+
+          const scaleX: number = fence.width / originalWidth;
+          const scaleY: number = fence.height / originalHeight;
+          const scaleZ: number = fence.depth / originalDepth;
+
+          originFence.scale.set(scaleX, scaleY, scaleZ);
+
+          const fencesXNumber: number = width / fence.width;
+          const fencesYNumber: number = depth / fence.width;
+
+          let xPosition: number = -(width / 2) + (fence.width / 2);
+          let yPosition: number = -(depth / 2) + (fence.width / 2);
+
+          const yFrontPosition: number = depth / 2;
+          const yBackPosition: number = -(depth / 2);
+
+          const northFenceGroup = new THREE.Group();
+          northFenceGroup.userData['type'] = 'north-fence-group';
+
+          const southFenceGroup = new THREE.Group();
+          southFenceGroup.userData['type'] = 'south-fence-group';
+
+          const westFenceGroup = new THREE.Group();
+          westFenceGroup.userData['type'] = 'west-fence-group';
+
+          const eastFenceGroup = new THREE.Group();
+          eastFenceGroup.userData['type'] = 'east-fence-group';
+
+          for (let i = 0; i < fencesXNumber; i++) {
+            const clippingPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), (width / 2));
+
+            // note: front - south
+            let singleFenceFront: THREE.Group<THREE.Object3DEventMap>;
+
+            if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
+              singleFenceFront = fenceModel.clone();
+              singleFenceFront.scale.set(scaleX, scaleY, scaleZ);
+
+              singleFenceFront.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                  child.material = child.material.clone();
+                  child.material.clippingPlanes = [clippingPlane];
+                  child.material.clipShadows = true;
+                }
+              });
+            } else {
+              singleFenceFront = originFence.clone();
+            }
+
+            singleFenceFront.rotation.y = Math.PI;
+            singleFenceFront.position.set(xPosition, fence.positionZ, yBackPosition);
+
+            singleFenceFront.userData['type'] = 'fence-south';
+            southFenceGroup.add(singleFenceFront);
+
+            // note: back - north
+            let singleFenceBack;
+
+            if (i == Math.floor(fencesXNumber) && fencesXNumber % 2 != 0) {
+              singleFenceBack = fenceModel.clone();
+              singleFenceBack.scale.set(scaleX, scaleY, scaleZ);
+
+              singleFenceBack.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                  child.material = child.material.clone();
+                  child.material.clippingPlanes = [clippingPlane];
+                  child.material.clipShadows = true;
+                }
+              });
+            } else {
+              singleFenceBack = originFence.clone();
+            }
+
+            singleFenceBack.position.set(xPosition, fence.positionZ, yFrontPosition);
+
+            singleFenceBack.userData['type'] = 'fence-north';
+            northFenceGroup.add(singleFenceBack);
+
+            xPosition += fence.width;
+          }
+
+          for (let i = 0; i < fencesYNumber; i++) {
+            const clippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), (depth / 2));
+
+            // note: right - east
+            let singleFenceRight: THREE.Group<THREE.Object3DEventMap>;
+
+            if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
+              singleFenceRight = fenceModel.clone();
+              singleFenceRight.scale.set(scaleX, scaleY, scaleZ);
+
+              singleFenceRight.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                  child.material = child.material.clone();
+                  child.material.clippingPlanes = [clippingPlane];
+                  child.material.clipShadows = true;
+                }
+              });
+            } else {
+              singleFenceRight = originFence.clone();
+            }
+
+            singleFenceRight.rotation.y = Math.PI + (Math.PI / 2);
+            singleFenceRight.position.set(-(width / 2), fence.positionZ, yPosition);
+
+            singleFenceRight.userData['type'] = 'fence-east';
+            eastFenceGroup.add(singleFenceRight);
+
+            // note: left - east
+            let singleFenceLeft: THREE.Group<THREE.Object3DEventMap>;
+
+            if (i == Math.floor(fencesYNumber) && fencesYNumber % 2 != 0) {
+              singleFenceLeft = fenceModel.clone();
+              singleFenceLeft.scale.set(scaleX, scaleY, scaleZ);
+
+              singleFenceLeft.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                  child.material = child.material.clone();
+                  child.material.clippingPlanes = [clippingPlane];
+                  child.material.clipShadows = true;
+                }
+              });
+            } else {
+              singleFenceLeft = originFence.clone();
+            }
+
+            singleFenceLeft.rotation.y = (Math.PI / 2);
+            singleFenceLeft.position.set(width / 2, fence.positionZ, yPosition);
+
+            singleFenceLeft.userData['type'] = 'fence-west';
+            westFenceGroup.add(singleFenceLeft);
+
+            yPosition += fence.width;
+          }
+
+          this.scene.add(northFenceGroup);
+          this.objects.push(northFenceGroup);
+          this.noEntranceNorthFence = northFenceGroup;
+
+          this.scene.add(southFenceGroup);
+          this.objects.push(southFenceGroup);
+          this.noEntranceSouthFence = southFenceGroup;
+
+          this.scene.add(westFenceGroup);
+          this.objects.push(westFenceGroup);
+          this.noEntranceWestFence = westFenceGroup;
+
+          this.scene.add(eastFenceGroup);
+          this.objects.push(eastFenceGroup);
+          this.noEntranceEastFence = eastFenceGroup;
+
+          resolve();
+        });
+      }, undefined, function (error) {
+        console.error('Error loading fence model: ' + error);
+        reject(error);
+      });
+    });
+  }
+
+  private addTemporaryCompass(): void {
+    const axesHelper = new THREE.AxesHelper(5);
+    this.scene.add(axesHelper);
   }
 }

@@ -102,11 +102,23 @@
             class="single-option-content"
             matTooltip="{{'Entrance' | translate}}"
             matTooltipShowDelay="500"
-            matTooltipPosition="below">
+            matTooltipPosition="below"
+            (click)="toggleEntranceOptions($event)">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">door_sliding</mat-icon>
                 </div>
                 <p>{{"Entrance" | translate}}</p>
+        </div>
+        <div class="option-container directions-container" *ngIf="showEntranceOptions">
+            <div 
+                class="single-option"
+                matTooltip="{{entranceDirection.name | translate}}"
+                matTooltipShowDelay="500"
+                matTooltipPosition="below"
+                *ngFor="let entranceDirection of entranceDirectionList"
+                (click)="openEntranceTool(entranceDirection.name)">
+                    <mat-icon class="direction-icon">{{entranceDirection.icon}}</mat-icon>
+            </div>
         </div>
     </div>
     <div class="single-option-container">

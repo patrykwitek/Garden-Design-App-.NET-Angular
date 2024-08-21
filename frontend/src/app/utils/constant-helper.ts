@@ -1,6 +1,14 @@
 import { Fence } from "../models/types/fence";
 
 export class ConstantHelper {
+    public static readonly entranceWidth = 1.6;
+
+    public static getFenceByType(fenceType: string) {
+        if (fenceType == "wooden") return ConstantHelper.woodenFence;
+        if (fenceType == "hedge") return ConstantHelper.hedge;
+        throw new Error('Fence Not Found');
+    }
+
     private static readonly woodenFence: Fence = {
         height: 1.5,
         width: 2,
@@ -22,10 +30,4 @@ export class ConstantHelper {
         },
         positionZ: .8 / 2
     };
-
-    public static getFenceByType(fenceType: string) {
-        if (fenceType == "wooden") return ConstantHelper.woodenFence;
-        if (fenceType == "hedge") return ConstantHelper.hedge;
-        throw new Error('Fence Not Found');
-    }
 }

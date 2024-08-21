@@ -96,11 +96,11 @@
 
                 &:hover {
                     cursor: pointer;
-                    
+
                     img {
                         scale: 110%;
                     }
-                    
+
                     p {
                         color: rgb(214, 214, 214);
                     }
@@ -109,6 +109,20 @@
                 &.selected {
                     img {
                         border: 2px white solid;
+                    }
+                }
+            }
+        }
+
+        .directions-container {
+            left: -87px;
+
+            .single-option {
+                &:hover {
+                    cursor: pointer;
+
+                    .direction-icon {
+                        scale: 110%;
                     }
                 }
             }

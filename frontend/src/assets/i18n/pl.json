@@ -48,6 +48,12 @@
     "WelcomeInGardenDesignApp": "Witaj w aplikacji do projektowania ogrodów",
     "Environment": "Otoczenie",
     "Entrance": "Wejście",
-    "Wooden": "Drewny płot",
-    "Hedge": "Żywopłot"
+    "Wooden": "Drewniany",
+    "Hedge": "Żywopłot",
+    "North": "Północ",
+    "South": "Południe",
+    "East": "Wschód",
+    "West": "Zachód",
+    "Add": "Dodaj",
+    "Cancel": "Anuluj"
 }

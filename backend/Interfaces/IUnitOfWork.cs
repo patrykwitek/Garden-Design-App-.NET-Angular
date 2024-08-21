@@ -6,6 +6,7 @@ namespace backend.Interfaces
         IUserRepository UserRepository { get; }
         IGroundRepository GroundRepository { get; }
         IFenceRepository FenceRepository { get; }
+        IEntranceRepository EntranceRepository { get; }
         Task<bool> Complete();
         bool HasChanges();
     }

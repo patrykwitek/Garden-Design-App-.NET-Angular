@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { IDirection } from 'src/app/models/interfaces/i-direction';
 import { IFence } from 'src/app/models/interfaces/i-fence';
 import { IGround } from 'src/app/models/interfaces/i-ground';
+import { Direction } from 'src/app/models/types/direction';
 import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
+import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
 
 @Component({
   selector: 'app-nav-garden-options',
@@ -10,6 +13,7 @@ import { GardenService } from 'src/app/services/garden.service';
   styleUrls: ['./nav-garden-options.component.scss']
 })
 export class NavGardenOptionsComponent implements OnInit {
+  @Output() isOpenEntranceTool: EventEmitter<Direction> = new EventEmitter<Direction>();
 
   // note: ground textures from https://pl.freepik.com
   // https://pl.freepik.com/darmowe-wektory/wzor-bez-szwu-zielonej-trawie_13187581.htm#fromView=search&page=1&position=2&uuid=f90cebc8-5133-4d24-8e09-284ece62e73a
@@ -20,12 +24,21 @@ export class NavGardenOptionsComponent implements OnInit {
 
   public groundList: IGround[] = [];
   public fenceList: IFence[] = [];
+  public entranceDirectionList: IDirection[] = [
+    { name: "North", icon: "north" },
+    { name: "South", icon: "south" },
+    { name: "East", icon: "east" },
+    { name: "West", icon: "west" }
+  ];
+
   public showGroundOptions: boolean = false;
   public showFenceOptions: boolean = false;
+  public showEntranceOptions: boolean = false;
 
   constructor(
     public gardenService: GardenService,
-    private engineService: EngineService
+    private engineService: EngineService,
+    private entranceTool: EntranceToolService
   ) { }
 
   ngOnInit(): void {
@@ -46,6 +59,11 @@ export class NavGardenOptionsComponent implements OnInit {
     event.stopPropagation();
   }
 
+  public toggleEntranceOptions(event: Event): void {
+    this.showEntranceOptions = !this.showEntranceOptions;
+    event.stopPropagation();
+  }
+
   public resetCameraPosition() {
     this.engineService.resetCameraPosition();
   }
@@ -56,6 +74,13 @@ export class NavGardenOptionsComponent implements OnInit {
 
   public setFence(fence: IFence) {
     this.gardenService.setFence(fence);
+  }
+
+  public openEntranceTool(direction: Direction) {
+    this.showEntranceOptions = false;
+    this.engineService.setCamera(direction);
+    this.entranceTool.initializeEntranceVisualisation(direction);
+    this.isOpenEntranceTool.emit(direction);
   }
 
   private loadGrounds(): void {
