@@ -11,8 +11,9 @@ import { Direction } from '../models/types/direction';
 import { HttpClient } from '@angular/common/http';
 import { IEntrance } from '../models/interfaces/i-entrance';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { gsap } from 'gsap';
+import { CSG } from 'three-csg-ts';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ import { gsap } from 'gsap';
 export class EngineService {
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
-  private camera!: THREE.PerspectiveCamera;
+  private camera!: THREE.PerspectiveCamera | THREE.OrthographicCamera;
   private controls!: OrbitControls;
 
   private objects: THREE.Object3D[] = [];
@@ -41,6 +42,10 @@ export class EngineService {
   private fenceType: string | undefined;
   private currentProjectId: string | undefined;
 
+  public is2DMode: boolean = false;
+  private is2DModeSource = new BehaviorSubject<boolean | null>(null);
+  public is2DMode$ = this.is2DModeSource.asObservable();
+
   constructor(
     private themeService: ThemeService,
     private http: HttpClient
@@ -56,7 +61,7 @@ export class EngineService {
 
     this.scene = new THREE.Scene();
 
-    this.setCameraSettings();
+    this.setDefaultCameraSettings();
     this.setLightSettings();
     this.addSky();
 
@@ -116,6 +121,9 @@ export class EngineService {
     if (this.controls) {
       this.controls.dispose();
     }
+
+    this.is2DMode = false;
+    this.is2DModeSource.next(false);
   }
 
   public async setFence(fenceType: string): Promise<void> {
@@ -201,28 +209,75 @@ export class EngineService {
 
   public resetCameraPosition() {
     if (this.width && this.depth) {
-      const cameraYPosition: number = -(this.depth / 2) - (this.width / 3);
+      if (this.is2DMode) {
+        const zoomFactor = 58;
 
-      gsap.to(this.camera.position, {
-        duration: 1,
-        x: 0,
-        y: 5,
-        z: cameraYPosition,
-        onUpdate: () => {
-          this.camera.lookAt(0, 0, 0);
-        }
-      });
+        this.camera = new THREE.OrthographicCamera(
+          -window.innerWidth / (2 * zoomFactor),
+          window.innerWidth / (2 * zoomFactor),
+          window.innerHeight / (2 * zoomFactor),
+          -window.innerHeight / (2 * zoomFactor),
+          0.1,
+          1000
+        );
 
-      this.controls.enableRotate = true;
-      this.controls.enableZoom = true;
-      this.controls.enablePan = true;
+        this.camera.position.set(0, 6, 0);
+        this.camera.lookAt(0, 0, 0);
+      }
+      else if (!this.is2DMode) {
+        gsap.to(this.camera.position, {
+          duration: 1,
+          x: 0,
+          y: 5,
+          z: -(this.depth / 2) - (this.width / 3),
+          onUpdate: () => {
+            this.camera.lookAt(0, 0, 0);
+          }
+        });
+      }
 
-      this.controls.target.set(0, 0, 0);
-      this.controls.update();
+      this.controls.dispose();
+      this.setOrbitControlsSettings();
     }
   }
 
+  public toggle2DMode() {
+    this.is2DMode = !this.is2DMode;
+    this.is2DModeSource.next(this.is2DMode);
+
+    if (this.is2DMode) {
+      if (this.width && this.depth) {
+        const zoomFactor: number = 58;
+
+        this.camera = new THREE.OrthographicCamera(
+          -window.innerWidth / (2 * zoomFactor),
+          window.innerWidth / (2 * zoomFactor),
+          window.innerHeight / (2 * zoomFactor),
+          -window.innerHeight / (2 * zoomFactor),
+          0.1,
+          1000
+        );
+
+        this.camera.position.set(0, 6, 0);
+        this.camera.lookAt(0, 0, 0);
+
+        this.addBorderVisualisation();
+      }
+    }
+    else if (!this.is2DMode) {
+      this.removeBorderVisualisation();
+      this.setDefaultCameraSettings();
+      this.resetCameraPosition();
+    }
+
+    this.controls.dispose();
+    this.setOrbitControlsSettings();
+  }
+
   public setCamera(direction: Direction) {
+    this.is2DMode = false;
+    this.setDefaultCameraSettings();
+
     if (this.width && this.depth) {
       let x: number = 0;
       let y: number = 1;
@@ -382,6 +437,106 @@ export class EngineService {
   public setEntrance(direction: Direction) {
     // TODO: optimise this method
     if (this.fenceType) this.setFence(this.fenceType);
+  }
+
+  private addBorderVisualisation(): void {
+    if (this.width && this.depth) {
+      const borderGroup = new THREE.Group();
+      const material = new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.4
+      });
+
+      const outerBoxGeometry = new THREE.BoxGeometry(1000, .3, 1000);
+      const outerBox = new THREE.Mesh(outerBoxGeometry, material);
+      outerBox.position.set(0, 0, 0);
+
+      const innerBoxGeometry = new THREE.BoxGeometry(this.width, .4, this.depth);
+      const innerBox = new THREE.Mesh(innerBoxGeometry, material);
+      innerBox.position.set(0, 0, 0);
+
+      const csgOuterBox = CSG.fromMesh(outerBox);
+      const csgInnerBox = CSG.fromMesh(innerBox);
+      const subtractedCSG = csgOuterBox.subtract(csgInnerBox);
+
+      const resultMesh = CSG.toMesh(subtractedCSG, outerBox.matrix, material);
+
+      borderGroup.add(resultMesh);
+      borderGroup.userData['type'] = 'border-group';
+
+      this.scene.add(borderGroup);
+      this.objects.push(borderGroup);
+
+      this.disableShadows();
+    }
+  }
+
+  private removeBorderVisualisation(): void {
+    this.objects = this.objects.filter(obj => {
+      if (obj.userData['type'] === 'border-group') {
+        this.scene.remove(obj);
+        obj.children.forEach(child => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry.dispose();
+            if (Array.isArray(child.material)) {
+              child.material.forEach(material => material.dispose());
+            } else {
+              child.material.dispose();
+            }
+          }
+        });
+        return false;
+      }
+      return true;
+    });
+
+    this.enableShadows();
+  }
+
+  private disableShadows(): void {
+    const directionalLights = this.scene.children.filter(
+      object => object instanceof THREE.DirectionalLight
+    ) as THREE.DirectionalLight[];
+
+    directionalLights.forEach(light => {
+      light.castShadow = false;
+    });
+  }
+
+  private enableShadows(): void {
+    const directionalLights = this.scene.children.filter(
+      object => object instanceof THREE.DirectionalLight
+    ) as THREE.DirectionalLight[];
+
+    directionalLights.forEach(light => {
+      light.castShadow = true;
+    });
+  }
+
+  private setOrbitControlsSettings() {
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    
+    if (this.is2DMode) {
+      this.controls.enableRotate = false;
+      this.controls.enableZoom = true;
+      this.controls.zoomSpeed = 1.2;
+      this.controls.panSpeed = 0.8;
+      this.controls.screenSpacePanning = true;
+      this.controls.minZoom = 0.25;
+      this.controls.maxZoom = 3;
+    }
+    else if (!this.is2DMode) {
+      this.controls.enableDamping = false;
+      this.controls.dampingFactor = 0.25;
+      this.controls.screenSpacePanning = false;
+      this.controls.maxPolarAngle = (Math.PI / 2) - .005;
+      this.controls.minDistance = 5;
+      this.controls.maxDistance = 50;
+    }
+
+    this.controls.target.set(0, 0, 0);
+    this.controls.update();
   }
 
   private async loadEntrances() {
@@ -649,19 +804,12 @@ export class EngineService {
     this.renderer.render(this.scene, this.camera);
   }
 
-  private setCameraSettings() {
+  private setDefaultCameraSettings() {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.set(0, 5, -10);
     this.camera.lookAt(0, 0, 0);
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = false;
-    this.controls.dampingFactor = 0.25;
-    this.controls.screenSpacePanning = false;
-    this.controls.maxPolarAngle = (Math.PI / 2) - .005;
-
-    this.controls.minDistance = 5;
-    this.controls.maxDistance = 50;
+    this.setOrbitControlsSettings();
   }
 
   private buildTestBorder(width: number, depth: number): void {

@@ -124,19 +124,6 @@
     <div class="single-option-container">
         <div 
             class="single-option-content"
-            matTooltip="2D / 3D"
-            matTooltipShowDelay="500"
-            matTooltipPosition="below">
-                <div class="option-icon-container">
-                    <mat-icon class="option-icon">toggle_on</mat-icon>
-                </div>
-                <!-- TODO: toogle bar -->
-                <p>2D / 3D</p> 
-        </div>
-    </div>
-    <div class="single-option-container">
-        <div 
-            class="single-option-content"
             matTooltip="PDF"
             matTooltipShowDelay="500"
             matTooltipPosition="below">
@@ -144,6 +131,18 @@
                     <mat-icon class="option-icon">picture_as_pdf</mat-icon>
                 </div>
                 <p>PDF</p>
+        </div>
+    </div>
+    <div class="single-option-container" (click)="toggle2DMode()">
+        <div 
+            class="single-option-content"
+            matTooltip="2D / 3D"
+            matTooltipShowDelay="500"
+            matTooltipPosition="below">
+                <div class="option-icon-container">
+                    <mat-icon class="option-icon">view_in_ar</mat-icon>
+                </div>
+                <p>{{(engineService.is2DMode$ | async) ? '3D' : '2D'}}</p> 
         </div>
     </div>
 </div>

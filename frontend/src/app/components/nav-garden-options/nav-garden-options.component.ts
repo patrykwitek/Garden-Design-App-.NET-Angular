@@ -37,16 +37,13 @@ export class NavGardenOptionsComponent implements OnInit {
 
   constructor(
     public gardenService: GardenService,
-    private engineService: EngineService,
+    public engineService: EngineService,
     private entranceTool: EntranceToolService
   ) { }
 
   ngOnInit(): void {
     this.loadGrounds();
     this.loadFences();
-
-    // TODO:
-    // add more types of grass
   }
 
   public toggleGroundOptions(event: Event): void {
@@ -66,6 +63,10 @@ export class NavGardenOptionsComponent implements OnInit {
 
   public resetCameraPosition() {
     this.engineService.resetCameraPosition();
+  }
+
+  public toggle2DMode() {
+    this.engineService.toggle2DMode();
   }
 
   public setGround(ground: IGround) {
