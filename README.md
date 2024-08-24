@@ -9,19 +9,19 @@
 2. [Installation](#installation)
 3. [Register & Login](#register)
 4. [User's Projects](#projects)
-5. [Adding Elements](#adding)
-6. [Removing Elements](#remove)
-7. [Setting Ground](#ground)
-8. [Setting Fence](#fence)
-9. [Reset Camera](#camera)
-10. [2D Mode](#2d)
-11. [Generating PDF File](#pdf)
-12. [Profile Edit](#edit)
-13. [Admin Role](#admin)
-14. [Translations](#translations)
-15. [Light & Dark Mode](#lightdarkmode)
-16. [Setting Environment](#environment)
-17. [Adding Entrance](#entrance)
+5. [Adding Entrance](#entrance)
+6. [Adding Elements](#adding)
+7. [Removing Elements](#remove)
+8. [Setting Ground](#ground)
+9. [Setting Fence](#fence)
+10. [Reset Camera](#camera)
+11. [2D Mode](#2d)
+12. [Generating PDF File](#pdf)
+13. [Profile Edit](#edit)
+14. [Admin Role](#admin)
+15. [Translations](#translations)
+16. [Light & Dark Mode](#lightdarkmode)
+17. [Setting Environment](#environment)
 
 <a name="preview"></a>
 ## 1. Preview & Description 👀
@@ -75,59 +75,68 @@ Users can create their own designs. At the moment, garden designer can set their
 
 https://github.com/user-attachments/assets/96d7864d-bb5c-4b5b-b971-9e60eac9b506
 
+<a name="entrance"></a>
+## 5. Adding entrance 🚪
+
+Thanks to the entrance tool, the user can add entrances from all sides of the garden.
+
+https://github.com/user-attachments/assets/108e00ca-473e-4465-8044-79e6df60b0a0
+
 <a name="adding"></a>
-## 5. Adding Elements 🌿
+## 6. Adding Elements 🌿
 
 *This functionality will come in the future*
 
 <a name="remove"></a>
-## 6. Removing Elements 🗑️
+## 7. Removing Elements 🗑️
 
 *This functionality will come in the future*
 
 <a name="ground"></a>
-## 7. Setting Ground 🏡
+## 8. Setting Ground 🏡
 
 You can change the ground of a particular garden in the top container of options. When you change the ground, it will be saved and will remain the same when you enter the project again.
 
 https://github.com/user-attachments/assets/52948a83-ff8c-4254-9ed0-10a47f54fe5b
 
 <a name="fence"></a>
-## 8. Setting Fence 🧱
+## 9. Setting Fence 🧱
 
 In the top options bar, the user has the option of setting a fence.
 
 https://github.com/user-attachments/assets/df4820c3-e6b3-47f9-ac84-1e0c5c12ff32
 
 <a name="camera"></a>
-## 9. Reset Camera 🎥
+## 10. Reset Camera 🎥
 
 When the user "flies away" with the camera too far or to a place far away, they can quickly return to the centre of a particular garden by clicking the "Reset Camera" button.
 
 https://github.com/user-attachments/assets/edd0350e-e93e-498d-95fd-82c96382ea16
 
 <a name="2d"></a>
-## 10. 2D Mode 🦅
+## 11. 2D Mode 🦅
 
-*This functionality will come in the future*
+In the top toolbar, user can switch the view to 2D mode.
+
+https://github.com/user-attachments/assets/30e5483a-f638-4552-838c-72cacb361712
 
 <a name="pdf"></a>
-## 11. Generating PDF File 🗃️
+## 12. Generating PDF File 🗃️
 
 *This functionality will come in the future*
 
 <a name="edit"></a>
-## 12. Profile Edit ✍️
+## 13. Profile Edit ✍️
 
 *This functionality will come in the future*
 
 <a name="admin"></a>
-## 13. Admin Role 🛡️
+## 14. Admin Role 🛡️
 
 *This functionality will come in the future*
 
 <a name="translations"></a>
-## 14. Translations 💁‍♂️
+## 15. Translations 💁‍♂️
 
 ### **For logged-in user:**
 
@@ -142,7 +151,7 @@ A non-logged-in user can select the language on the welcome page.
 https://github.com/user-attachments/assets/139caae6-188f-4d82-b39e-f70667bc457e
 
 <a name="lightdarkmode"></a>
-## 15. Light & Dark Mode 🌙
+## 16. Light & Dark Mode 🌙
 
 The garden designer has the option to change the mode from light to dark (night) to work comfortably in the evening. When changing the dark mode, in addition to changing the interface colours to darker, the sky changes from day to night.
 
@@ -151,15 +160,8 @@ The dark mode information is stored in local storage, so the application will re
 https://github.com/user-attachments/assets/c29f7d42-4b4c-4b0b-a7bf-3c9149eca66c
 
 <a name="environment"></a>
-## 16. Setting environment 🏙️
+## 17. Setting environment 🏙️
 
 *This functionality will come in the future*
-
-<a name="entrance"></a>
-## 16. Adding entrance 🚪
-
-Thanks to the entrance tool, the user can add entrances from all sides of the garden.
-
-https://github.com/user-attachments/assets/108e00ca-473e-4465-8044-79e6df60b0a0
 
 [🔼 Back to top](#top)
