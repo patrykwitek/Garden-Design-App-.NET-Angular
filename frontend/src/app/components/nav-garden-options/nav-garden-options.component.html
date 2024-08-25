@@ -20,7 +20,7 @@
                     *ngFor="let ground of groundList"
                     (click)="setGround(ground)"
                     [ngClass]="(gardenService.currentGround$ | async) === ground.name ? 'selected' : ''">
-                        <img [src]="'../../../assets/textures/grounds/' + ground.img + '.jpg'" alt={{ground.name}}>
+                        <img [src]="'../../../assets/textures/grounds/' + ground.img + ' thumbnail.png'" alt={{ground.name}}>
                 </div>
             </div>
     </div>

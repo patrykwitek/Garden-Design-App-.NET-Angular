@@ -40,6 +40,13 @@
                 color: var(--header-font-color);
             }
 
+            .loading-container {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                color: var(--header-font-color);
+            }
+
             table {
                 margin: 5px 1rem;
                 font-size: 1rem;
@@ -133,7 +140,7 @@
                     color: var(--bright-label-color);
                     background-color: var(--pagination-bg-color) !important;
                     border: none;
-                    
+
                     &:hover {
                         color: var(--bright-label-color);
                         background-color: var(--header-font-color) !important;

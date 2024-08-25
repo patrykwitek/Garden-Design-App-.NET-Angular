@@ -13,10 +13,11 @@ import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 export class HomeComponent implements OnInit, OnDestroy {
   public openProjectTab: boolean | undefined;
 
-  private id = ""; // TODO: check if it's needed
+  private id = "";
 
   private isOpenProjectTabSubscription: Subscription | undefined;
   private isCurrentProjectSubscription: Subscription | undefined;
+
 
   constructor(
     public loginService: LoginService,
@@ -26,12 +27,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.openProjectTab = this.projectLoaderService.getOpenProjectTab();
+    this.openProjectTab = true;
 
     this.isOpenProjectTabSubscription = this.projectLoaderService.getIsOpenProjectTab().subscribe(
       openProjectTab => {
-        if (openProjectTab)
-          this.openProjectTab = true;
+          this.openProjectTab = openProjectTab;
       }
     );
 

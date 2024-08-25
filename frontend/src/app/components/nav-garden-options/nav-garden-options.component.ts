@@ -15,12 +15,13 @@ import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
 export class NavGardenOptionsComponent implements OnInit {
   @Output() isOpenEntranceTool: EventEmitter<Direction> = new EventEmitter<Direction>();
 
-  // note: ground textures from https://pl.freepik.com
+  // ground textures from https://pl.freepik.com
   // https://pl.freepik.com/darmowe-wektory/wzor-bez-szwu-zielonej-trawie_13187581.htm#fromView=search&page=1&position=2&uuid=f90cebc8-5133-4d24-8e09-284ece62e73a
   // https://www.freepik.com/free-vector/green-grass-vector-seamless-texture-lawn-nature-meadow-plant-field-natural-outdoor-illustration_11059458.htm#page=8&query=grass%20texture&position=21&from_view=keyword&track=ais_user&uuid=92b0530b-1e3a-49d6-a527-793251936cf9
 
-  // potential icons:
-  // https://www.freepik.com/free-vector/several-green-grass-borders-realistic-design_1089459.htm#page=9&query=grass%20texture&position=47&from_view=keyword&track=ais_user&uuid=92b0530b-1e3a-49d6-a527-793251936cf9
+  // ground icons from https://pl.freepik.com
+  // https://www.freepik.com/free-vector/plant-stems-front-plan-nature-illustration-isolated-green-grass-realistic-detailed-fresh-green-vector-grass_37153713.htm#fromView=search&page=3&position=19&uuid=26c7c2d1-051a-4e4b-af85-6e0f118cddf0
+  // https://www.freepik.com/free-vector/green-grass-border-realistic-design_4904201.htm#from_view=detail_alsolike
 
   public groundList: IGround[] = [];
   public fenceList: IFence[] = [];

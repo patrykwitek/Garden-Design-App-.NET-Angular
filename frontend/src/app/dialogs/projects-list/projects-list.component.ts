@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ProjectsParams } from 'src/app/models/classes/projectsParams';
 import { IPagination } from 'src/app/models/interfaces/i-pagination';
 import { IProject } from 'src/app/models/interfaces/i-project';
 import { DateService } from 'src/app/services/date.service';
-import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
 import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 import { ProjectService } from 'src/app/services/project.service';
@@ -20,21 +19,24 @@ export class ProjectsListComponent implements OnInit {
   pagination: IPagination | undefined;
   projectsParams: ProjectsParams | undefined;
 
+  isLoading: boolean = false;
+
   constructor(
     public dialogRef: MatDialogRef<ProjectsListComponent>,
     private projectService: ProjectService,
     private projectLoaderService: ProjectLoaderService,
     private dateService: DateService,
-    private gardenService: GardenService,
-    private engineService: EngineService
+    private gardenService: GardenService
   ) {
     this.projectsParams = projectService.getProjectsParams();
   }
 
-  ngOnInit(): void {
-    this.loadProjects();
+  async ngOnInit(): Promise<void> {
+    this.isLoading = true;
+    await this.loadProjects();
+    this.isLoading = false;
   }
-
+  
   public cancel() {
     this.dialogRef.close();
   }
@@ -84,5 +86,4 @@ export class ProjectsListComponent implements OnInit {
 
     this.dialogRef.close();
   }
-
 }

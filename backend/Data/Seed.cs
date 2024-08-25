@@ -35,13 +35,13 @@ namespace backend.Data
                         {
                             Name = "Wooden",
                             // img link: https://www.istockphoto.com/pl/wektor/sie%C4%87-gm1479544715-507499080
-                            Img = "wooden",
+                            Img = "wooden thumbnail",
                         },
                         new Fence
                         {
                             Name = "Hedge",
                             // img link: https://www.dreamstime.com/cartoon-bushes-green-plants-decorative-garden-hedge-flat-shrubbery-trees-deciduous-forest-elements-different-shapes-summer-park-image311366656
-                            Img = "hedge",
+                            Img = "hedge thumbnail",
                         }
                     );
                 }

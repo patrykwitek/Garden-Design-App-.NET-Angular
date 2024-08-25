@@ -4,10 +4,13 @@
         <h3>{{"Projects" | translate}}</h3>
         <div class="break-line"></div>
         <div class="projects-list-container">
-            <div class="no-projects-container" *ngIf="projects.length === 0">
+            <div class="loading-container" *ngIf="isLoading">
+                <h5>{{"Loading" | translate}}...</h5>
+            </div>
+            <div class="no-projects-container" *ngIf="!isLoading && projects.length === 0">
                 <h5>{{"NoProjectsYet" | translate}}</h5>
             </div>
-            <table *ngIf="projects.length !== 0">
+            <table *ngIf="!isLoading && projects.length !== 0">
                 <thead>
                     <tr>
                         <th>{{"Name" | translate}}</th>
@@ -65,7 +68,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div *ngIf="pagination && projects.length != 0" class="pagination-container">
+            <div *ngIf="!isLoading && pagination && projects.length != 0" class="pagination-container">
                 <pagination 
                     [boundaryLinks]="true" 
                     [totalItems]="pagination.totalItems" 

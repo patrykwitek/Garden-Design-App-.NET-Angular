@@ -60,6 +60,7 @@ export class EngineService {
     window.addEventListener('resize', () => this.onWindowResize());
 
     this.scene = new THREE.Scene();
+    this.is2DMode = false;
 
     this.setDefaultCameraSettings();
     this.setLightSettings();
@@ -210,19 +211,7 @@ export class EngineService {
   public resetCameraPosition() {
     if (this.width && this.depth) {
       if (this.is2DMode) {
-        const zoomFactor = 58;
-
-        this.camera = new THREE.OrthographicCamera(
-          -window.innerWidth / (2 * zoomFactor),
-          window.innerWidth / (2 * zoomFactor),
-          window.innerHeight / (2 * zoomFactor),
-          -window.innerHeight / (2 * zoomFactor),
-          0.1,
-          1000
-        );
-
-        this.camera.position.set(0, 6, 0);
-        this.camera.lookAt(0, 0, 0);
+        this.set2DModeCamera();
       }
       else if (!this.is2DMode) {
         gsap.to(this.camera.position, {
@@ -247,20 +236,7 @@ export class EngineService {
 
     if (this.is2DMode) {
       if (this.width && this.depth) {
-        const zoomFactor: number = 58;
-
-        this.camera = new THREE.OrthographicCamera(
-          -window.innerWidth / (2 * zoomFactor),
-          window.innerWidth / (2 * zoomFactor),
-          window.innerHeight / (2 * zoomFactor),
-          -window.innerHeight / (2 * zoomFactor),
-          0.1,
-          1000
-        );
-
-        this.camera.position.set(0, 6, 0);
-        this.camera.lookAt(0, 0, 0);
-
+        this.set2DModeCamera();
         this.addBorderVisualisation();
       }
     }
@@ -439,6 +415,23 @@ export class EngineService {
     if (this.fenceType) this.setFence(this.fenceType);
   }
 
+  private set2DModeCamera(): void {
+    const zoomFactor: number = 58;
+
+    this.camera = new THREE.OrthographicCamera(
+      -window.innerWidth / (2 * zoomFactor),
+      window.innerWidth / (2 * zoomFactor),
+      window.innerHeight / (2 * zoomFactor),
+      -window.innerHeight / (2 * zoomFactor),
+      0.1,
+      1000
+    );
+
+    this.camera.position.set(0, 6, 0);
+    this.camera.lookAt(0, 0, 0);
+    this.camera.up.set(0, 0, 1);
+  }
+
   private addBorderVisualisation(): void {
     if (this.width && this.depth) {
       const borderGroup = new THREE.Group();
@@ -516,7 +509,7 @@ export class EngineService {
 
   private setOrbitControlsSettings() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    
+
     if (this.is2DMode) {
       this.controls.enableRotate = false;
       this.controls.enableZoom = true;
