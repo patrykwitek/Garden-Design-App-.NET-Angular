@@ -27,7 +27,7 @@ export class GardenService {
     private http: HttpClient
   ) { }
 
-  public setCurrentProject(project: IProject) {
+  public setCurrentProject(project: IProject | undefined) {
     this.currentProject = project;
   }
 

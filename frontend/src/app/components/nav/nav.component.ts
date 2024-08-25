@@ -75,8 +75,9 @@ export class NavComponent {
     this.toggleDropdownMenu();
 
     this.engineService.dispose();
-    this.projectLoaderService.loadOpenProjectTab(true);
+    this.gardenService.setCurrentProject(undefined);
     this.projectLoaderService.setProject(null);
+    this.projectLoaderService.loadOpenProjectTab(true);
   }
 
   public goToSettings(): void {

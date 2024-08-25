@@ -55,11 +55,12 @@ export class ProjectService {
   }
 
   public getProjects(projectsParams: ProjectsParams) {
-    const response = this.projectCache.get(Object.values(projectsParams).join('-'));
+    // TODO: check if optimisation is possible
+    // const response = this.projectCache.get(Object.values(projectsParams).join('-'));
 
-    if (response) {
-      return of(response);
-    }
+    // if (response) {
+    //   return of(response);
+    // }
 
     let params: HttpParams = getPaginationHeaders(projectsParams.pageNumber, projectsParams.pageSize);
 
