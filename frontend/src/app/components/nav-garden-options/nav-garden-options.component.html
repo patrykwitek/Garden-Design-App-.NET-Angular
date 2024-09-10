@@ -66,11 +66,23 @@
             class="single-option-content"
             matTooltip="{{'AddElement' | translate}}"
             matTooltipShowDelay="500"
-            matTooltipPosition="below">
+            matTooltipPosition="below"
+            (click)="toggleAddElementsOption($event)">
                 <div class="option-icon-container">
                     <mat-icon class="option-icon">eco</mat-icon>
                 </div>
                 <p>{{"AddElement" | translate}}</p>
+        </div>
+        <div class="option-container add-elements-container" *ngIf="showAddElementsOptions">
+            <div 
+                class="single-option"
+                matTooltip={{category.name}}
+                matTooltipShowDelay="500"
+                matTooltipPosition="below"
+                *ngFor="let category of elementCategoriesList"
+                (click)="openAddElementCategory(category.name)">
+                    <img [src]="'../../../assets/images/element thumbnails/' + category.name.toLowerCase() + ' thumbnail.png'" alt={{category.name}}>
+            </div>
         </div>
     </div>
     <div class="single-option-container">

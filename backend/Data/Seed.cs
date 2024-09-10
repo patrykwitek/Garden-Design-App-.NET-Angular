@@ -46,6 +46,27 @@ namespace backend.Data
                     );
                 }
 
+                if (!context.ElementCategories.Any())
+                {
+                    context.ElementCategories.AddRange(
+                        new ElementCategory
+                        {
+                            Name = "Pavement",
+                            // img link: https://ambientcg.com/view?id=PavingStones081
+                        },
+                        new ElementCategory
+                        {
+                            Name = "Tree",
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-gm1393465651-449311815
+                        },
+                        new ElementCategory
+                        {
+                            Name = "Bush",
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-gm1393465651-449311815
+                        }
+                    );
+                }
+
                 context.SaveChanges();
             }
         }

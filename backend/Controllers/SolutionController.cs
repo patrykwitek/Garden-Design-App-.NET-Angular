@@ -58,6 +58,12 @@ public class SolutionController : BaseApiController
         return await _unitOfWork.FenceRepository.GetFenceList();
     }
 
+    [HttpGet("getElementCategoriesList")]
+    public async Task<ActionResult<IEnumerable<ElementCategory>>> GetElements()
+    {
+        return await _unitOfWork.ElementCategoryRepository.GetElementsList();
+    }
+
     [HttpPut("setEntrance/{projectId}")]
     public async Task<IActionResult> SetEntrance(int projectId, [FromBody] EntranceDto entranceDto)
     {

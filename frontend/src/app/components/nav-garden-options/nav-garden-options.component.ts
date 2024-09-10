@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { IDirection } from 'src/app/models/interfaces/i-direction';
+import { IElementCategory } from 'src/app/models/interfaces/i-element';
 import { IFence } from 'src/app/models/interfaces/i-fence';
 import { IGround } from 'src/app/models/interfaces/i-ground';
 import { Direction } from 'src/app/models/types/direction';
@@ -25,6 +26,7 @@ export class NavGardenOptionsComponent implements OnInit {
 
   public groundList: IGround[] = [];
   public fenceList: IFence[] = [];
+  public elementCategoriesList: IElementCategory[] = [];
   public entranceDirectionList: IDirection[] = [
     { name: "North", icon: "north" },
     { name: "South", icon: "south" },
@@ -33,6 +35,7 @@ export class NavGardenOptionsComponent implements OnInit {
   ];
 
   public showGroundOptions: boolean = false;
+  public showAddElementsOptions: boolean = false;
   public showFenceOptions: boolean = false;
   public showEntranceOptions: boolean = false;
 
@@ -45,10 +48,16 @@ export class NavGardenOptionsComponent implements OnInit {
   ngOnInit(): void {
     this.loadGrounds();
     this.loadFences();
+    this.loadElementsCategories();
   }
 
   public toggleGroundOptions(event: Event): void {
     this.showGroundOptions = !this.showGroundOptions;
+    event.stopPropagation();
+  }
+
+  public toggleAddElementsOption(event: Event): void {
+    this.showAddElementsOptions = !this.showAddElementsOptions;
     event.stopPropagation();
   }
 
@@ -78,6 +87,10 @@ export class NavGardenOptionsComponent implements OnInit {
     this.gardenService.setFence(fence);
   }
 
+  public openAddElementCategory(elementCategory: string) {
+    // TODO
+  }
+
   public openEntranceTool(direction: Direction) {
     this.showEntranceOptions = false;
     this.engineService.setCamera(direction);
@@ -103,6 +116,17 @@ export class NavGardenOptionsComponent implements OnInit {
       },
       error => {
         console.error('Error loading fences: ', error);
+      }
+    );
+  }
+
+  private loadElementsCategories(): void {
+    this.gardenService.getElementCategories().subscribe(
+      (elementCategoriesList: IElementCategory[]) => {
+        this.elementCategoriesList = elementCategoriesList;
+      },
+      error => {
+        console.error('Error loading element categories: ', error);
       }
     );
   }
