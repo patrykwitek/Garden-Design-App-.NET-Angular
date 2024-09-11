@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { IDirection } from 'src/app/models/interfaces/i-direction';
-import { IElementCategory } from 'src/app/models/interfaces/i-element';
+import { IElement } from 'src/app/models/interfaces/i-element';
+import { IElementCategory } from 'src/app/models/interfaces/i-element-category';
 import { IFence } from 'src/app/models/interfaces/i-fence';
 import { IGround } from 'src/app/models/interfaces/i-ground';
 import { Direction } from 'src/app/models/types/direction';
@@ -27,6 +28,7 @@ export class NavGardenOptionsComponent implements OnInit {
   public groundList: IGround[] = [];
   public fenceList: IFence[] = [];
   public elementCategoriesList: IElementCategory[] = [];
+  public chosenCategoryElementsList: IElementCategory[] = [];
   public entranceDirectionList: IDirection[] = [
     { name: "North", icon: "north" },
     { name: "South", icon: "south" },
@@ -38,6 +40,8 @@ export class NavGardenOptionsComponent implements OnInit {
   public showAddElementsOptions: boolean = false;
   public showFenceOptions: boolean = false;
   public showEntranceOptions: boolean = false;
+
+  public showChooseElementOptions: boolean = false;
 
   constructor(
     public gardenService: GardenService,
@@ -57,7 +61,8 @@ export class NavGardenOptionsComponent implements OnInit {
   }
 
   public toggleAddElementsOption(event: Event): void {
-    this.showAddElementsOptions = !this.showAddElementsOptions;
+    this.showAddElementsOptions = (this.showChooseElementOptions) ? false : !this.showAddElementsOptions;
+    this.showChooseElementOptions = false;
     event.stopPropagation();
   }
 
@@ -87,7 +92,22 @@ export class NavGardenOptionsComponent implements OnInit {
     this.gardenService.setFence(fence);
   }
 
-  public openAddElementCategory(elementCategory: string) {
+  public openAddElementCategory(elementCategory: string): void {
+    this.showAddElementsOptions = false;
+    this.showChooseElementOptions = true;
+
+    this.gardenService.getElementsByCategory(elementCategory).subscribe(
+      (chosenCategoryElementsList: IElement[]) => {
+        this.chosenCategoryElementsList = chosenCategoryElementsList;
+      },
+      error => {
+        console.error('Error loading elements: ', error);
+      }
+    );
+  }
+
+  public chooseElementToPlace(element: string): void {
+    this.showChooseElementOptions = false;
     // TODO
   }
 

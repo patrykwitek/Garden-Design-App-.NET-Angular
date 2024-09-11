@@ -59,9 +59,15 @@ public class SolutionController : BaseApiController
     }
 
     [HttpGet("getElementCategoriesList")]
-    public async Task<ActionResult<IEnumerable<ElementCategory>>> GetElements()
+    public async Task<ActionResult<IEnumerable<ElementCategory>>> GetElementCategoriesList()
     {
-        return await _unitOfWork.ElementCategoryRepository.GetElementsList();
+        return await _unitOfWork.ElementRepository.GetElementCategoriesList();
+    }
+
+    [HttpGet("getElementsListByCategory/{category}")]
+    public async Task<ActionResult<IEnumerable<Element>>> GetElementsListByCategory(string category)
+    {
+        return await _unitOfWork.ElementRepository.GetElementsListByCategory(category);
     }
 
     [HttpPut("setEntrance/{projectId}")]

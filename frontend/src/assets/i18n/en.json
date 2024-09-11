@@ -56,5 +56,17 @@
     "West": "West",
     "Add": "Add",
     "Cancel": "Cancel",
-    "Loading": "Loading"
+    "Loading": "Loading",
+    "Stone": "Stone",
+    "Paving Stone": "Paving Stone",
+    "Grit": "Grit",
+    "Pine": "Pine",
+    "Oak": "Oak",
+    "Birch": "Birch",
+    "Juniper": "Juniper",
+    "Yew": "Yew",
+    "Salix caprea": "Salix caprea",
+    "Pavement": "Pavement",
+    "Tree": "Tree",
+    "Bush": "Bush"
 }

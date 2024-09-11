@@ -6,7 +6,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { IFence } from '../models/interfaces/i-fence';
-import { IElementCategory } from '../models/interfaces/i-element';
+import { IElementCategory } from '../models/interfaces/i-element-category';
+import { IElement } from '../models/interfaces/i-element';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,10 @@ export class GardenService {
 
   public getElementCategories(): Observable<IElementCategory[]> {
     return this.http.get<IElementCategory[]>(this.baseUrl + 'solution/getElementCategoriesList');
+  }
+
+  public getElementsByCategory(category: string): Observable<IElement[]> {
+    return this.http.get<IElement[]>(this.baseUrl + 'solution/getElementsListByCategory/' + category);
   }
 
   public setGround(ground: IGround) {

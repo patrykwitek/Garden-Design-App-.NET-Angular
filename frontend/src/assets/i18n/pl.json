@@ -56,5 +56,17 @@
     "West": "Zachód",
     "Add": "Dodaj",
     "Cancel": "Anuluj",
-    "Loading": "Ładowanie"
+    "Loading": "Ładowanie",
+    "Stone": "Kamień",
+    "Paving Stone": "Kamienne płytki",
+    "Grit": "Żwirek",
+    "Pine": "Sosna",
+    "Oak": "Dąb",
+    "Birch": "Brzoza",
+    "Juniper": "Jałowiec",
+    "Yew": "Cis",
+    "Salix caprea": "Salix caprea",
+    "Pavement": "Chodnik",
+    "Tree": "Drzewo",
+    "Bush": "Krzew"
 }
