@@ -46,6 +46,87 @@ namespace backend.Data
                     );
                 }
 
+                if (!context.ElementCategories.Any())
+                {
+                    context.ElementCategories.AddRange(
+                        new ElementCategory
+                        {
+                            Name = "Pavement",
+                            // img link: https://ambientcg.com/view?id=PavingStones081
+                        },
+                        new ElementCategory
+                        {
+                            Name = "Tree",
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-gm1393465651-449311815
+                        },
+                        new ElementCategory
+                        {
+                            Name = "Bush",
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-gm1393465651-449311815
+                        }
+                    );
+                }
+
+                if (!context.Elements.Any())
+                {
+                    context.Elements.AddRange(
+                        new Element
+                        {
+                            Name = "Stone",
+                            Category = "Pavement"
+                            // img link: https://ambientcg.com/view?id=PavingStones081
+                        },
+                        new Element
+                        {
+                            Name = "Paving Stone",
+                            Category = "Pavement"
+                            // img link: https://ambientcg.com/view?id=PavingStones080
+                        },
+                        new Element
+                        {
+                            Name = "Grit",
+                            Category = "Pavement"
+                            // img link: https://ambientcg.com/view?id=Ground062S
+                        },
+                        new Element
+                        {
+                            Name = "Pine",
+                            Category = "Tree"
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-ilustracja-z-kresk%C3%B3wek-wektorowych-gm1159273177-316932044
+                        },
+                        new Element
+                        {
+                            Name = "Oak",
+                            Category = "Tree"
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-ilustracja-z-kresk%C3%B3wek-wektorowych-gm1159273177-316932044
+                        },
+                        new Element
+                        {
+                            Name = "Birch",
+                            Category = "Tree"
+                            // img link: https://www.vecteezy.com/vector-art/47790788-birch-tree-flat-illustration-on-white-background
+                        },
+                        new Element
+                        {
+                            Name = "Juniper",
+                            Category = "Bush"
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-ilustracja-z-kresk%C3%B3wek-wektorowych-gm1159273177-316932044
+                        },
+                        new Element
+                        {
+                            Name = "Yew",
+                            Category = "Bush"
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-ilustracja-z-kresk%C3%B3wek-wektorowych-gm1159273177-316932044
+                        },
+                        new Element
+                        {
+                            Name = "Salix caprea",
+                            Category = "Bush"
+                            // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-ilustracja-z-kresk%C3%B3wek-wektorowych-gm1159273177-316932044
+                        }
+                    );
+                }
+
                 context.SaveChanges();
             }
         }

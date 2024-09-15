@@ -44,7 +44,7 @@ namespace backend.Controllers
                 return Ok();
             }
 
-            return BadRequest("Failed to send message");
+            return BadRequest("Failed to create project");
         }
 
         [HttpGet("getProjects")]

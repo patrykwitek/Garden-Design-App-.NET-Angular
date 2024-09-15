@@ -6,7 +6,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { IFence } from '../models/interfaces/i-fence';
-import { IEntrance } from '../models/interfaces/i-entrance';
+import { IElementCategory } from '../models/interfaces/i-element-category';
+import { IElement } from '../models/interfaces/i-element';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,8 @@ export class GardenService {
     this.engineService.setFence(this.currentProject.fence.name.toLowerCase());
     this.currentFenceSource.next(this.currentProject.fence.name);
 
+    this.engineService.setGardenElements();
+
     this.engineService.setAnimating(true);
     this.engineService.animate();
   }
@@ -56,6 +59,14 @@ export class GardenService {
 
   public getFences(): Observable<IFence[]> {
     return this.http.get<IFence[]>(this.baseUrl + 'solution/getFenceList');
+  }
+
+  public getElementCategories(): Observable<IElementCategory[]> {
+    return this.http.get<IElementCategory[]>(this.baseUrl + 'solution/getElementCategoriesList');
+  }
+
+  public getElementsByCategory(category: string): Observable<IElement[]> {
+    return this.http.get<IElement[]>(this.baseUrl + 'solution/getElementsListByCategory/' + category);
   }
 
   public setGround(ground: IGround) {

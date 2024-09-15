@@ -17,6 +17,37 @@ namespace backend.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.31");
 
+            modelBuilder.Entity("backend.Entities.Element", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Elements");
+                });
+
+            modelBuilder.Entity("backend.Entities.ElementCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ElementCategories");
+                });
+
             modelBuilder.Entity("backend.Entities.Entrance", b =>
                 {
                     b.Property<int>("Id")
@@ -26,8 +57,8 @@ namespace backend.Migrations
                     b.Property<string>("Direction")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Position")
-                        .HasColumnType("INTEGER");
+                    b.Property<double>("Position")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("INTEGER");
@@ -54,6 +85,40 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fences");
+                });
+
+            modelBuilder.Entity("backend.Entities.GardenElement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("PositionX")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("PositionY")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double?>("RotationX")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("RotationY")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("GardenElements");
                 });
 
             modelBuilder.Entity("backend.Entities.Project", b =>
@@ -145,13 +210,20 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Entities.Entrance", b =>
                 {
-                    b.HasOne("backend.Entities.Project", "Project")
+                    b.HasOne("backend.Entities.Project", null)
                         .WithMany("Entrances")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Project");
+            modelBuilder.Entity("backend.Entities.GardenElement", b =>
+                {
+                    b.HasOne("backend.Entities.Project", null)
+                        .WithMany("GardenElements")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("backend.Entities.Project", b =>
@@ -178,6 +250,8 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Entities.Project", b =>
                 {
                     b.Navigation("Entrances");
+
+                    b.Navigation("GardenElements");
                 });
 
             modelBuilder.Entity("backend.Entities.User", b =>

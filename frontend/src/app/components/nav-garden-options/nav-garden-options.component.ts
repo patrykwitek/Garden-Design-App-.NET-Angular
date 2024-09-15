@@ -1,11 +1,15 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { IDirection } from 'src/app/models/interfaces/i-direction';
+import { IElement } from 'src/app/models/interfaces/i-element';
+import { IElementCategory } from 'src/app/models/interfaces/i-element-category';
 import { IFence } from 'src/app/models/interfaces/i-fence';
 import { IGround } from 'src/app/models/interfaces/i-ground';
 import { Direction } from 'src/app/models/types/direction';
 import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
 import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
+import { PavementToolService } from 'src/app/tools/pavement-tool.service';
+import { ConstantHelper } from 'src/app/utils/constant-helper';
 
 @Component({
   selector: 'app-nav-garden-options',
@@ -25,6 +29,8 @@ export class NavGardenOptionsComponent implements OnInit {
 
   public groundList: IGround[] = [];
   public fenceList: IFence[] = [];
+  public elementCategoriesList: IElementCategory[] = [];
+  public chosenCategoryElementsList: IElement[] = [];
   public entranceDirectionList: IDirection[] = [
     { name: "North", icon: "north" },
     { name: "South", icon: "south" },
@@ -33,22 +39,33 @@ export class NavGardenOptionsComponent implements OnInit {
   ];
 
   public showGroundOptions: boolean = false;
+  public showAddElementsOptions: boolean = false;
   public showFenceOptions: boolean = false;
   public showEntranceOptions: boolean = false;
+
+  public showChooseElementOptions: boolean = false;
 
   constructor(
     public gardenService: GardenService,
     public engineService: EngineService,
-    private entranceTool: EntranceToolService
+    private entranceTool: EntranceToolService,
+    private pavementTool: PavementToolService
   ) { }
 
   ngOnInit(): void {
     this.loadGrounds();
     this.loadFences();
+    this.loadElementsCategories();
   }
 
   public toggleGroundOptions(event: Event): void {
     this.showGroundOptions = !this.showGroundOptions;
+    event.stopPropagation();
+  }
+
+  public toggleAddElementsOption(event: Event): void {
+    this.showAddElementsOptions = (this.showChooseElementOptions) ? false : !this.showAddElementsOptions;
+    this.showChooseElementOptions = false;
     event.stopPropagation();
   }
 
@@ -78,6 +95,38 @@ export class NavGardenOptionsComponent implements OnInit {
     this.gardenService.setFence(fence);
   }
 
+  public openAddElementCategory(elementCategory: string): void {
+    this.showAddElementsOptions = false;
+    this.showChooseElementOptions = true;
+
+    this.gardenService.getElementsByCategory(elementCategory).subscribe(
+      (chosenCategoryElementsList: IElement[]) => {
+        this.chosenCategoryElementsList = chosenCategoryElementsList;
+      },
+      error => {
+        console.error('Error loading elements: ', error);
+      }
+    );
+  }
+
+  public chooseElementToPlace(element: IElement): void {
+    this.showChooseElementOptions = false;
+    switch (element.category) {
+      case ConstantHelper.pavementCategory:
+        this.pavementTool.initializePavementVisualisation(element.name);
+        break;
+      case ConstantHelper.treeCategory:
+        // TODO
+        break;
+      case ConstantHelper.bushCategory:
+        // TODO
+        break;
+      default:
+        // TODO
+        break;
+    }
+  }
+
   public openEntranceTool(direction: Direction) {
     this.showEntranceOptions = false;
     this.engineService.setCamera(direction);
@@ -103,6 +152,17 @@ export class NavGardenOptionsComponent implements OnInit {
       },
       error => {
         console.error('Error loading fences: ', error);
+      }
+    );
+  }
+
+  private loadElementsCategories(): void {
+    this.gardenService.getElementCategories().subscribe(
+      (elementCategoriesList: IElementCategory[]) => {
+        this.elementCategoriesList = elementCategoriesList;
+      },
+      error => {
+        console.error('Error loading element categories: ', error);
       }
     );
   }

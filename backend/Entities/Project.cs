@@ -16,5 +16,6 @@ namespace backend.Entities
         public Ground Ground { get; set; }
         public Fence Fence { get; set; }
         public List<Entrance> Entrances { get; set;} = new List<Entrance>();
+        public List<GardenElement> GardenElements { get; set;} = new List<GardenElement>();
     }
 }
