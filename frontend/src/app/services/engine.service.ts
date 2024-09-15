@@ -18,7 +18,6 @@ import { IPavement } from '../models/interfaces/i-pavement';
 import { IGardenElement } from '../models/interfaces/i-garden-element';
 import { ITree } from '../models/interfaces/i-tree';
 import { IBush } from '../models/interfaces/i-bush';
-import { element } from 'three/examples/jsm/nodes/Nodes';
 
 @Injectable({
   providedIn: 'root'

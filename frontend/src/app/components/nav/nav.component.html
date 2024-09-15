@@ -7,7 +7,12 @@
             <a 
                 class="app-title" 
                 routerLink="/">
-                    {{"GardenDesignApp" | translate}}
+                <!-- logo link: https://www.istockphoto.com/pl/wektor/green-leaf-nature-ecology-element-vector-icon-gm2150897730-572038497 -->
+                    <img 
+                        src="../../../assets/images/gda-logo.png" 
+                        alt="{{'GardenDesignApp' | translate}}" 
+                        class="logo"
+                        [ngClass]="!isOpenProjectTab || (themeService.isDarkMode$| async) ? 'white-logo' : ''">
             </a>
     </div>
     <app-nav-garden-options *ngIf="!isOpenProjectTab" (isOpenEntranceTool)="receiveEntranceTool($event)"></app-nav-garden-options>
