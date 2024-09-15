@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environment';
 import { IProject } from 'src/app/models/interfaces/i-project';
 import { IEntrance } from 'src/app/models/interfaces/i-entrance';
 import { ConstantHelper } from 'src/app/utils/constant-helper';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-nav',
@@ -33,6 +34,7 @@ export class NavComponent {
 
   constructor(
     public loginService: LoginService,
+    public themeService: ThemeService,
     private router: Router,
     private projectLoaderService: ProjectLoaderService,
     private engineService: EngineService,
@@ -57,6 +59,11 @@ export class NavComponent {
     this.loginService.logout();
     this.router.navigateByUrl('/');
     this.toggleDropdownMenu();
+
+    this.engineService.dispose();
+    this.gardenService.setCurrentProject(undefined);
+    this.projectLoaderService.setProject(null);
+    this.projectLoaderService.loadOpenProjectTab(true);
   }
 
   public toggleDropdownMenu(): void {
