@@ -1,4 +1,4 @@
-# Garden Design Application 🌳 _(early version)_
+# Garden Design Application 🍃 _(early version)_
 > ASP.NET & Angular Garden Design Application
 
 ### **Important Message: At the moment it is a very early version of the project and newer and newer functionalities will appear with time.**
@@ -11,6 +11,10 @@
 4. [User's Projects](#projects)
 5. [Adding Entrance](#entrance)
 6. [Adding Elements](#adding)
+   - [Pavements](#pavements)
+   - [Trees](#trees)
+   - [Bushes](#bushes)
+   - [Benches](#benches)
 7. [Removing Elements](#remove)
 8. [Setting Ground](#ground)
 9. [Setting Fence](#fence)
@@ -84,6 +88,40 @@ https://github.com/user-attachments/assets/108e00ca-473e-4465-8044-79e6df60b0a0
 
 <a name="adding"></a>
 ## 6. Adding Elements 🌿
+
+User can add various elements to the garden.
+
+https://github.com/user-attachments/assets/f9bf1100-02f0-47c3-9132-55d7acca254c
+
+<a name="pavements"></a>
+### Pavements 🚶
+
+On 2D: 
+
+![pavements 2D](https://github.com/user-attachments/assets/e99dc0d2-d3dc-4195-a5cc-d2771ac6d533)
+
+On 3D:
+
+![pavements visualisation](https://github.com/user-attachments/assets/c9082e98-2c36-4a8e-be4e-533291179f0c)
+
+The pavement position is selected by using the tool. The algorithm recognises the places where a footpath can be added -the entrances to the garden and the continuation of established footpaths. 
+
+Users can cancel the selection of the walkway at any time by pressing the ESC button.
+
+https://github.com/user-attachments/assets/7b75062d-1138-4eac-9ffc-e163d3190c57
+
+<a name="trees"></a>
+### Trees 🌳
+
+*This functionality will come in the future*
+
+<a name="bushes"></a>
+### Bushes 🌲
+
+*This functionality will come in the future*
+
+<a name="benches"></a>
+### Benches 🪑
 
 *This functionality will come in the future*
 
