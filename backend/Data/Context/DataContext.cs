@@ -16,6 +16,7 @@ public class DataContext : DbContext
     public DbSet<Entrance> Entrances { get; set; }
     public DbSet<ElementCategory> ElementCategories { get; set; }
     public DbSet<Element> Elements { get; set; }
+    public DbSet<GardenElement> GardenElements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data.Context;
 
@@ -10,9 +11,10 @@ using backend.Data.Context;
 namespace backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240915122919_AddGardenElementsEntity")]
+    partial class AddGardenElementsEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.31");
@@ -99,24 +101,19 @@ namespace backend.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("PositionX")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("PositionY")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("ProjectId")
+                    b.Property<int>("PositionX")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("RotationX")
-                        .HasColumnType("REAL");
+                    b.Property<int>("PositionY")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<double?>("RotationY")
-                        .HasColumnType("REAL");
+                    b.Property<int?>("RotationX")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("RotationY")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
 
                     b.ToTable("GardenElements");
                 });
@@ -217,15 +214,6 @@ namespace backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("backend.Entities.GardenElement", b =>
-                {
-                    b.HasOne("backend.Entities.Project", null)
-                        .WithMany("GardenElements")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("backend.Entities.Project", b =>
                 {
                     b.HasOne("backend.Entities.Fence", "Fence")
@@ -250,8 +238,6 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Entities.Project", b =>
                 {
                     b.Navigation("Entrances");
-
-                    b.Navigation("GardenElements");
                 });
 
             modelBuilder.Entity("backend.Entities.User", b =>

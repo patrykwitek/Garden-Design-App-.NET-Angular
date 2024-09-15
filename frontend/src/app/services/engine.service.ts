@@ -18,11 +18,14 @@ import { IPavement } from '../models/interfaces/i-pavement';
 import { IGardenElement } from '../models/interfaces/i-garden-element';
 import { ITree } from '../models/interfaces/i-tree';
 import { IBush } from '../models/interfaces/i-bush';
+import { element } from 'three/examples/jsm/nodes/Nodes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EngineService {
+  private baseUrl = environment.apiUrl;
+
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera | THREE.OrthographicCamera;
@@ -38,6 +41,8 @@ export class EngineService {
 
   private entranceVisualisation: THREE.Mesh | undefined;
   private pavementVisualisation: THREE.Mesh | undefined;
+
+  private tempPavementType: string | undefined;
 
   private isSavePavementPossible: boolean | undefined;
 
@@ -192,11 +197,6 @@ export class EngineService {
 
   public async setGardenElements(): Promise<void> {
     await this.loadGardenElements();
-    if (this.gardenElementsList) {
-      this.pavementsList = this.gardenElementsList.filter(element => element.category === 'Pavement')
-      this.treesList = this.gardenElementsList.filter(element => element.category === 'Tree')
-      this.bushesList = this.gardenElementsList.filter(element => element.category === 'Bush')
-    }
   }
 
   public setGround(textureName: string): void {
@@ -279,6 +279,7 @@ export class EngineService {
         this.removeAllEventListeners();
         this.raycaster = undefined;
         this.mouse = undefined;
+        this.tempPavementType = undefined;
       }
     }
 
@@ -394,6 +395,7 @@ export class EngineService {
       this.removeAllEventListeners();
       this.raycaster = undefined;
       this.mouse = undefined;
+      this.tempPavementType = undefined;
     }
 
     const geometry = new THREE.BoxGeometry(ConstantHelper.entranceWidth, 1.5, .2);
@@ -431,9 +433,12 @@ export class EngineService {
       this.removeAllEventListeners();
       this.raycaster = undefined;
       this.mouse = undefined;
+      this.tempPavementType = undefined;
     }
 
     this.textureLoader.load(`assets/textures/pavements/${pavementName.toLowerCase()}.jpg`, (texture) => {
+      this.tempPavementType = pavementName;
+
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       texture.repeat.set(ConstantHelper.entranceWidth * 1.17, ConstantHelper.entranceWidth * 1.17);
@@ -516,6 +521,7 @@ export class EngineService {
       this.pavementVisualisation = undefined;
       this.raycaster = undefined;
       this.mouse = undefined;
+      this.tempPavementType = undefined;
     }
   }
 
@@ -705,21 +711,22 @@ export class EngineService {
   }
 
   private savePavementPosition(): void {
-    if (this.isSavePavementPossible && this.pavementVisualisation) {
+    if (this.isSavePavementPossible && this.pavementVisualisation && this.tempPavementType) {
       const pavement: IPavement = {
+        name: this.tempPavementType,
         x: this.pavementVisualisation.position.x,
         y: this.pavementVisualisation.position.z
       };
 
       this.pavementsList.push(pavement);
-
-      // TODO: save pavement position to the database
+      this.addPavementToDatabase(pavement);
 
       this.removeAllEventListeners();
 
       this.pavementVisualisation = undefined;
       this.raycaster = undefined;
       this.mouse = undefined;
+      this.tempPavementType = undefined;
     }
   }
 
@@ -836,14 +843,45 @@ export class EngineService {
   }
 
   private getEntrancesForProject(projectId: string | undefined): Observable<IEntrance[]> {
-    const baseUrl = environment.apiUrl;
-    return this.http.get<IEntrance[]>(baseUrl + `solution/getEntrancesForProject/${projectId}`);
+    return this.http.get<IEntrance[]>(this.baseUrl + `solution/getEntrancesForProject/${projectId}`);
   }
 
   private async loadGardenElements() {
     await this.getElementsForGarden(this.currentProjectId).subscribe(
       (gardenElementsList: IGardenElement[]) => {
         this.gardenElementsList = gardenElementsList;
+        
+        this.pavementsList = this.gardenElementsList
+          .filter((element: IGardenElement) => element.category === 'Pavement')
+          .map((element: IGardenElement): IPavement => ({
+            name: element.name,
+            x: element.positionX,
+            y: element.positionY,
+          }));
+
+        this.treesList = this.gardenElementsList
+          .filter((element: IGardenElement) => element.category === 'Tree')
+          .map((element: IGardenElement): ITree => ({
+            name: element.name,
+            x: element.positionX,
+            y: element.positionY,
+            rotationX: element.rotationX,
+            rotationY: element.rotationY
+          }));
+
+        this.bushesList = this.gardenElementsList
+          .filter((element: IGardenElement) => element.category === 'Bush')
+          .map((element: IGardenElement): IBush => ({
+            name: element.name,
+            x: element.positionX,
+            y: element.positionY,
+            rotationX: element.rotationX,
+            rotationY: element.rotationY
+          }));
+
+        this.addPavementsToGarden();
+        this.addTreesToGarden();
+        this.addBushesToGarden();
       },
       error => {
         console.error('Error loading garden elements: ', error);
@@ -852,8 +890,53 @@ export class EngineService {
   }
 
   private getElementsForGarden(projectId: string | undefined): Observable<IGardenElement[]> {
-    const baseUrl = environment.apiUrl;
-    return this.http.get<IGardenElement[]>(baseUrl + `solution/getElementsForProject/${projectId}`);
+    return this.http.get<IGardenElement[]>(this.baseUrl + `solution/getElementsForProject/${projectId}`);
+  }
+
+  private addPavementsToGarden(): void {
+    this.pavementsList.forEach(pavement => {
+      this.textureLoader.load(`assets/textures/pavements/${pavement.name.toLowerCase()}.jpg`, (texture) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(ConstantHelper.entranceWidth * 1.17, ConstantHelper.entranceWidth * 1.17);
+
+        const pavementGeometry = new THREE.PlaneGeometry(ConstantHelper.entranceWidth, ConstantHelper.entranceWidth);
+        const pavementMaterial = new THREE.MeshStandardMaterial({ map: texture, roughness: 1, metalness: 0 });
+
+        const pavementVisualisation = new THREE.Mesh(pavementGeometry, pavementMaterial);
+        pavementVisualisation.rotation.x = -Math.PI / 2;
+        pavementVisualisation.position.set(pavement.x, 0.01, pavement.y);
+        pavementVisualisation.receiveShadow = true;
+
+        this.scene.add(pavementVisualisation);
+        this.objects.push(pavementVisualisation);
+      });
+    });
+  }
+
+  private addTreesToGarden(): void {
+    this.treesList.forEach(tree => {
+      // TODO
+    });
+  }
+
+  private addBushesToGarden(): void {
+    this.bushesList.forEach(bush => {
+      // TODO
+    });
+  }
+
+  private async addPavementToDatabase(pavement: IPavement) {
+    await this.savePavementToDatabase(pavement).subscribe(
+      () => { },
+      error => {
+        console.error('Error during adding pavement: ', error);
+      }
+    );
+  }
+
+  public savePavementToDatabase(pavement: IPavement) {
+    return this.http.post(this.baseUrl + `solution/addPavement/${this.currentProjectId}`, pavement);
   }
 
   private cutFencesForEntrances(entrances: IEntrance[]): void {

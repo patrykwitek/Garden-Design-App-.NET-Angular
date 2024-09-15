@@ -4,8 +4,8 @@ export interface IGardenElement {
     id: number;
     name: string;
     category: ElementCategory;
-    x: number;
-    y: number;
+    positionX: number;
+    positionY: number;
     rotationX?: number;
     rotationY?: number;
 }
