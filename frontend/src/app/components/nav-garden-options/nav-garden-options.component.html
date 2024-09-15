@@ -91,7 +91,7 @@
                 matTooltipShowDelay="500"
                 matTooltipPosition="below"
                 *ngFor="let element of chosenCategoryElementsList"
-                (click)="chooseElementToPlace(element.name)">
+                (click)="chooseElementToPlace(element)">
                     <img [src]="'../../../assets/images/element thumbnails/' + element.name.toLowerCase() + ' thumbnail.png'" alt={{element.name}}>
             </div>
         </div>

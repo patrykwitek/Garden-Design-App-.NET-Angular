@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs';
+import { HomeDisplayMode } from 'src/app/models/types/home-display-mode';
 import { Language } from 'src/app/models/types/language';
 import { LoginService } from 'src/app/services/login.service';
 import { ThemeService } from 'src/app/services/theme.service';
-import { HomeDisplayMode } from 'src/app/types/home-display-mode';
 
 @Component({
   selector: 'app-welcome-page',

@@ -14,6 +14,10 @@ import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { gsap } from 'gsap';
 import { CSG } from 'three-csg-ts';
+import { IPavement } from '../models/interfaces/i-pavement';
+import { IGardenElement } from '../models/interfaces/i-garden-element';
+import { ITree } from '../models/interfaces/i-tree';
+import { IBush } from '../models/interfaces/i-bush';
 
 @Injectable({
   providedIn: 'root'
@@ -33,11 +37,27 @@ export class EngineService {
   private depth: number | undefined;
 
   private entranceVisualisation: THREE.Mesh | undefined;
+  private pavementVisualisation: THREE.Mesh | undefined;
+
+  private isSavePavementPossible: boolean | undefined;
+
+  private eventListeners: { type: string, listener: EventListenerOrEventListenerObject }[] = [];
+
+  private textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
+
+  private raycaster: THREE.Raycaster | undefined;
+  private mouse: THREE.Vector2 | undefined;
 
   private noEntranceNorthFence: THREE.Group<THREE.Object3DEventMap> | undefined;
   private noEntranceSouthFence: THREE.Group<THREE.Object3DEventMap> | undefined;
   private noEntranceWestFence: THREE.Group<THREE.Object3DEventMap> | undefined;
   private noEntranceEastFence: THREE.Group<THREE.Object3DEventMap> | undefined;
+
+  private entrancesList: IEntrance[] = [];
+  private gardenElementsList: IGardenElement[] = [];
+  private pavementsList: IPavement[] = [];
+  private treesList: ITree[] = [];
+  private bushesList: IBush[] = [];
 
   private fenceType: string | undefined;
   private currentProjectId: string | undefined;
@@ -170,6 +190,15 @@ export class EngineService {
     // this.buildTestBorder(width, depth);
   }
 
+  public async setGardenElements(): Promise<void> {
+    await this.loadGardenElements();
+    if (this.gardenElementsList) {
+      this.pavementsList = this.gardenElementsList.filter(element => element.category === 'Pavement')
+      this.treesList = this.gardenElementsList.filter(element => element.category === 'Tree')
+      this.bushesList = this.gardenElementsList.filter(element => element.category === 'Bush')
+    }
+  }
+
   public setGround(textureName: string): void {
     if (this.ground) {
       this.scene.remove(this.ground);
@@ -181,8 +210,7 @@ export class EngineService {
       }
     }
 
-    const loader = new THREE.TextureLoader();
-    loader.load(`assets/textures/grounds/${textureName}.jpg`, (texture) => {
+    this.textureLoader.load(`assets/textures/grounds/${textureName}.jpg`, (texture) => {
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
       texture.repeat.set(200, 200);
@@ -230,7 +258,7 @@ export class EngineService {
     }
   }
 
-  public toggle2DMode() {
+  public toggle2DMode(): void {
     this.is2DMode = !this.is2DMode;
     this.is2DModeSource.next(this.is2DMode);
 
@@ -244,6 +272,14 @@ export class EngineService {
       this.removeBorderVisualisation();
       this.setDefaultCameraSettings();
       this.resetCameraPosition();
+
+      if (this.pavementVisualisation) {
+        this.scene.remove(this.pavementVisualisation);
+        this.pavementVisualisation = undefined;
+        this.removeAllEventListeners();
+        this.raycaster = undefined;
+        this.mouse = undefined;
+      }
     }
 
     this.controls.dispose();
@@ -252,6 +288,7 @@ export class EngineService {
 
   public setCamera(direction: Direction) {
     this.is2DMode = false;
+    this.is2DModeSource.next(false);
     this.setDefaultCameraSettings();
 
     if (this.width && this.depth) {
@@ -347,8 +384,17 @@ export class EngineService {
     this.scene.add(secondaryLight);
   }
 
-  public initializeEntranceVisualisation(x: number, y: number, direction: Direction) {
+  public initializeEntranceVisualisation(x: number, y: number, direction: Direction): void {
     this.clearEntranceVisualisation();
+    this.removeBorderVisualisation();
+
+    if (this.pavementVisualisation) {
+      this.scene.remove(this.pavementVisualisation);
+      this.pavementVisualisation = undefined;
+      this.removeAllEventListeners();
+      this.raycaster = undefined;
+      this.mouse = undefined;
+    }
 
     const geometry = new THREE.BoxGeometry(ConstantHelper.entranceWidth, 1.5, .2);
     const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
@@ -365,6 +411,53 @@ export class EngineService {
 
     this.scene.add(this.entranceVisualisation);
     this.objects.push(this.entranceVisualisation);
+  }
+
+  public initializePavementVisualisation(pavementName: string): void {
+    if (!this.is2DMode && this.width && this.depth) {
+      this.is2DMode = !this.is2DMode;
+      this.is2DModeSource.next(this.is2DMode);
+
+      this.set2DModeCamera();
+      this.addBorderVisualisation();
+
+      this.controls.dispose();
+      this.setOrbitControlsSettings();
+    }
+
+    if (this.pavementVisualisation) {
+      this.scene.remove(this.pavementVisualisation);
+      this.pavementVisualisation = undefined;
+      this.removeAllEventListeners();
+      this.raycaster = undefined;
+      this.mouse = undefined;
+    }
+
+    this.textureLoader.load(`assets/textures/pavements/${pavementName.toLowerCase()}.jpg`, (texture) => {
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(ConstantHelper.entranceWidth * 1.17, ConstantHelper.entranceWidth * 1.17);
+
+      const pavementGeometry = new THREE.PlaneGeometry(ConstantHelper.entranceWidth, ConstantHelper.entranceWidth);
+      const pavementMaterial = new THREE.MeshStandardMaterial({ map: texture, roughness: 1, metalness: 0, transparent: true, opacity: .8 });
+
+      this.pavementVisualisation = new THREE.Mesh(pavementGeometry, pavementMaterial);
+      this.pavementVisualisation.rotation.x = -Math.PI / 2;
+      this.pavementVisualisation.position.set(0, 0.01, 0);
+      this.pavementVisualisation.receiveShadow = true;
+
+      this.scene.add(this.pavementVisualisation);
+      this.objects.push(this.pavementVisualisation);
+
+      this.raycaster = new THREE.Raycaster();
+      this.mouse = new THREE.Vector2();
+
+      this.isSavePavementPossible = false;
+
+      this.addEventListener('mousemove', this.changePavementPositionOnMouseMove.bind(this));
+      this.addEventListener('click', this.savePavementPosition.bind(this));
+      this.addEventListener('keydown', this.closePavementTool.bind(this));
+    });
   }
 
   public clearEntranceVisualisation() {
@@ -415,6 +508,17 @@ export class EngineService {
     if (this.fenceType) this.setFence(this.fenceType);
   }
 
+  private closePavementTool(event: any): void {
+    if (event.key === 'Escape') {
+      this.scene.remove(this.pavementVisualisation!);
+      this.removeAllEventListeners();
+
+      this.pavementVisualisation = undefined;
+      this.raycaster = undefined;
+      this.mouse = undefined;
+    }
+  }
+
   private set2DModeCamera(): void {
     const zoomFactor: number = 58;
 
@@ -430,6 +534,193 @@ export class EngineService {
     this.camera.position.set(0, 6, 0);
     this.camera.lookAt(0, 0, 0);
     this.camera.up.set(0, 0, 1);
+  }
+
+  private addEventListener(type: string, listener: EventListenerOrEventListenerObject): void {
+    window.addEventListener(type, listener, false);
+    this.eventListeners.push({ type, listener });
+  }
+
+  private removeAllEventListeners(): void {
+    this.eventListeners.forEach(({ type, listener }) => {
+      window.removeEventListener(type, listener, false);
+    });
+    this.eventListeners = [];
+  }
+
+  private changePavementPositionOnMouseMove(event: any) {
+    if (!this.mouse || !this.raycaster || !this.pavementVisualisation || !this.ground || !this.width || !this.depth || !this.entrancesList) {
+      return;
+    }
+
+    if (this.isSavePavementPossible) {
+      (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+    }
+    else {
+      (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = .6;
+    }
+
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    const intersects = this.raycaster.intersectObject(this.ground);
+    if (intersects.length > 0) {
+      let isCursorInside: boolean = true;
+
+      const point = intersects[0].point;
+
+      const borderWidth = (this.width / 2) - (ConstantHelper.entranceWidth / 2);
+      const borderDepth = (this.depth / 2) - (ConstantHelper.entranceWidth / 2);
+
+      if (point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.pavementVisualisation.position.set(-borderWidth, 0.01, point.z);
+      }
+
+      if (point.x >= borderWidth) {
+        isCursorInside = false;
+        this.pavementVisualisation.position.set(borderWidth, 0.01, point.z);
+      }
+
+      if (point.z <= -borderDepth) {
+        isCursorInside = false;
+        this.pavementVisualisation.position.set(point.x, 0.01, -borderDepth);
+      }
+
+      if (point.z >= borderDepth) {
+        isCursorInside = false;
+        this.pavementVisualisation.position.set(point.x, 0.01, borderDepth);
+      }
+
+      if (point.z >= borderDepth && point.x >= borderWidth) {
+        isCursorInside = false;
+        this.pavementVisualisation.position.set(borderWidth, 0.01, borderDepth);
+      }
+
+      if (point.z >= borderDepth && point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.pavementVisualisation.position.set(-borderWidth, 0.01, borderDepth);
+      }
+
+      if (point.z <= -borderDepth && point.x >= borderWidth) {
+        isCursorInside = false;
+        this.pavementVisualisation.position.set(borderWidth, 0.01, -borderDepth);
+      }
+
+      if (point.z <= -borderDepth && point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.pavementVisualisation.position.set(-borderWidth, 0.01, -borderDepth);
+      }
+
+      if (isCursorInside) {
+        this.pavementVisualisation.position.set(point.x, 0.01, point.z);
+      }
+
+      this.isSavePavementPossible = false;
+
+      this.entrancesList.forEach(entrance => {
+        if (entrance.direction === 'West'
+          && this.pavementVisualisation!.position.x >= borderWidth - .1
+          && entrance.position >= -(this.pavementVisualisation!.position.z + (ConstantHelper.entranceWidth / 2) - (this.depth! / 2) + .1)
+          && entrance.position <= -(this.pavementVisualisation!.position.z - (ConstantHelper.entranceWidth / 2) - (this.depth! / 2) - .1)
+        ) {
+          this.pavementVisualisation!.position.set(borderWidth, 0.01, -(entrance.position - (this.depth! / 2)));
+          this.isSavePavementPossible = true;
+          (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+        }
+        else if (entrance.direction === 'East'
+          && this.pavementVisualisation!.position.x <= -borderWidth + .1
+          && entrance.position >= -(this.pavementVisualisation!.position.z + (ConstantHelper.entranceWidth / 2) - (this.depth! / 2) + .1)
+          && entrance.position <= -(this.pavementVisualisation!.position.z - (ConstantHelper.entranceWidth / 2) - (this.depth! / 2) - .1)
+        ) {
+          this.pavementVisualisation!.position.set(-borderWidth, 0.01, -(entrance.position - (this.depth! / 2)));
+          this.isSavePavementPossible = true;
+          (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+        }
+        else if (entrance.direction === 'North'
+          && this.pavementVisualisation!.position.z >= borderDepth - .1
+          && entrance.position >= -(this.pavementVisualisation!.position.x + (ConstantHelper.entranceWidth / 2) - (this.width! / 2) + .1)
+          && entrance.position <= -(this.pavementVisualisation!.position.x - (ConstantHelper.entranceWidth / 2) - (this.width! / 2) - .1)
+        ) {
+          this.pavementVisualisation!.position.set(-(entrance.position - (this.width! / 2)), 0.01, borderDepth);
+          this.isSavePavementPossible = true;
+          (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+        }
+        else if (entrance.direction === 'South'
+          && this.pavementVisualisation!.position.z <= -borderDepth + .1
+          && entrance.position >= -(this.pavementVisualisation!.position.x + (ConstantHelper.entranceWidth / 2) - (this.width! / 2) + .1)
+          && entrance.position <= -(this.pavementVisualisation!.position.x - (ConstantHelper.entranceWidth / 2) - (this.width! / 2) - .1)
+        ) {
+          this.pavementVisualisation!.position.set(-(entrance.position - (this.width! / 2)), 0.01, -borderDepth);
+          this.isSavePavementPossible = true;
+          (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+        }
+      });
+
+      this.pavementsList.forEach(pavement => {
+        // under pavement
+        if (this.pavementVisualisation!.position.x <= pavement.x + (ConstantHelper.entranceWidth / 2) + .1
+          && this.pavementVisualisation!.position.x >= pavement.x - (ConstantHelper.entranceWidth / 2) - .1
+          && this.pavementVisualisation!.position.z >= pavement.y - ConstantHelper.entranceWidth - .1
+          && this.pavementVisualisation!.position.z <= pavement.y - (ConstantHelper.entranceWidth / 2)
+        ) {
+          this.pavementVisualisation!.position.set(pavement.x, 0.01, pavement.y - ConstantHelper.entranceWidth);
+          this.isSavePavementPossible = true;
+          (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+        }
+        // above pavement
+        else if (this.pavementVisualisation!.position.x <= pavement.x + (ConstantHelper.entranceWidth / 2) + .1
+          && this.pavementVisualisation!.position.x >= pavement.x - (ConstantHelper.entranceWidth / 2) - .1
+          && this.pavementVisualisation!.position.z <= pavement.y + ConstantHelper.entranceWidth + .1
+          && this.pavementVisualisation!.position.z >= pavement.y + (ConstantHelper.entranceWidth / 2)
+        ) {
+          this.pavementVisualisation!.position.set(pavement.x, 0.01, pavement.y + ConstantHelper.entranceWidth);
+          this.isSavePavementPossible = true;
+          (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+        }
+        // on the left side of pavement
+        else if (this.pavementVisualisation!.position.x <= pavement.x + ConstantHelper.entranceWidth + .1
+          && this.pavementVisualisation!.position.x >= pavement.x + (ConstantHelper.entranceWidth / 2)
+          && this.pavementVisualisation!.position.z <= pavement.y + (ConstantHelper.entranceWidth / 2)
+          && this.pavementVisualisation!.position.z >= pavement.y - (ConstantHelper.entranceWidth / 2)
+        ) {
+          this.pavementVisualisation!.position.set(pavement.x + ConstantHelper.entranceWidth, 0.01, pavement.y);
+          this.isSavePavementPossible = true;
+          (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+        }
+        // on the right side of pavement
+        else if (this.pavementVisualisation!.position.x >= pavement.x - ConstantHelper.entranceWidth + .1
+          && this.pavementVisualisation!.position.x <= pavement.x - (ConstantHelper.entranceWidth / 2)
+          && this.pavementVisualisation!.position.z <= pavement.y + (ConstantHelper.entranceWidth / 2)
+          && this.pavementVisualisation!.position.z >= pavement.y - (ConstantHelper.entranceWidth / 2)
+        ) {
+          this.pavementVisualisation!.position.set(pavement.x - ConstantHelper.entranceWidth, 0.01, pavement.y);
+          this.isSavePavementPossible = true;
+          (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
+        }
+      });
+    }
+  }
+
+  private savePavementPosition(): void {
+    if (this.isSavePavementPossible && this.pavementVisualisation) {
+      const pavement: IPavement = {
+        x: this.pavementVisualisation.position.x,
+        y: this.pavementVisualisation.position.z
+      };
+
+      this.pavementsList.push(pavement);
+
+      // TODO: save pavement position to the database
+
+      this.removeAllEventListeners();
+
+      this.pavementVisualisation = undefined;
+      this.raycaster = undefined;
+      this.mouse = undefined;
+    }
   }
 
   private addBorderVisualisation(): void {
@@ -535,6 +826,7 @@ export class EngineService {
   private async loadEntrances() {
     await this.getEntrancesForProject(this.currentProjectId).subscribe(
       (entrances: IEntrance[]) => {
+        this.entrancesList = entrances;
         this.cutFencesForEntrances(entrances);
       },
       error => {
@@ -546,6 +838,22 @@ export class EngineService {
   private getEntrancesForProject(projectId: string | undefined): Observable<IEntrance[]> {
     const baseUrl = environment.apiUrl;
     return this.http.get<IEntrance[]>(baseUrl + `solution/getEntrancesForProject/${projectId}`);
+  }
+
+  private async loadGardenElements() {
+    await this.getElementsForGarden(this.currentProjectId).subscribe(
+      (gardenElementsList: IGardenElement[]) => {
+        this.gardenElementsList = gardenElementsList;
+      },
+      error => {
+        console.error('Error loading garden elements: ', error);
+      }
+    );
+  }
+
+  private getElementsForGarden(projectId: string | undefined): Observable<IGardenElement[]> {
+    const baseUrl = environment.apiUrl;
+    return this.http.get<IGardenElement[]>(baseUrl + `solution/getElementsForProject/${projectId}`);
   }
 
   private cutFencesForEntrances(entrances: IEntrance[]): void {

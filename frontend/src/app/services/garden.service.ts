@@ -47,6 +47,8 @@ export class GardenService {
     this.engineService.setFence(this.currentProject.fence.name.toLowerCase());
     this.currentFenceSource.next(this.currentProject.fence.name);
 
+    this.engineService.setGardenElements();
+
     this.engineService.setAnimating(true);
     this.engineService.animate();
   }

@@ -1,7 +1,12 @@
+import { ElementCategory } from "../models/types/element-category";
 import { Fence } from "../models/types/fence";
 
 export class ConstantHelper {
-    public static readonly entranceWidth = 1.6;
+    public static readonly entranceWidth: number = 1.6;
+    
+    public static readonly pavementCategory: ElementCategory = 'Pavement';
+    public static readonly treeCategory: ElementCategory = 'Tree';
+    public static readonly bushCategory: ElementCategory = 'Bush';
 
     public static getFenceByType(fenceType: string) {
         if (fenceType == "wooden") return ConstantHelper.woodenFence;

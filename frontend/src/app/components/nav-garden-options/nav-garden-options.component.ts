@@ -8,6 +8,8 @@ import { Direction } from 'src/app/models/types/direction';
 import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
 import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
+import { PavementToolService } from 'src/app/tools/pavement-tool.service';
+import { ConstantHelper } from 'src/app/utils/constant-helper';
 
 @Component({
   selector: 'app-nav-garden-options',
@@ -28,7 +30,7 @@ export class NavGardenOptionsComponent implements OnInit {
   public groundList: IGround[] = [];
   public fenceList: IFence[] = [];
   public elementCategoriesList: IElementCategory[] = [];
-  public chosenCategoryElementsList: IElementCategory[] = [];
+  public chosenCategoryElementsList: IElement[] = [];
   public entranceDirectionList: IDirection[] = [
     { name: "North", icon: "north" },
     { name: "South", icon: "south" },
@@ -46,7 +48,8 @@ export class NavGardenOptionsComponent implements OnInit {
   constructor(
     public gardenService: GardenService,
     public engineService: EngineService,
-    private entranceTool: EntranceToolService
+    private entranceTool: EntranceToolService,
+    private pavementTool: PavementToolService
   ) { }
 
   ngOnInit(): void {
@@ -106,9 +109,22 @@ export class NavGardenOptionsComponent implements OnInit {
     );
   }
 
-  public chooseElementToPlace(element: string): void {
+  public chooseElementToPlace(element: IElement): void {
     this.showChooseElementOptions = false;
-    // TODO
+    switch (element.category) {
+      case ConstantHelper.pavementCategory:
+        this.pavementTool.initializePavementVisualisation(element.name);
+        break;
+      case ConstantHelper.treeCategory:
+        // TODO
+        break;
+      case ConstantHelper.bushCategory:
+        // TODO
+        break;
+      default:
+        // TODO
+        break;
+    }
   }
 
   public openEntranceTool(direction: Direction) {
