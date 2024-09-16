@@ -46,6 +46,24 @@ namespace backend.Data
                     );
                 }
 
+                if (!context.Environments.Any())
+                {
+                    context.Environments.AddRange(
+                        new Entities.Environment
+                        {
+                            Name = "None"
+                        },
+                        new Entities.Environment
+                        {
+                            Name = "Forest"
+                        },
+                        new Entities.Environment
+                        {
+                            Name = "City"
+                        }
+                    );
+                }
+
                 if (!context.ElementCategories.Any())
                 {
                     context.ElementCategories.AddRange(

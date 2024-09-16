@@ -19,7 +19,7 @@ public class SolutionController : BaseApiController
     {
         var project = await _unitOfWork.ProjectsRepository.GetProjectByIdAsync(projectId);
 
-        if (project == null)
+        if (project is null)
         {
             return NotFound("Project not found.");
         }
@@ -34,6 +34,28 @@ public class SolutionController : BaseApiController
     public async Task<ActionResult<IEnumerable<Ground>>> GetGrounds()
     {
         return await _unitOfWork.GroundRepository.GetGroundList();
+    }
+
+    [HttpPut("setEnvironment/{projectId}")]
+    public async Task<IActionResult> SetEnvironment(int projectId, [FromBody] Entities.Environment environment)
+    {
+        var project = await _unitOfWork.ProjectsRepository.GetProjectByIdAsync(projectId);
+
+        if (project is null)
+        {
+            return NotFound("Project not found.");
+        }
+
+        project.Environment = environment;
+        await _unitOfWork.Complete();
+
+        return Ok(project);
+    }
+
+    [HttpGet("getEnvironmentList")]
+    public async Task<ActionResult<IEnumerable<Entities.Environment>>> GetEnvironments()
+    {
+        return await _unitOfWork.EnvironmentRepository.GetEnvironmentList();
     }
 
     [HttpPut("setFence/{projectId}")]
