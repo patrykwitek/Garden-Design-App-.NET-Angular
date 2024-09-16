@@ -68,5 +68,8 @@
     "Salix caprea": "Salix caprea",
     "Pavement": "Chodnik",
     "Tree": "Drzewo",
-    "Bush": "Krzew"
+    "Bush": "Krzew",
+    "None": "Bez",
+    "Forest": "Las",
+    "City": "Miasto"
 }

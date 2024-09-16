@@ -18,6 +18,7 @@ import { IPavement } from '../models/interfaces/i-pavement';
 import { IGardenElement } from '../models/interfaces/i-garden-element';
 import { ITree } from '../models/interfaces/i-tree';
 import { IBush } from '../models/interfaces/i-bush';
+import { Environment } from '../models/types/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -224,6 +225,10 @@ export class EngineService {
       this.scene.add(plane);
       this.objects.push(plane);
     });
+  }
+
+  public setEnvironment(environment: Environment): void {
+    // TODO
   }
 
   public setGardenDimensions(width: number, depth: number) {

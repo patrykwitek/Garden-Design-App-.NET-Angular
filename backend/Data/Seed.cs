@@ -52,14 +52,17 @@ namespace backend.Data
                         new Entities.Environment
                         {
                             Name = "None"
+                            // img link: https://www.istockphoto.com/pl/wektor/ikona-wektora-x-znacznika-stylu-p%C5%82askiego-na-bia%C5%82ym-gm898741098-248002060
                         },
                         new Entities.Environment
                         {
                             Name = "Forest"
+                            // img link: https://www.istockphoto.com/pl/wektor/krajobraz-jeziora-gm1143206930-306921790
                         },
                         new Entities.Environment
                         {
                             Name = "City"
+                            // img link: https://www.istockphoto.com/pl/wektor/manhattan-panoram%C4%99-gm92712733-10230737
                         }
                     );
                 }

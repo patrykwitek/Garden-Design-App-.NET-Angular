@@ -11,6 +11,7 @@ namespace backend.DTO
         public int Depth { get; set; }
         public string OwnerUsername { get; set; }
         public Ground Ground{ get; set; }
+        public Entities.Environment Environment { get; set; }
         public Fence Fence { get; set; }
         public List<EntranceDto> Entrances { get; set; }
     }

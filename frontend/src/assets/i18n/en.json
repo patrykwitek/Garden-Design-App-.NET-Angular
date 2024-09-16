@@ -68,5 +68,8 @@
     "Salix caprea": "Salix caprea",
     "Pavement": "Pavement",
     "Tree": "Tree",
-    "Bush": "Bush"
+    "Bush": "Bush",
+    "None": "None",
+    "Forest": "Forest",
+    "City": "City"
 }
