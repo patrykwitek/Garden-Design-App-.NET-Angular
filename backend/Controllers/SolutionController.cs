@@ -46,8 +46,11 @@ public class SolutionController : BaseApiController
             return NotFound("Project not found.");
         }
 
-        project.Environment = environment;
-        await _unitOfWork.Complete();
+        if (project.Environment != environment)
+        {
+            project.Environment = environment;
+            await _unitOfWork.Complete();
+        }
 
         return Ok(project);
     }

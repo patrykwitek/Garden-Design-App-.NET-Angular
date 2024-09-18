@@ -96,7 +96,7 @@ export class GardenService {
   }
 
   public setEnvironment(environment: IEnvironment) {
-    if (this.currentProject) {
+    if (this.currentProject && this.currentProject.environment.name !== environment.name) {
       this.http.put(this.baseUrl + `solution/setEnvironment/${this.currentProject.id}`, environment).subscribe(
         _ => { },
         error => {
