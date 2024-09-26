@@ -21,7 +21,7 @@ import { IBush } from '../models/interfaces/i-bush';
 import { Environment } from '../models/types/environment';
 import { ForestElement } from '../models/types/forest-element';
 import { IFlower } from '../models/interfaces/i-flower';
-import { CityService } from './city.service';
+import { CityGeneratorService } from './city-generator.service';
 
 @Injectable({
   providedIn: 'root'
@@ -82,7 +82,7 @@ export class EngineService {
   constructor(
     private themeService: ThemeService,
     private http: HttpClient,
-    private cityService: CityService
+    private cityService: CityGeneratorService
   ) { }
 
   public initialize(canvas: HTMLCanvasElement): void {

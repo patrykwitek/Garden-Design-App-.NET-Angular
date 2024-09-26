@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 @Injectable({
   providedIn: 'root'
 })
-export class CityService {
+export class CityGeneratorService {
 
   private width: number | undefined;
   private depth: number | undefined;
@@ -547,6 +547,346 @@ export class CityService {
 
         verticalPositionY -= ConstantHelper.cityGrassDepth;
       }
+
+      const horizontalMiddleOutsideGrassNumber: number = (this.width! + (2 * ConstantHelper.citySidewalkWidth) + (2 * ConstantHelper.cityGrassWidth)) / ConstantHelper.cityGrassDepth;
+      let horizontalMiddleOutsidePositionX: number = (this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth - .1 - (ConstantHelper.cityGrassDepth / 2);
+
+      for (let i = 0; i < horizontalMiddleOutsideGrassNumber; i++) {
+        let frontGrassClone: THREE.Group<THREE.Object3DEventMap>;
+        const frontClippingPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), (this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth);
+
+        if (i == Math.floor(horizontalMiddleOutsideGrassNumber)) {
+          frontGrassClone = gltf.scene.clone();
+          frontGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          frontGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [frontClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          frontGrassClone = originGrass.clone();
+        }
+
+        frontGrassClone.position.set(horizontalMiddleOutsidePositionX, ConstantHelper.citySidewalkHeight - .02, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - (ConstantHelper.cityGrassWidth / 2));
+        frontGrassClone.rotation.y = Math.PI / 2;
+        frontGrassClone.userData['type'] = 'grass';
+
+        grassGroup.add(frontGrassClone);
+
+        let rearGrassClone: THREE.Group<THREE.Object3DEventMap>;
+        const rearClippingPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), (this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth);
+
+        if (i == Math.floor(horizontalMiddleOutsideGrassNumber)) {
+          rearGrassClone = gltf.scene.clone();
+          rearGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          rearGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [rearClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          rearGrassClone = originGrass.clone();
+        }
+
+        rearGrassClone.position.set(horizontalMiddleOutsidePositionX, ConstantHelper.citySidewalkHeight - .02, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + (ConstantHelper.cityGrassWidth / 2));
+        rearGrassClone.rotation.y = Math.PI / 2;
+        rearGrassClone.userData['type'] = 'grass';
+
+        grassGroup.add(rearGrassClone);
+
+        horizontalMiddleOutsidePositionX -= ConstantHelper.cityGrassDepth;
+      }
+
+      const verticalMiddleOutsideGrassNumber: number = (this.depth! + (2 * ConstantHelper.citySidewalkWidth) + (2 * ConstantHelper.cityGrassWidth)) / ConstantHelper.cityGrassDepth;
+      let verticalMiddleOutsidePositionY: number = (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth - .1 - (ConstantHelper.cityGrassDepth / 2);
+
+      for (let i = 0; i < verticalMiddleOutsideGrassNumber; i++) {
+        let leftGrassClone: THREE.Group<THREE.Object3DEventMap>;
+        const leftClippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth);
+
+        if (i >= Math.floor(verticalMiddleOutsideGrassNumber) - 1) {
+          leftGrassClone = gltf.scene.clone();
+          leftGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          leftGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [leftClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          leftGrassClone = originGrass.clone();
+        }
+
+        leftGrassClone.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + (ConstantHelper.cityGrassWidth / 2), ConstantHelper.citySidewalkHeight - .02, -verticalMiddleOutsidePositionY);
+        leftGrassClone.userData['type'] = 'grass';
+
+        grassGroup.add(leftGrassClone);
+
+        let rightGrassClone: THREE.Group<THREE.Object3DEventMap>;
+        const rightClippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth);
+
+        if (i >= Math.floor(verticalMiddleOutsideGrassNumber) - 1) {
+          rightGrassClone = gltf.scene.clone();
+          rightGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          rightGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [rightClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          rightGrassClone = originGrass.clone();
+        }
+
+        rightGrassClone.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - (ConstantHelper.cityGrassWidth / 2), ConstantHelper.citySidewalkHeight - .02, -verticalMiddleOutsidePositionY);
+        rightGrassClone.userData['type'] = 'grass';
+
+        grassGroup.add(rightGrassClone);
+
+        verticalMiddleOutsidePositionY -= ConstantHelper.cityGrassDepth;
+      }
+
+      const leftHorizontalExtensionOutsideGrass: THREE.Group = new THREE.Group();
+      leftHorizontalExtensionOutsideGrass.userData['type'] = 'grass-group';
+
+      const rightHorizontalExtensionOutsideGrass: THREE.Group = new THREE.Group();
+      rightHorizontalExtensionOutsideGrass.userData['type'] = 'grass-group';
+
+      const outsideGrassNumber: number = (ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth) / ConstantHelper.cityGrassDepth;
+      let horizontalExtensionOutsidePositionX: number = ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth) / 2);
+
+      for (let i = 0; i < outsideGrassNumber; i++) {
+        let leftGrassClone: THREE.Group<THREE.Object3DEventMap>;
+        let rightGrassClone: THREE.Group<THREE.Object3DEventMap>;
+
+        const leftClippingPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), -(this.width! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth);
+        const rightClippingPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), (this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityStreetWidth);
+
+        if (i >= Math.floor(outsideGrassNumber) - 1) {
+          leftGrassClone = gltf.scene.clone();
+          leftGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          leftGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [leftClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+
+          rightGrassClone = gltf.scene.clone();
+          rightGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          rightGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [rightClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          leftGrassClone = originGrass.clone();
+          rightGrassClone = originGrass.clone();
+        }
+
+        leftGrassClone.position.set(horizontalExtensionOutsidePositionX, ConstantHelper.citySidewalkHeight - .02, 0);
+        leftGrassClone.rotation.y = Math.PI / 2;
+        leftGrassClone.userData['type'] = 'grass';
+
+        rightGrassClone.position.set(horizontalExtensionOutsidePositionX, ConstantHelper.citySidewalkHeight - .02, 0);
+        rightGrassClone.rotation.y = Math.PI / 2;
+        rightGrassClone.userData['type'] = 'grass';
+
+        leftHorizontalExtensionOutsideGrass.add(leftGrassClone);
+        rightHorizontalExtensionOutsideGrass.add(rightGrassClone);
+
+        horizontalExtensionOutsidePositionX -= ConstantHelper.cityGrassDepth;
+      }
+
+      const leftRearHorizontalExtensionOutsideGrass = leftHorizontalExtensionOutsideGrass.clone();
+      leftRearHorizontalExtensionOutsideGrass.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + (ConstantHelper.cityStreetWidth / 2) - .1, 0, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + (ConstantHelper.cityGrassWidth / 2));
+      grassGroup.add(leftRearHorizontalExtensionOutsideGrass);
+
+      const leftRearMiddleHorizontalExtensionOutsideGrass = leftHorizontalExtensionOutsideGrass.clone();
+      leftRearMiddleHorizontalExtensionOutsideGrass.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + (ConstantHelper.cityStreetWidth / 2) - .1, 0, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + (ConstantHelper.cityGrassWidth / 2));
+      grassGroup.add(leftRearMiddleHorizontalExtensionOutsideGrass);
+
+      const leftFrontHorizontalExtensionOutsideGrass = leftHorizontalExtensionOutsideGrass.clone();
+      leftFrontHorizontalExtensionOutsideGrass.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + (ConstantHelper.cityStreetWidth / 2) - .1, 0, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - (ConstantHelper.cityGrassWidth / 2));
+      grassGroup.add(leftFrontHorizontalExtensionOutsideGrass);
+
+      const leftFrontMiddleHorizontalExtensionOutsideGrass = leftHorizontalExtensionOutsideGrass.clone();
+      leftFrontMiddleHorizontalExtensionOutsideGrass.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + (ConstantHelper.cityStreetWidth / 2) - .1, 0, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - (ConstantHelper.cityGrassWidth / 2));
+      grassGroup.add(leftFrontMiddleHorizontalExtensionOutsideGrass);
+
+      const rightRearHorizontalExtensionOutsideGrass = rightHorizontalExtensionOutsideGrass.clone();
+      rightRearHorizontalExtensionOutsideGrass.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth - ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2) - .1, 0, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + (ConstantHelper.cityGrassWidth / 2));
+      grassGroup.add(rightRearHorizontalExtensionOutsideGrass);
+
+      const rightRearMiddleHorizontalExtensionOutsideGrass = rightHorizontalExtensionOutsideGrass.clone();
+      rightRearMiddleHorizontalExtensionOutsideGrass.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth - ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2) - .1, 0, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + (ConstantHelper.cityGrassWidth / 2));
+      grassGroup.add(rightRearMiddleHorizontalExtensionOutsideGrass);
+
+      const rightFrontHorizontalExtensionOutsideGrass = rightHorizontalExtensionOutsideGrass.clone();
+      rightFrontHorizontalExtensionOutsideGrass.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth - ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2) - .1, 0, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - (ConstantHelper.cityGrassWidth / 2));
+      grassGroup.add(rightFrontHorizontalExtensionOutsideGrass);
+
+      const rightFrontMiddleHorizontalExtensionOutsideGrass = rightHorizontalExtensionOutsideGrass.clone();
+      rightFrontMiddleHorizontalExtensionOutsideGrass.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth - ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2) - .1, 0, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - (ConstantHelper.cityGrassWidth / 2));
+      grassGroup.add(rightFrontMiddleHorizontalExtensionOutsideGrass);
+
+      const frontHorizontalExtensionOutsideGrass: THREE.Group = new THREE.Group();
+      frontHorizontalExtensionOutsideGrass.userData['type'] = 'grass-group';
+
+      const rearHorizontalExtensionOutsideGrass: THREE.Group = new THREE.Group();
+      rearHorizontalExtensionOutsideGrass.userData['type'] = 'grass-group';
+
+      let horizontalVerticalOutsidePositionY: number = -((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth) / 2);
+
+      for (let i = 0; i < outsideGrassNumber; i++) {
+        let frontGrassClone: THREE.Group<THREE.Object3DEventMap>;
+        let rearGrassClone: THREE.Group<THREE.Object3DEventMap>;
+
+        const frontClippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityStreetWidth);
+        const rearClippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth);
+
+        if (i == 0) {
+          frontGrassClone = gltf.scene.clone();
+          frontGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          frontGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [frontClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+
+          rearGrassClone = gltf.scene.clone();
+          rearGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          rearGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [rearClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          frontGrassClone = originGrass.clone();
+          rearGrassClone = originGrass.clone();
+        }
+
+        frontGrassClone.position.set(0, ConstantHelper.citySidewalkHeight - .02, horizontalVerticalOutsidePositionY);
+        frontGrassClone.userData['type'] = 'grass';
+
+        frontHorizontalExtensionOutsideGrass.add(frontGrassClone);
+
+        rearGrassClone.position.set(0, ConstantHelper.citySidewalkHeight - .02, horizontalVerticalOutsidePositionY);
+        rearGrassClone.userData['type'] = 'grass';
+
+        rearHorizontalExtensionOutsideGrass.add(rearGrassClone);
+
+        horizontalVerticalOutsidePositionY += ConstantHelper.cityGrassDepth;
+      }
+
+      const frontLeftHorizontalExtensionOutsideGrass = frontHorizontalExtensionOutsideGrass.clone();
+      frontLeftHorizontalExtensionOutsideGrass.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + (ConstantHelper.cityGrassWidth / 2), 0, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth + .1 - ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth) / 2));
+      grassGroup.add(frontLeftHorizontalExtensionOutsideGrass);
+
+      const frontRightHorizontalExtensionOutsideGrass = frontHorizontalExtensionOutsideGrass.clone();
+      frontRightHorizontalExtensionOutsideGrass.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - (ConstantHelper.cityGrassWidth / 2), 0, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth + .1 - ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth) / 2));
+      grassGroup.add(frontRightHorizontalExtensionOutsideGrass);
+
+      const rearLeftHorizontalExtensionOutsideGrass = rearHorizontalExtensionOutsideGrass.clone();
+      rearLeftHorizontalExtensionOutsideGrass.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + (ConstantHelper.cityGrassWidth / 2), 0, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityGrassWidth + ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth) / 2));
+      grassGroup.add(rearLeftHorizontalExtensionOutsideGrass);
+
+      const rearRightHorizontalExtensionOutsideGrass = rearHorizontalExtensionOutsideGrass.clone();
+      rearRightHorizontalExtensionOutsideGrass.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - (ConstantHelper.cityGrassWidth / 2), 0, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityGrassWidth + ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityGrassWidth) / 2));
+      grassGroup.add(rearRightHorizontalExtensionOutsideGrass);
+
+      const frontLongOutsideGrass: THREE.Group = new THREE.Group();
+      frontLongOutsideGrass.userData['type'] = 'grass-group';
+
+      const rearLongOutsideGrass: THREE.Group = new THREE.Group();
+      rearLongOutsideGrass.userData['type'] = 'grass-group';
+
+      const longGrassNumber: number = (ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / ConstantHelper.cityGrassDepth;
+      let longOutsidePositionY: number = -((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2);
+
+      for (let i = 0; i < longGrassNumber; i++) {
+        let frontGrassClone: THREE.Group<THREE.Object3DEventMap>;
+        let rearGrassClone: THREE.Group<THREE.Object3DEventMap>;
+
+        const frontClippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityStreetWidth);
+        const rearClippingPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth);
+
+        if (i == 0) {
+          frontGrassClone = gltf.scene.clone();
+          frontGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          frontGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [frontClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+
+          rearGrassClone = gltf.scene.clone();
+          rearGrassClone.scale.set(scaleX, scaleY, scaleZ);
+
+          rearGrassClone.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = child.material.clone();
+              child.material.clippingPlanes = [rearClippingPlane];
+              child.material.clipShadows = true;
+            }
+          });
+        } else {
+          frontGrassClone = originGrass.clone();
+          rearGrassClone = originGrass.clone();
+        }
+
+        frontGrassClone.position.set(0, ConstantHelper.citySidewalkHeight - .02, longOutsidePositionY);
+        frontGrassClone.userData['type'] = 'grass';
+
+        frontLongOutsideGrass.add(frontGrassClone);
+
+        rearGrassClone.position.set(0, ConstantHelper.citySidewalkHeight - .02, longOutsidePositionY);
+        rearGrassClone.userData['type'] = 'grass';
+
+        rearLongOutsideGrass.add(rearGrassClone);
+
+        longOutsidePositionY += ConstantHelper.cityGrassDepth;
+      }
+
+      const frontLeftLongOutsideGrass = frontLongOutsideGrass.clone();
+      frontLeftLongOutsideGrass.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + (ConstantHelper.cityGrassWidth / 2), 0, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - .2 - ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2));
+      grassGroup.add(frontLeftLongOutsideGrass);
+
+      const frontRightLongOutsideGrass = frontLongOutsideGrass.clone();
+      frontRightLongOutsideGrass.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - (ConstantHelper.cityGrassWidth / 2), 0, -(this.depth! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - .2 - ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2));
+      grassGroup.add(frontRightLongOutsideGrass);
+
+      const rearLeftLongOutsideGrass = rearLongOutsideGrass.clone();
+      rearLeftLongOutsideGrass.position.set((this.width! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + (ConstantHelper.cityGrassWidth / 2), 0, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + .2 + ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2));
+      grassGroup.add(rearLeftLongOutsideGrass);
+
+      const rearRightLongOutsideGrass = rearLongOutsideGrass.clone();
+      rearRightLongOutsideGrass.position.set(-(this.width! / 2) - ConstantHelper.citySidewalkWidth - ConstantHelper.cityGrassWidth - ConstantHelper.cityKerbWidth - ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth - (ConstantHelper.cityGrassWidth / 2), 0, (this.depth! / 2) + ConstantHelper.citySidewalkWidth + ConstantHelper.cityGrassWidth + ConstantHelper.cityKerbWidth + ConstantHelper.cityStreetWidth + ConstantHelper.cityKerbWidth + .2 + ((ConstantHelper.cityStreetWidth - ConstantHelper.cityKerbWidth) / 2));
+      grassGroup.add(rearRightLongOutsideGrass);
     });
 
     // city grass texture link: https://ambientcg.com/view?id=Grass002
