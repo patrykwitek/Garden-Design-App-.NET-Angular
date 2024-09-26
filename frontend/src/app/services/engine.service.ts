@@ -20,6 +20,8 @@ import { ITree } from '../models/interfaces/i-tree';
 import { IBush } from '../models/interfaces/i-bush';
 import { Environment } from '../models/types/environment';
 import { ForestElement } from '../models/types/forest-element';
+import { IFlower } from '../models/interfaces/i-flower';
+import { CityService } from './city.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +32,7 @@ export class EngineService {
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera | THREE.OrthographicCamera;
+  private mirrorCamera: THREE.CubeCamera | undefined;
   private controls!: OrbitControls;
 
   private objects: THREE.Object3D[] = [];
@@ -66,6 +69,7 @@ export class EngineService {
   private pavementsList: IPavement[] = [];
   private treesList: ITree[] = [];
   private bushesList: IBush[] = [];
+  private flowersList: IBush[] = [];
 
   private currentProjectId: string | undefined;
 
@@ -77,7 +81,8 @@ export class EngineService {
 
   constructor(
     private themeService: ThemeService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cityService: CityService
   ) { }
 
   public initialize(canvas: HTMLCanvasElement): void {
@@ -109,6 +114,8 @@ export class EngineService {
     this.controls.update();
 
     this.renderer.render(this.scene, this.camera);
+
+    if (this.mirrorCamera) this.mirrorCamera.update(this.renderer, this.scene);
   }
 
   public setAnimating(isAnimating: boolean) {
@@ -140,6 +147,8 @@ export class EngineService {
       }
     }
 
+    this.environment = undefined;
+
     if (this.renderer) {
       this.renderer.dispose();
     }
@@ -158,10 +167,6 @@ export class EngineService {
 
   public async setFence(fenceType: string): Promise<void> {
     this.fenceType = fenceType;
-
-    // fences links:
-    // https://www.cgtrader.com/free-3d-models/exterior/other/cc0-wood-fence
-    // https://free3d.com/3d-model/-rectangular-box-hedge--896206.html
 
     this.objects = this.objects.filter(obj => {
       if ((obj.userData['type'] === 'north-fence-group') || (obj.userData['type'] === 'south-fence-group') || (obj.userData['type'] === 'west-fence-group') || (obj.userData['type'] === 'east-fence-group')) {
@@ -182,7 +187,7 @@ export class EngineService {
     const fence = ConstantHelper.getFenceByType(fenceType);
 
     if (this.width && this.depth) {
-      if (fence.destination.fileName.includes('.gltf') || fence.destination.fileName.includes('.glf')) {
+      if (fence.destination.fileName.includes('.gltf') || fence.destination.fileName.includes('.glb')) {
         await this.loadFenceFromGTLF(this.width, this.depth, fence);
       }
       else if (fence.destination.fileName.includes('.obj') || (fence.destination.fileName.includes('.mlt'))) {
@@ -236,7 +241,7 @@ export class EngineService {
     else this.environment = environment;
 
     this.objects = this.objects.filter(obj => {
-      if ((obj.userData['type'] === 'forest-element') || (obj.userData['type'] === 'city-element')) {
+      if ((obj.userData['type'] === 'forest-element') || (obj.userData['type'] === 'city-group')) {
         this.scene.remove(obj);
         if (obj instanceof THREE.Mesh) {
           obj.geometry.dispose();
@@ -608,7 +613,14 @@ export class EngineService {
   }
 
   private setCityEnvironment(): void {
-    // TODO
+    if (!this.width || !this.depth) return;
+
+    const city = this.cityService.createCityEnvironment(this.width, this.depth);
+
+    this.mirrorCamera = city.mirrorCamera;
+    
+    this.scene.add(city.group);
+    this.objects.push(city.group);
   }
 
   private loadGLTF3DModel(name: string, fileExtension: 'gltf' | 'glb', positionX: number, positionY: number, rotation: number, scale: number, width: number, depth: number, height: number, elementType: string): Promise<void> {
@@ -691,7 +703,7 @@ export class EngineService {
       1000
     );
 
-    this.camera.position.set(0, 6, 0);
+    this.camera.position.set(0, 20, 0);
     this.camera.lookAt(0, 0, 0);
     this.camera.up.set(0, 0, 1);
   }
@@ -1033,9 +1045,20 @@ export class EngineService {
             rotationY: element.rotationY
           }));
 
+        this.flowersList = this.gardenElementsList
+          .filter((element: IGardenElement) => element.category === 'Flower')
+          .map((element: IGardenElement): IFlower => ({
+            name: element.name,
+            x: element.positionX,
+            y: element.positionY,
+            rotationX: element.rotationX,
+            rotationY: element.rotationY
+          }));
+
         this.addPavementsToGarden();
         this.addTreesToGarden();
         this.addBushesToGarden();
+        this.addFlowersToGarden();
       },
       error => {
         console.error('Error loading garden elements: ', error);
@@ -1076,6 +1099,12 @@ export class EngineService {
 
   private addBushesToGarden(): void {
     this.bushesList.forEach(bush => {
+      // TODO
+    });
+  }
+
+  private addFlowersToGarden(): void {
+    this.flowersList.forEach(flower => {
       // TODO
     });
   }

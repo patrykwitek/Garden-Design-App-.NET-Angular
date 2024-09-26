@@ -71,5 +71,10 @@
     "Bush": "Krzew",
     "None": "Bez",
     "Forest": "Las",
-    "City": "Miasto"
+    "City": "Miasto",
+    "Flower": "Kwiat",
+    "Tulip": "Tulipan",
+    "Narcissus": "Narcyz",
+    "Crocus": "Krokus",
+    "Wire": "Siatka metaliczna"
 }

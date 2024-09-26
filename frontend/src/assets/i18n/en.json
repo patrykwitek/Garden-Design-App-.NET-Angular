@@ -71,5 +71,10 @@
     "Bush": "Bush",
     "None": "None",
     "Forest": "Forest",
-    "City": "City"
+    "City": "City",
+    "Flower": "Flower",
+    "Tulip": "Tulip",
+    "Narcissus": "Narcissus",
+    "Crocus": "Crocus",
+    "Wire": "Chain link"
 }

@@ -1,1 +1,1 @@
-export type ElementCategory = "Pavement" | "Tree" | "Bush";
+export type ElementCategory = "Pavement" | "Tree" | "Bush" | "Flower";

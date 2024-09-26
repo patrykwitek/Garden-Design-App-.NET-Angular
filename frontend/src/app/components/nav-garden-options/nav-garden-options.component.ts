@@ -134,8 +134,11 @@ export class NavGardenOptionsComponent implements OnInit {
       case ConstantHelper.bushCategory:
         // TODO
         break;
-      default:
+      case ConstantHelper.flowerCategory:
         // TODO
+        break;
+      default:
+        throw new Error('Element category not found');
         break;
     }
   }
