@@ -67,8 +67,39 @@
 
                     td {
                         text-align: center;
-                        padding: 1rem 0;
                         color: rgb(88, 88, 88);
+                        padding: 1rem 0;
+
+                        .details-section {
+                            display: flex;
+                            gap: 2rem;
+                            padding: 0 10px;
+                            justify-content: center;
+
+                            .single-project-detail-icon {
+                                display: flex;
+                                margin: 10px 10;
+
+                                img {
+                                    align-self: center;
+                                    transition: .2s;
+                                    width: 30px;
+                                    border: 2px rgb(58, 58, 58) solid;
+                                }
+
+                                &:hover {
+                                    cursor: pointer;
+
+                                    img {
+                                        scale: 110%;
+                                    }
+
+                                    p {
+                                        color: rgb(214, 214, 214);
+                                    }
+                                }
+                            }
+                        }
 
                         .actions-section {
                             width: 100%;
@@ -76,6 +107,7 @@
                             flex-wrap: wrap;
                             justify-content: center;
                             gap: 5px;
+                            padding: 0 2rem;
 
                             button {
                                 border: none;
@@ -96,6 +128,14 @@
                                 }
                             }
                         }
+                    }
+
+                    .details-column {
+                        width: 20%;
+                    }
+
+                    .actions-column {
+                        width: 20%;
                     }
 
                     &:last-child {

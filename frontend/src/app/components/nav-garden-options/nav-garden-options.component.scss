@@ -73,25 +73,14 @@
 
             .single-option {
                 display: flex;
-                flex-direction: column;
                 padding: 5px 10px;
                 margin: 5px 0;
-                gap: .2rem;
-
-                * {
-                    align-self: center;
-                    transition: .2s;
-                }
 
                 img {
+                    align-self: center;
+                    transition: .2s;
                     width: 30px;
                     border: 2px rgb(58, 58, 58) solid;
-                }
-
-                p {
-                    margin: 0;
-                    text-align: center;
-                    font-size: .8rem;
                 }
 
                 &:hover {
@@ -99,10 +88,6 @@
 
                     img {
                         scale: 110%;
-                    }
-
-                    p {
-                        color: rgb(214, 214, 214);
                     }
                 }
 

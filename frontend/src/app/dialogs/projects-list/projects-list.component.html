@@ -16,9 +16,9 @@
                         <th>{{"Name" | translate}}</th>
                         <th>{{"DateCreated" | translate}}</th>
                         <th>{{"Author" | translate}}</th>
-                        <th>{{"Width" | translate}}</th>
-                        <th>{{"Depth" | translate}}</th>
-                        <th></th>
+                        <th>{{"Size" | translate}}</th>
+                        <th class="details-column">{{"Details" | translate}}</th>
+                        <th class="actions-column"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,9 +31,33 @@
                                 {{project.dateCreated | date: "dd MMMM yyyy"}}
                         </td>
                         <td>{{project.ownerUsername}}</td>
-                        <td>{{project.width}}</td>
-                        <td>{{project.depth}}</td>
-                        <td>
+                        <td>{{project.width}}m x {{project.depth}}m</td>
+                        <td class="details-column">
+                            <div class="details-section">
+                                <div 
+                                    class="single-project-detail-icon"
+                                    matTooltip="{{project.ground.name | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                        <img [src]="'../../../assets/textures/grounds/' + project.ground.img + ' thumbnail.png'" alt={{project.ground.img}}>
+                                </div>
+                                <div 
+                                    class="single-project-detail-icon"
+                                    matTooltip="{{project.fence.name | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                        <img [src]="'../../../assets/textures/fences/' + project.fence.img + '.png'" alt={{project.fence.name}}>
+                                </div>
+                                <div 
+                                    class="single-project-detail-icon"
+                                    matTooltip="{{project.environment.name | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                    <img [src]="'../../../assets/images/environments/' + project.environment.name.toLowerCase() + '.png'" alt={{project.environment.name}}>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="actions-column">
                             <div class="actions-section">
                                 <button 
                                     matTooltip="{{'Delete' | translate}}"
