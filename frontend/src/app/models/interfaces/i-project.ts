@@ -1,4 +1,5 @@
 import { IEntrance } from "./i-entrance";
+import { IEnvironment } from "./i-environment";
 import { IFence } from "./i-fence";
 import { IGround } from "./i-ground";
 
@@ -9,6 +10,7 @@ export interface IProject {
     width: number;
     depth: number;
     ground: IGround;
+    environment: IEnvironment;
     fence: IFence;
     entrances: IEntrance[];
     ownerUsername?: string;

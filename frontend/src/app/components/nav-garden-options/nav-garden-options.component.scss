@@ -114,9 +114,16 @@
             }
         }
 
-        .add-elements-container {
+        .fences-columns-container {
+            left: -76px;
+        }
+
+        .three-columns-container {
             left: -57px;
-            max-width: 300px;
+            min-width: 186px;
+            max-width: 200px;
+            flex-wrap: wrap;
+            margin-bottom: .5rem;
         }
 
         .directions-container {

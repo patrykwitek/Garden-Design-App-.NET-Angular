@@ -8,6 +8,8 @@ import { HttpClient } from '@angular/common/http';
 import { IFence } from '../models/interfaces/i-fence';
 import { IElementCategory } from '../models/interfaces/i-element-category';
 import { IElement } from '../models/interfaces/i-element';
+import { IEnvironment } from '../models/interfaces/i-environment';
+import { Environment } from '../models/types/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +19,9 @@ export class GardenService {
 
   private currentGroundSource = new BehaviorSubject<string | null>(null);
   public currentGround$ = this.currentGroundSource.asObservable();
+
+  private currentEnvironmentSource = new BehaviorSubject<Environment | null>(null);
+  public currentEnvironment$ = this.currentEnvironmentSource.asObservable();
 
   private currentFenceSource = new BehaviorSubject<string | null>(null);
   public currentFence$ = this.currentFenceSource.asObservable();
@@ -44,6 +49,9 @@ export class GardenService {
     this.engineService.setGround(this.currentProject.ground.img);
     this.currentGroundSource.next(this.currentProject.ground.name);
 
+    this.engineService.setEnvironment(this.currentProject.environment.name);
+    this.currentEnvironmentSource.next(this.currentProject.environment.name);
+
     this.engineService.setFence(this.currentProject.fence.name.toLowerCase());
     this.currentFenceSource.next(this.currentProject.fence.name);
 
@@ -55,6 +63,10 @@ export class GardenService {
 
   public getGrounds(): Observable<IGround[]> {
     return this.http.get<IGround[]>(this.baseUrl + 'solution/getGroundList');
+  }
+
+  public getEnvironments(): Observable<IEnvironment[]> {
+    return this.http.get<IEnvironment[]>(this.baseUrl + 'solution/getEnvironmentList');
   }
 
   public getFences(): Observable<IFence[]> {
@@ -80,6 +92,22 @@ export class GardenService {
 
       this.engineService.setGround(ground.img);
       this.currentGroundSource.next(ground.name);
+    }
+  }
+
+  public setEnvironment(environment: IEnvironment) {
+    if (this.currentProject) {
+      this.http.put(this.baseUrl + `solution/setEnvironment/${this.currentProject.id}`, environment).subscribe(
+        _ => { 
+          this.currentProject!.environment = environment;
+        },
+        error => {
+          console.error('Error setting the environment: ', error);
+        }
+      );
+
+      this.engineService.setEnvironment(environment.name);
+      this.currentEnvironmentSource.next(environment.name);
     }
   }
 

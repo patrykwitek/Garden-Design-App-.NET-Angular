@@ -68,5 +68,13 @@
     "Salix caprea": "Salix caprea",
     "Pavement": "Pavement",
     "Tree": "Tree",
-    "Bush": "Bush"
+    "Bush": "Bush",
+    "None": "None",
+    "Forest": "Forest",
+    "City": "City",
+    "Flower": "Flower",
+    "Tulip": "Tulip",
+    "Narcissus": "Narcissus",
+    "Crocus": "Crocus",
+    "Wire": "Chain link"
 }

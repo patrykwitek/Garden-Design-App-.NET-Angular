@@ -24,6 +24,7 @@ namespace backend.Controllers
             User projectOwner = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
             Ground ground = (await _unitOfWork.GroundRepository.GetGroundList()).FirstOrDefault();
+            Entities.Environment environment = (await _unitOfWork.EnvironmentRepository.GetEnvironmentList()).FirstOrDefault();
             Fence fence = (await _unitOfWork.FenceRepository.GetFenceList()).FirstOrDefault();
 
             Project project = new Project
@@ -34,6 +35,7 @@ namespace backend.Controllers
                 Depth = projectDto.Depth,
                 User = projectOwner,
                 Ground = ground,
+                Environment = environment,
                 Fence = fence
             };
 

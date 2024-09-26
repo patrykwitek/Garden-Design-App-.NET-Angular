@@ -1,0 +1,11 @@
+Model Information:
+* title:	Fence - 445
+* source:	https://sketchfab.com/3d-models/fence-445-94a4d42ac65c4fe89c36946651843719
+* author:	amt16 (https://sketchfab.com/amt16)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Fence - 445" (https://sketchfab.com/3d-models/fence-445-94a4d42ac65c4fe89c36946651843719) by amt16 (https://sketchfab.com/amt16) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

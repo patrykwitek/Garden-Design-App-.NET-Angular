@@ -38,6 +38,7 @@ namespace backend.Repositories
             var query = _context.Projects
                 .Include(project => project.Ground)
                 .Include(project => project.Fence)
+                .Include(project => project.Environment)
                 .Include(project => project.Entrances)
                 .AsQueryable();
 
@@ -53,6 +54,7 @@ namespace backend.Repositories
             return await _context.Projects
                 .Include(project => project.Ground)
                 .Include(project => project.Fence)
+                .Include(project => project.Environment)
                 .Include(project => project.Entrances)
                 .FirstOrDefaultAsync(project => project.Id == id);
         }

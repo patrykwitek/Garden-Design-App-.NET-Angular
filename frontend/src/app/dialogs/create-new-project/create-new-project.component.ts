@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { IEnvironment } from 'src/app/models/interfaces/i-environment';
 import { IFence } from 'src/app/models/interfaces/i-fence';
 import { IGround } from 'src/app/models/interfaces/i-ground';
 import { IProject } from 'src/app/models/interfaces/i-project';
@@ -18,6 +19,7 @@ export class CreateNewProjectComponent implements OnInit {
   public isPl: boolean | undefined;
 
   private groundList: IGround[] = [];
+  private environmentList: IEnvironment[] = [];
   private fenceList: IFence[] = [];
 
   constructor(
@@ -51,12 +53,22 @@ export class CreateNewProjectComponent implements OnInit {
       }
     );
 
+    await this.gardenService.getEnvironments().subscribe(
+      (environmentList: IEnvironment[]) => {
+        this.environmentList = environmentList;
+      },
+      error => {
+        console.error('Error loading environments: ', error);
+      }
+    );
+
     if (this.name && this.width && this.depth) {
       const project: IProject = {
         name: this.name,
         width: this.width,
         depth: this.depth,
         ground: this.groundList[0],
+        environment: this.environmentList[0],
         fence: this.fenceList[0],
         entrances: []
       }

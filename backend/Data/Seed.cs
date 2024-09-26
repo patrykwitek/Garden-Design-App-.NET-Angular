@@ -42,6 +42,33 @@ namespace backend.Data
                             Name = "Hedge",
                             // img link: https://www.dreamstime.com/cartoon-bushes-green-plants-decorative-garden-hedge-flat-shrubbery-trees-deciduous-forest-elements-different-shapes-summer-park-image311366656
                             Img = "hedge thumbnail",
+                        },
+                        new Fence
+                        {
+                            Name = "Wire",
+                            // img link: https://www.dreamstime.com/realistic-detailed-d-silhouette-black-metal-fence-wire-mesh-set-vector-illustration-frame-private-concept-realistic-image158636623
+                            Img = "wire fence thumbnail",
+                        }
+                    );
+                }
+
+                if (!context.Environments.Any())
+                {
+                    context.Environments.AddRange(
+                        new Entities.Environment
+                        {
+                            Name = "None"
+                            // img link: https://www.istockphoto.com/pl/wektor/ikona-wektora-x-znacznika-stylu-p%C5%82askiego-na-bia%C5%82ym-gm898741098-248002060
+                        },
+                        new Entities.Environment
+                        {
+                            Name = "Forest"
+                            // img link: https://www.istockphoto.com/pl/wektor/krajobraz-jeziora-gm1143206930-306921790
+                        },
+                        new Entities.Environment
+                        {
+                            Name = "City"
+                            // img link: https://www.istockphoto.com/pl/wektor/manhattan-panoram%C4%99-gm92712733-10230737
                         }
                     );
                 }
@@ -63,6 +90,11 @@ namespace backend.Data
                         {
                             Name = "Bush",
                             // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-gm1393465651-449311815
+                        },
+                        new ElementCategory
+                        {
+                            Name = "Flower",
+                            // img link: https://www.istockphoto.com/pl/wektor/wiosenna-trawa-granica-z-wczesn%C4%85-wiosn%C4%85-kwiaty-i-motyl-izolowane-na-bia%C5%82ym-tle-gm1129847617-298616893
                         }
                     );
                 }
@@ -123,6 +155,24 @@ namespace backend.Data
                             Name = "Salix caprea",
                             Category = "Bush"
                             // img link: https://www.istockphoto.com/pl/wektor/zestaw-drzew-ilustracja-z-kresk%C3%B3wek-wektorowych-gm1159273177-316932044
+                        },
+                        new Element
+                        {
+                            Name = "Crocus",
+                            Category = "Flower"
+                            // img link: https://www.istockphoto.com/pl/wektor/cartoon-garden-kwiaty-i-element-zestaw-wektor-gm956341846-261114781
+                        },
+                        new Element
+                        {
+                            Name = "Narcissus",
+                            Category = "Flower"
+                            // img link: https://www.istockphoto.com/pl/wektor/cartoon-garden-kwiaty-i-element-zestaw-wektor-gm956341846-261114781
+                        },
+                        new Element
+                        {
+                            Name = "Tulip",
+                            Category = "Flower"
+                            // img link: https://www.istockphoto.com/pl/wektor/cartoon-garden-kwiaty-i-element-zestaw-wektor-gm956341846-261114781
                         }
                     );
                 }

@@ -18,6 +18,10 @@ import { IPavement } from '../models/interfaces/i-pavement';
 import { IGardenElement } from '../models/interfaces/i-garden-element';
 import { ITree } from '../models/interfaces/i-tree';
 import { IBush } from '../models/interfaces/i-bush';
+import { Environment } from '../models/types/environment';
+import { ForestElement } from '../models/types/forest-element';
+import { IFlower } from '../models/interfaces/i-flower';
+import { CityGeneratorService } from './city-generator.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,12 +32,15 @@ export class EngineService {
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera | THREE.OrthographicCamera;
+  private mirrorCamera: THREE.CubeCamera | undefined;
   private controls!: OrbitControls;
 
   private objects: THREE.Object3D[] = [];
   private isAnimating: boolean = false;
 
   private ground: THREE.Mesh | undefined;
+  private fenceType: string | undefined;
+  private environment: Environment | undefined;
 
   private width: number | undefined;
   private depth: number | undefined;
@@ -62,9 +69,11 @@ export class EngineService {
   private pavementsList: IPavement[] = [];
   private treesList: ITree[] = [];
   private bushesList: IBush[] = [];
+  private flowersList: IBush[] = [];
 
-  private fenceType: string | undefined;
   private currentProjectId: string | undefined;
+
+  private modelCache: { [key: string]: THREE.Group } = {};
 
   public is2DMode: boolean = false;
   private is2DModeSource = new BehaviorSubject<boolean | null>(null);
@@ -72,7 +81,8 @@ export class EngineService {
 
   constructor(
     private themeService: ThemeService,
-    private http: HttpClient
+    private http: HttpClient,
+    private cityService: CityGeneratorService
   ) { }
 
   public initialize(canvas: HTMLCanvasElement): void {
@@ -104,6 +114,8 @@ export class EngineService {
     this.controls.update();
 
     this.renderer.render(this.scene, this.camera);
+
+    if (this.mirrorCamera) this.mirrorCamera.update(this.renderer, this.scene);
   }
 
   public setAnimating(isAnimating: boolean) {
@@ -135,6 +147,8 @@ export class EngineService {
       }
     }
 
+    this.environment = undefined;
+
     if (this.renderer) {
       this.renderer.dispose();
     }
@@ -153,10 +167,6 @@ export class EngineService {
 
   public async setFence(fenceType: string): Promise<void> {
     this.fenceType = fenceType;
-
-    // fences links:
-    // https://www.cgtrader.com/free-3d-models/exterior/other/cc0-wood-fence
-    // https://free3d.com/3d-model/-rectangular-box-hedge--896206.html
 
     this.objects = this.objects.filter(obj => {
       if ((obj.userData['type'] === 'north-fence-group') || (obj.userData['type'] === 'south-fence-group') || (obj.userData['type'] === 'west-fence-group') || (obj.userData['type'] === 'east-fence-group')) {
@@ -177,7 +187,7 @@ export class EngineService {
     const fence = ConstantHelper.getFenceByType(fenceType);
 
     if (this.width && this.depth) {
-      if (fence.destination.fileName.includes('.gltf') || fence.destination.fileName.includes('.glf')) {
+      if (fence.destination.fileName.includes('.gltf') || fence.destination.fileName.includes('.glb')) {
         await this.loadFenceFromGTLF(this.width, this.depth, fence);
       }
       else if (fence.destination.fileName.includes('.obj') || (fence.destination.fileName.includes('.mlt'))) {
@@ -224,6 +234,41 @@ export class EngineService {
       this.scene.add(plane);
       this.objects.push(plane);
     });
+  }
+
+  public setEnvironment(environment: Environment): void {
+    if (this.environment === environment) return;
+    else this.environment = environment;
+
+    this.objects = this.objects.filter(obj => {
+      if ((obj.userData['type'] === 'forest-element') || (obj.userData['type'] === 'city-group')) {
+        this.scene.remove(obj);
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach(material => material.dispose());
+          } else {
+            obj.material.dispose();
+          }
+        }
+        return false;
+      }
+      return true;
+    });
+
+    switch (environment) {
+      case 'None':
+        break;
+      case 'Forest':
+        this.setForestEnvironment();
+        break;
+      case 'City':
+        this.setCityEnvironment();
+        break;
+      default:
+        throw new Error('Environment not found');
+        break;
+    }
   }
 
   public setGardenDimensions(width: number, depth: number) {
@@ -524,6 +569,128 @@ export class EngineService {
     }
   }
 
+  private setForestEnvironment(): void {
+    const gardenArea: number = this.width! * this.depth!;
+
+    const forestElements: ForestElement[] = [
+      // pine-1 3D model link: https://www.cgtrader.com/free-3d-models/plant/leaf/single-tree
+      { amount: gardenArea > 1000 ? 50 : 100, name: 'pine-1', fileExtension: 'gltf', width: 11, depth: 11, height: 17 },
+      // pine-2 3D model link: https://www.cgtrader.com/free-3d-models/plant/conifer/christmas-tree-model-85da8650-bd59-4ddc-88ce-386f8b623b55
+      { amount: gardenArea > 1000 ? 40 : 80, name: 'pine-2', fileExtension: 'glb', width: 7, depth: 7, height: 17 },
+      // birch 3D model link: https://www.cgtrader.com/free-3d-models/plant/leaf/tree-08-ce6003b6-5713-42e8-b928-78aa1995521c
+      { amount: gardenArea > 1000 ? 30 : 60, name: 'birch', fileExtension: 'gltf', width: 9, depth: 9, height: 17 },
+      // yew 3D model link: https://www.cgtrader.com/free-3d-models/plant/leaf/tree-02-efe818d1-771f-4e4f-912b-b7958d329ad2
+      { amount: gardenArea > 1000 ? 20 : 40, name: 'yew', fileExtension: 'gltf', width: 5, depth: 5, height: 2 },
+    ];
+
+    const environmentPromises: Promise<void>[] = [];
+    const placedTrees: { x: number, y: number }[] = [];
+
+    forestElements.forEach(element => {
+      for (let i = 0; i < element.amount; i++) {
+        let position = this.getRandomPositionOutsideGarden(placedTrees);
+        environmentPromises.push(this.loadGLTF3DModel(
+          element.name,
+          element.fileExtension,
+          position.x,
+          position.y,
+          Math.random() * Math.PI * 2,
+          Math.random() * (1 - 0.5) + 0.5,
+          element.width,
+          element.depth,
+          element.height,
+          'forest-element'
+        ));
+        placedTrees.push(position);
+      }
+    });
+
+    Promise.all(environmentPromises)
+      .then(() => { })
+      .catch((error) => {
+        console.error('Error while loading environment:', error);
+      });
+  }
+
+  private setCityEnvironment(): void {
+    if (!this.width || !this.depth) return;
+
+    const city = this.cityService.createCityEnvironment(this.width, this.depth);
+
+    this.mirrorCamera = city.mirrorCamera;
+    
+    this.scene.add(city.group);
+    this.objects.push(city.group);
+  }
+
+  private loadGLTF3DModel(name: string, fileExtension: 'gltf' | 'glb', positionX: number, positionY: number, rotation: number, scale: number, width: number, depth: number, height: number, elementType: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.modelCache[name]) {
+        const modelClone = this.modelCache[name].clone();
+        this.addModelToScene(modelClone, positionX, positionY, rotation, scale, width, depth, height, elementType);
+        resolve();
+      } else {
+        const loader: GLTFLoader = new GLTFLoader();
+        loader.load(`../../assets/3d models/${name}/${name}.${fileExtension}`, (gltf) => {
+          const originModel = gltf.scene;
+          this.modelCache[name] = originModel;
+
+          const modelClone = originModel.clone();
+          this.addModelToScene(modelClone, positionX, positionY, rotation, scale, width, depth, height, elementType);
+          resolve();
+        }, undefined, (error) => {
+          reject(error);
+        });
+      }
+    });
+  }
+
+  private addModelToScene(model: THREE.Group, positionX: number, positionY: number, rotation: number, scale: number, width: number, depth: number, height: number, elementType: string): void {
+    const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(model);
+    const size: THREE.Vector3 = new THREE.Vector3();
+    boundingBox.getSize(size);
+
+    const scaleX: number = (width * scale) / size.x;
+    const scaleY: number = (height * scale) / size.y;
+    const scaleZ: number = (depth * scale) / size.z;
+
+    model.scale.set(scaleX, scaleY, scaleZ);
+    model.position.set(positionX, 0, positionY);
+    model.rotation.y = rotation;
+
+    model.userData['type'] = elementType;
+
+    this.scene.add(model);
+    this.objects.push(model);
+  }
+
+  private getRandomPositionOutsideGarden(placedTrees: { x: number, y: number }[]): { x: number, y: number } {
+    const halfWidth = this.width! / 2;
+    const halfDepth = this.depth! / 2;
+
+    let randomX: number;
+    let randomY: number;
+    let isOutsideGarden: boolean;
+    let isFarEnoughFromOtherTrees: boolean;
+
+    do {
+      randomX = Math.random() * 600 - 300;
+      randomY = Math.random() * 600 - 300;
+
+      isOutsideGarden =
+        (randomX < -halfWidth - 5 || randomX > halfWidth + 5) ||
+        (randomY < -halfDepth - 5 || randomY > halfDepth + 5);
+
+      isFarEnoughFromOtherTrees = placedTrees.every(tree => {
+        const distance = Math.sqrt((tree.x - randomX) ** 2 + (tree.y - randomY) ** 2);
+        return distance > 2;
+      });
+
+    } while ((!isOutsideGarden || !isFarEnoughFromOtherTrees));
+
+    return { x: randomX, y: randomY };
+  }
+
   private set2DModeCamera(): void {
     const zoomFactor: number = 58;
 
@@ -536,7 +703,7 @@ export class EngineService {
       1000
     );
 
-    this.camera.position.set(0, 6, 0);
+    this.camera.position.set(0, 20, 0);
     this.camera.lookAt(0, 0, 0);
     this.camera.up.set(0, 0, 1);
   }
@@ -849,7 +1016,7 @@ export class EngineService {
     await this.getElementsForGarden(this.currentProjectId).subscribe(
       (gardenElementsList: IGardenElement[]) => {
         this.gardenElementsList = gardenElementsList;
-        
+
         this.pavementsList = this.gardenElementsList
           .filter((element: IGardenElement) => element.category === 'Pavement')
           .map((element: IGardenElement): IPavement => ({
@@ -878,9 +1045,20 @@ export class EngineService {
             rotationY: element.rotationY
           }));
 
+        this.flowersList = this.gardenElementsList
+          .filter((element: IGardenElement) => element.category === 'Flower')
+          .map((element: IGardenElement): IFlower => ({
+            name: element.name,
+            x: element.positionX,
+            y: element.positionY,
+            rotationX: element.rotationX,
+            rotationY: element.rotationY
+          }));
+
         this.addPavementsToGarden();
         this.addTreesToGarden();
         this.addBushesToGarden();
+        this.addFlowersToGarden();
       },
       error => {
         console.error('Error loading garden elements: ', error);
@@ -921,6 +1099,12 @@ export class EngineService {
 
   private addBushesToGarden(): void {
     this.bushesList.forEach(bush => {
+      // TODO
+    });
+  }
+
+  private addFlowersToGarden(): void {
+    this.flowersList.forEach(flower => {
       // TODO
     });
   }

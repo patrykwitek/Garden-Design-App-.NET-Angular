@@ -1,0 +1,11 @@
+Model Information:
+* title:	Boxwood
+* source:	https://sketchfab.com/3d-models/boxwood-f0efd57011404e1b9ff14e89f7ecb305
+* author:	shortpaca (https://sketchfab.com/shortpaca)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Boxwood" (https://sketchfab.com/3d-models/boxwood-f0efd57011404e1b9ff14e89f7ecb305) by shortpaca (https://sketchfab.com/shortpaca) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

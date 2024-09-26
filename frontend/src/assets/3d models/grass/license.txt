@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low Poly Cartoon Grass
+* source:	https://sketchfab.com/3d-models/low-poly-cartoon-grass-84834a633e6b4d11aa3597666ee6945f
+* author:	Dandushik (https://sketchfab.com/Dandushik)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low Poly Cartoon Grass" (https://sketchfab.com/3d-models/low-poly-cartoon-grass-84834a633e6b4d11aa3597666ee6945f) by Dandushik (https://sketchfab.com/Dandushik) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

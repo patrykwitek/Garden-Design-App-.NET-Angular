@@ -70,6 +70,20 @@ namespace backend.Migrations
                     b.ToTable("Entrances");
                 });
 
+            modelBuilder.Entity("backend.Entities.Environment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Environments");
+                });
+
             modelBuilder.Entity("backend.Entities.Fence", b =>
                 {
                     b.Property<int>("Id")
@@ -133,6 +147,9 @@ namespace backend.Migrations
                     b.Property<int>("Depth")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("EnvironmentId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("FenceId")
                         .HasColumnType("INTEGER");
 
@@ -149,6 +166,8 @@ namespace backend.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EnvironmentId");
 
                     b.HasIndex("FenceId");
 
@@ -228,6 +247,10 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Entities.Project", b =>
                 {
+                    b.HasOne("backend.Entities.Environment", "Environment")
+                        .WithMany()
+                        .HasForeignKey("EnvironmentId");
+
                     b.HasOne("backend.Entities.Fence", "Fence")
                         .WithMany()
                         .HasForeignKey("FenceId");
@@ -239,6 +262,8 @@ namespace backend.Migrations
                     b.HasOne("backend.Entities.User", "User")
                         .WithMany("Projects")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Environment");
 
                     b.Navigation("Fence");
 

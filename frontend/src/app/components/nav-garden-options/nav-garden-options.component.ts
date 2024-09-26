@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { IDirection } from 'src/app/models/interfaces/i-direction';
 import { IElement } from 'src/app/models/interfaces/i-element';
 import { IElementCategory } from 'src/app/models/interfaces/i-element-category';
+import { IEnvironment } from 'src/app/models/interfaces/i-environment';
 import { IFence } from 'src/app/models/interfaces/i-fence';
 import { IGround } from 'src/app/models/interfaces/i-ground';
 import { Direction } from 'src/app/models/types/direction';
@@ -28,6 +29,7 @@ export class NavGardenOptionsComponent implements OnInit {
   // https://www.freepik.com/free-vector/green-grass-border-realistic-design_4904201.htm#from_view=detail_alsolike
 
   public groundList: IGround[] = [];
+  public environmentList: IEnvironment[] = [];
   public fenceList: IFence[] = [];
   public elementCategoriesList: IElementCategory[] = [];
   public chosenCategoryElementsList: IElement[] = [];
@@ -39,6 +41,7 @@ export class NavGardenOptionsComponent implements OnInit {
   ];
 
   public showGroundOptions: boolean = false;
+  public showEnvironmentOptions: boolean = false;
   public showAddElementsOptions: boolean = false;
   public showFenceOptions: boolean = false;
   public showEntranceOptions: boolean = false;
@@ -54,6 +57,7 @@ export class NavGardenOptionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadGrounds();
+    this.loadEnvironments();
     this.loadFences();
     this.loadElementsCategories();
   }
@@ -79,6 +83,11 @@ export class NavGardenOptionsComponent implements OnInit {
     event.stopPropagation();
   }
 
+  public toggleEnvironmentOptions(event: Event): void {
+    this.showEnvironmentOptions = !this.showEnvironmentOptions;
+    event.stopPropagation();
+  }
+
   public resetCameraPosition() {
     this.engineService.resetCameraPosition();
   }
@@ -89,6 +98,10 @@ export class NavGardenOptionsComponent implements OnInit {
 
   public setGround(ground: IGround) {
     this.gardenService.setGround(ground);
+  }
+
+  public setEnvironment(environment: IEnvironment) {
+    this.gardenService.setEnvironment(environment);
   }
 
   public setFence(fence: IFence) {
@@ -121,8 +134,11 @@ export class NavGardenOptionsComponent implements OnInit {
       case ConstantHelper.bushCategory:
         // TODO
         break;
-      default:
+      case ConstantHelper.flowerCategory:
         // TODO
+        break;
+      default:
+        throw new Error('Element category not found');
         break;
     }
   }
@@ -141,6 +157,17 @@ export class NavGardenOptionsComponent implements OnInit {
       },
       error => {
         console.error('Error loading grounds: ', error);
+      }
+    );
+  }
+
+  private loadEnvironments(): void {
+    this.gardenService.getEnvironments().subscribe(
+      (environmentList: IEnvironment[]) => {
+        this.environmentList = environmentList;
+      },
+      error => {
+        console.error('Error loading environments: ', error);
       }
     );
   }
