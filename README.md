@@ -1,7 +1,7 @@
 # Garden Design Application 🍃 _(early version)_
 > ASP.NET & Angular Garden Design Application
 
-### **Important Message: At the moment it is a very early version of the project and newer and newer functionalities will appear with time.**
+### **Important Message: At the moment it is a early version of the project and newer and newer functionalities will appear with time.**
 
 <a name="top"></a>
 ## Table of Contents 📖
@@ -14,6 +14,7 @@
    - [Pavements](#pavements)
    - [Trees](#trees)
    - [Bushes](#bushes)
+   - [Flowers](#flowers)
    - [Benches](#benches)
 7. [Removing Elements](#remove)
 8. [Setting Ground](#ground)
@@ -26,6 +27,8 @@
 15. [Translations](#translations)
 16. [Light & Dark Mode](#lightdarkmode)
 17. [Setting Environment](#environment)
+    - [Forest](#forest)
+    - [City](#city)
 
 <a name="preview"></a>
 ## 1. Preview & Description 👀
@@ -38,7 +41,11 @@ Application uses ASP.NET as backend and Angular as frontend. WebGL was used to c
 
 Inspiration for the project came from my first programming job at Idealogic company, where I had been creating software for designing houses also using WebGL.
 
-![preview](https://github.com/user-attachments/assets/364c4cf5-216d-498a-8673-9fde2e48a073)
+![preview1](https://github.com/user-attachments/assets/0ba3b173-2581-4558-8929-1655fba83d6e)
+
+![preview2](https://github.com/user-attachments/assets/5f6c4c8c-9de1-4419-8941-1b590f85c6de)
+
+![preview3](https://github.com/user-attachments/assets/284a54d0-2845-4f7c-ba89-5fa6c0cb5ddf)
 
 <a name="installation"></a>
 ## 2. Installation 🛒
@@ -104,7 +111,7 @@ On 3D:
 
 ![pavements visualisation](https://github.com/user-attachments/assets/c9082e98-2c36-4a8e-be4e-533291179f0c)
 
-The pavement position is selected by using the tool. The algorithm recognises the places where a footpath can be added -the entrances to the garden and the continuation of established footpaths. 
+The pavement position is selected by using the tool. The algorithm recognises the places where a footpath can be added - the entrances to the garden and the continuation of established footpaths. 
 
 Users can cancel the selection of the walkway at any time by pressing the ESC button.
 
@@ -117,6 +124,11 @@ https://github.com/user-attachments/assets/7b75062d-1138-4eac-9ffc-e163d3190c57
 
 <a name="bushes"></a>
 ### Bushes 🌲
+
+*This functionality will come in the future*
+
+<a name="flowers"></a>
+### Flowers 🌼
 
 *This functionality will come in the future*
 
@@ -135,14 +147,14 @@ https://github.com/user-attachments/assets/7b75062d-1138-4eac-9ffc-e163d3190c57
 
 You can change the ground of a particular garden in the top container of options. When you change the ground, it will be saved and will remain the same when you enter the project again.
 
-https://github.com/user-attachments/assets/52948a83-ff8c-4254-9ed0-10a47f54fe5b
+https://github.com/user-attachments/assets/b8609a61-471b-4158-9581-a7fb8df2afb4
 
 <a name="fence"></a>
 ## 9. Setting Fence 🧱
 
 In the top options bar, the user has the option of setting a fence.
 
-https://github.com/user-attachments/assets/df4820c3-e6b3-47f9-ac84-1e0c5c12ff32
+https://github.com/user-attachments/assets/8b350fca-b907-4af5-b3d2-cad5fdcff976
 
 <a name="camera"></a>
 ## 10. Reset Camera 🎥
@@ -195,11 +207,23 @@ The garden designer has the option to change the mode from light to dark (night)
 
 The dark mode information is stored in local storage, so the application will remember the state saved by the user.
 
-https://github.com/user-attachments/assets/c29f7d42-4b4c-4b0b-a7bf-3c9149eca66c
+https://github.com/user-attachments/assets/b966a92b-ef79-4fb6-be2c-6204d0024e7c
 
 <a name="environment"></a>
 ## 17. Setting environment 🏙️
 
-*This functionality will come in the future*
+User can set the garden environment. It can be a forest, a city or an empty space.
+
+https://github.com/user-attachments/assets/0a1ed3e4-6178-416e-b60b-d3007dc97bd8
+
+<a name="forest"></a>
+### Forest 🌳
+
+![forest](https://github.com/user-attachments/assets/90cf6aee-fd2e-4ab3-a010-4604bbe4dedf)
+
+<a name="city"></a>
+### City 🏙️
+
+https://github.com/user-attachments/assets/98f0b537-5539-43e6-a858-0def32623b74
 
 [🔼 Back to top](#top)
