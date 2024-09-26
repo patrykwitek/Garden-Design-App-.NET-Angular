@@ -27,7 +27,7 @@ export class ProjectsComponent {
     panelClass: 'dialog',
     backdropClass: 'dialog-backdrop',
     height: 'fit-content',
-    width: '900px'
+    width: '1300px'
   };
 
   constructor(

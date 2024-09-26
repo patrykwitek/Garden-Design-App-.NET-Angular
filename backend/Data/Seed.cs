@@ -95,6 +95,11 @@ namespace backend.Data
                         {
                             Name = "Flower",
                             // img link: https://www.istockphoto.com/pl/wektor/wiosenna-trawa-granica-z-wczesn%C4%85-wiosn%C4%85-kwiaty-i-motyl-izolowane-na-bia%C5%82ym-tle-gm1129847617-298616893
+                        },
+                        new ElementCategory
+                        {
+                            Name = "Bench",
+                            // img link: https://www.istockphoto.com/pl/wektor/%C5%82awka-ogrodowa-kresk%C3%B3wkowe-drewniane-i-wiklinowe-meble-na-ulice-i-parki-zestaw-gm1331220354-414419829
                         }
                     );
                 }
@@ -173,6 +178,24 @@ namespace backend.Data
                             Name = "Tulip",
                             Category = "Flower"
                             // img link: https://www.istockphoto.com/pl/wektor/cartoon-garden-kwiaty-i-element-zestaw-wektor-gm956341846-261114781
+                        },
+                        new Element
+                        {
+                            Name = "Wooden",
+                            Category = "Bench"
+                            // img link: https://www.istockphoto.com/pl/wektor/%C5%82awka-ogrodowa-kresk%C3%B3wkowe-drewniane-i-wiklinowe-meble-na-ulice-i-parki-zestaw-gm1331220354-414419829
+                        },
+                        new Element
+                        {
+                            Name = "Modern",
+                            Category = "Bench"
+                            // img link: https://www.istockphoto.com/pl/wektor/%C5%82awka-ogrodowa-kresk%C3%B3wkowe-drewniane-i-wiklinowe-meble-na-ulice-i-parki-zestaw-gm1331220354-414419829
+                        },
+                        new Element
+                        {
+                            Name = "Metal",
+                            Category = "Bench"
+                            // img link: https://www.istockphoto.com/pl/wektor/%C5%82awka-ogrodowa-kresk%C3%B3wkowe-drewniane-i-wiklinowe-meble-na-ulice-i-parki-zestaw-gm1331220354-414419829
                         }
                     );
                 }
