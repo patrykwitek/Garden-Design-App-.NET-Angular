@@ -1,24 +1,92 @@
 <div class="create-new-project-container">
     <app-back-button class="back" (click)="cancel()"></app-back-button>
-    <form (ngSubmit)="create()">
-        <h3>{{"CreateNewProject" | translate}}</h3>
-        <div class="break-line"></div>
-        <div class="inputs-container">
-            <div class="single-input">
-                <label [ngClass]="isPl ? 'wider' : ''" for="name">{{"Name" | translate}}:</label>
-                <input type="text" name="name" placeholder="{{'Name' | translate}}" [(ngModel)]="name">
+    <form 
+        [formGroup]="createProjectForm" 
+        (ngSubmit)="createProjectForm.valid && create()" 
+        autocomplete="off"
+        *ngIf="groundChoice && environmentChoice && fenceChoice">
+            <h3>{{"CreateNewProject" | translate}}</h3>
+            <div class="break-line"></div>
+            <div class="input-container">
+                <app-text-input 
+                    [formControl]="$any(createProjectForm.controls['name'])" 
+                    [label]="'Name'" 
+                    [type]="'text'">
+                </app-text-input>
+                <div class="two-columns">
+                    <app-text-input 
+                        [formControl]="$any(createProjectForm.controls['width'])" 
+                        [label]="'Width'"
+                        [type]="'number'"
+                        [class]="'small'">
+                    </app-text-input>
+                    <app-text-input 
+                        [formControl]="$any(createProjectForm.controls['depth'])" 
+                        [label]="'Depth'" 
+                        [type]="'number'"
+                        [class]="'small'">
+                    </app-text-input>
+                </div>
+                <div class="selection-options">
+                    <p class="field-header">{{"Ground" | translate}}:</p>
+                    <div class="options-section">
+                        <div 
+                            class="single-option"
+                            matTooltip={{ground.name}}
+                            matTooltipShowDelay="500"
+                            matTooltipPosition="below"
+                            *ngFor="let ground of groundList"
+                            (click)="setGround(ground)"
+                            [ngClass]="groundChoice.name === ground.name ? 'selected' : ''">
+                                <img [src]="'../../../assets/textures/grounds/' + ground.img + ' thumbnail.png'" alt={{ground.name}}>
+                        </div>
+                    </div>
+                </div>
+                <div class="selection-options">
+                    <p class="field-header">{{"Fence" | translate}}:</p>
+                    <div class="options-section">
+                        <div 
+                            class="single-option"
+                            matTooltip={{fence.name}}
+                            matTooltipShowDelay="500"
+                            matTooltipPosition="below"
+                            *ngFor="let fence of fenceList"
+                            (click)="setFence(fence)"
+                            [ngClass]="fenceChoice.name === fence.name ? 'selected' : ''">
+                                <img [src]="'../../../assets/textures/fences/' + fence.img + '.png'" alt={{fence.name}}>
+                        </div>
+                    </div>
+                </div>
+                <div class="selection-options">
+                    <p class="field-header">{{"Environment" | translate}}:</p>
+                    <div class="options-section">
+                        <div 
+                            class="single-option"
+                            matTooltip={{environment.name}}
+                            matTooltipShowDelay="500"
+                            matTooltipPosition="below"
+                            *ngFor="let environment of environmentList"
+                            (click)="setEnvironment(environment)"
+                            [ngClass]="environmentChoice.name === environment.name ? 'selected' : ''">
+                                <img [src]="'../../../assets/images/environments/' + environment.name.toLowerCase() + '.png'" alt={{environment.name}}>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="single-input">
-                <label [ngClass]="isPl ? 'wider' : ''" for="width">{{"Width" | translate}}:</label>
-                <input type="number" name="width" placeholder="{{'Width' | translate}}" [(ngModel)]="width">
+            <div class="errors-container" *ngIf="validationErrors">
+                <ul>
+                    <li *ngFor="let error of validationErrors">
+                        {{error}}
+                    </li>
+                </ul>
             </div>
-            <div class="single-input">
-                <label [ngClass]="isPl ? 'wider' : ''" for="depth">{{"Depth" | translate}}:</label>
-                <input type="number" name="depth" placeholder="{{'Depth' | translate}}" [(ngModel)]="depth">
+            <div class="button-container">
+                <button 
+                    class="submit-button" 
+                    type="submit"
+                    [disabled]="!createProjectForm.valid">
+                        {{"Create" | translate}}
+                </button>
             </div>
-        </div>
-        <div class="buttons-container">
-            <input type="submit" value="{{'Create' | translate}}" class="submit-button">
-        </div>
     </form>
 </div>

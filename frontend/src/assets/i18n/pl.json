@@ -32,7 +32,7 @@
     "CreateAccount": "Utwórz konto",
     "PleaseEnterA": "Proszę podaj",
     "MustBeAtLeast": "musi posiadać przynajmniej",
-    "MustBeAtMost": "musi posiadać conajwyżej",
+    "MustBeAtMost": "musi posiadać co najwyżej",
     "Characters": "znaki",
     "ConfirmPasswordError": "Hasła muszą się pokrywać",
     "IsRequired": "jest wymagane",
@@ -79,5 +79,8 @@
     "Wire": "Siatka metaliczna",
     "Bench": "Ławka",
     "Modern": "Nowoczesne",
-    "Metal": "Metalowe"
+    "Metal": "Metalowe",
+    "Details": "Szczegóły",
+    "Size": "Wymiary",
+    "MetersLong": "metrów"
 }

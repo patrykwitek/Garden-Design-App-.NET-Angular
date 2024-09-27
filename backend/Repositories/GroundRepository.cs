@@ -15,6 +15,11 @@ public class GroundRepository : IGroundRepository
         _context = context;
     }
 
+    public async Task<Ground> GetGroundById(int id)
+    {
+        return await _context.Grounds.FirstOrDefaultAsync(ground => ground.Id == id);
+    }
+
     public async Task<List<Ground>> GetGroundList()
     {
         return await _context.Grounds.ToListAsync();

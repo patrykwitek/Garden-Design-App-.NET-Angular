@@ -1,6 +1,13 @@
 .single-input {
     position: relative;
-    margin: 1rem 0;
+
+    p {
+        margin: 0;
+        padding: 0;
+        font-size: .8rem;
+        color: var(--input-header);
+        margin-bottom: .1rem;
+    }
 
     input {
         border: 1px black solid;
@@ -25,9 +32,17 @@
 
     .error-icon {
         position: absolute;
-        top: 5px;
-        left: calc(20vw - 35px);
+        top: 26px;
+        right: 5px;
         color: rgb(171, 0, 0);
         visibility: hidden;
+    }
+
+    &.small {
+        width: 140px;
+        
+        input {
+            width: 140px;
+        }
     }
 }

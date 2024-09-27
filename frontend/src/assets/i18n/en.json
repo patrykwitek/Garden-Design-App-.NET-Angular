@@ -79,5 +79,8 @@
     "Wire": "Chain link",
     "Bench": "Bench",
     "Modern": "Modern",
-    "Metal": "Metal"
+    "Metal": "Metal",
+    "Details": "Details",
+    "Size": "Size",
+    "MetersLong": "meters long"
 }
