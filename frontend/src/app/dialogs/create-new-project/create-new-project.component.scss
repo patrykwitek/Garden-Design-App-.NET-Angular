@@ -1,6 +1,7 @@
 .create-new-project-container {
     max-width: 100%;
     background-color: var(--dialog-color);
+    padding: 20px 0;
 
     .back {
         position: absolute;
@@ -16,7 +17,6 @@
             color: var(--header-font-color);
             margin: 0;
             align-self: center;
-            margin-top: 20px;
         }
 
         .break-line {
@@ -27,57 +27,91 @@
             align-self: center;
         }
 
-        .inputs-container {
+        .input-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: .5rem;
+            gap: .7rem;
 
-            .single-input {
+            * {
                 align-self: center;
-                width: 100%;
+            }
+
+            .two-columns {
+                width: 300px;
                 display: flex;
-                justify-content: center;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+            }
 
-                label {
-                    width: 60px;
-                    color: var(--label-color)
+            .selection-options {
+                width: 300px;
+
+                .field-header {
+                    margin: 0;
+                    padding: 0;
+                    font-size: .8rem;
+                    color: var(--input-header);
+                    margin-bottom: .1rem;
+                    width: 300px;
                 }
 
-                .wider {
-                    width: 90px;
-                }
+                .options-section {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 1rem;
+                    color: white;
+                    width: 300px;
 
-                input {
-                    width: 200px;
-                    padding: 2px 6px;
+                    .single-option {
+                        display: flex;
 
-                    &:focus {
-                        outline: none;
+                        img {
+                            align-self: center;
+                            width: 30px;
+                            border: 2px rgb(58, 58, 58) solid;
+                        }
+
+                        &:hover {
+                            cursor: pointer;
+
+                            img {
+                                border: 2px var(--flag-border) solid;
+                            }
+                        }
+
+                        &.selected {
+                            img {
+                                border: 2px var(--flag-border) solid;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        .buttons-container {
+        .button-container {
+            margin: 20px 0;
             width: 100%;
             align-self: center;
             display: flex;
             flex-wrap: wrap;
-            padding: 1rem 0;
-            margin-top: .5rem;
             justify-content: center;
-            gap: 2rem;
 
             .submit-button {
-                border: 2px var(--header-font-color) solid;
-                color: var(--header-font-color);
-                background-color: transparent;
+                width: 300px;
+                border: 1px var(--navbar-color) solid;
+                background-color: var(--navbar-color);
+                color: white;
                 border-radius: 5px;
                 padding: 3px 12px;
                 transition: .2s;
 
+                &:disabled {
+                    opacity: .8;
+                }
+
                 &:hover {
+                    cursor: pointer;
                     color: var(--bright-label-color);
                     background-color: var(--header-font-color);
                 }

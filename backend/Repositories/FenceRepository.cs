@@ -16,6 +16,11 @@ public class FenceRepository : IFenceRepository
         _context = context;
     }
 
+    public async Task<Fence> GetFenceById(int id)
+    {
+        return await _context.Fences.FirstOrDefaultAsync(fence => fence.Id == id);
+    }
+
     public async Task<List<Fence>> GetFenceList()
     {
         return await _context.Fences.ToListAsync();

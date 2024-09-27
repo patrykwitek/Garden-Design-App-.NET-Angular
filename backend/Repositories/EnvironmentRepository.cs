@@ -15,6 +15,11 @@ namespace backend.Repositories
             _context = context;
         }
 
+        public async Task<Entities.Environment> GetEnvironmentById(int id)
+        {
+            return await _context.Environments.FirstOrDefaultAsync(environment => environment.Id == id);
+        }
+
         public async Task<List<Entities.Environment>> GetEnvironmentList()
         {
             return await _context.Environments.ToListAsync();

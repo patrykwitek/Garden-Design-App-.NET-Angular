@@ -37,6 +37,7 @@
     --navbar-menu-hover: rgb(118, 160, 123);
     --welcome-button-bg-hover: transparent;
     --cancel-button-bg: rgb(255, 42, 63);
+    --input-header: rgb(77, 77, 77);
 }
 
 body.dark-mode {
@@ -64,6 +65,7 @@ body.dark-mode {
     --navbar-menu-hover: rgb(75, 75, 75);
     --welcome-button-bg-hover: white;
     --cancel-button-bg: white;
+    --input-header: rgb(255, 255, 255);
 }
 
 html,

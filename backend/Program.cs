@@ -16,7 +16,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 
-// TODO: zmienić po dodaniu certyfikatu
+// TODO: change after adding cerificate (?)
 app.UseCors(builder => builder
     .AllowAnyHeader()
     .AllowAnyMethod()

@@ -1,4 +1,5 @@
-<div class="single-input">
+<div class="single-input" [ngClass]="class">
+    <p>{{label | translate}}:</p>
     <input 
         type={{type}}
         [class.is-invalid]="control.touched && control.invalid"
@@ -20,5 +21,11 @@
     </div>
     <div class="invalid-feedback" *ngIf="control.errors?.['notMatching']">
         {{"ConfirmPasswordError" | translate}}
+    </div>
+    <div class="invalid-feedback" *ngIf="control.errors?.['min']">
+        {{label | translate}} {{"MustBeAtLeast" | translate}} {{control.errors?.['min'].min}} {{"MetersLong" | translate}}
+    </div>
+    <div class="invalid-feedback" *ngIf="control.errors?.['max']">
+        {{label | translate}} {{"MustBeAtMost" | translate}} {{control.errors?.['max'].max}} {{"MetersLong" | translate}}
     </div>
 </div>

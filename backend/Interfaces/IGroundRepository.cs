@@ -3,5 +3,6 @@
     public interface IGroundRepository
     {
         Task<List<Ground>> GetGroundList();
+        Task<Ground> GetGroundById(int id);
     }
 }
