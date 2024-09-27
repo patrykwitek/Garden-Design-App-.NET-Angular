@@ -1,7 +1,7 @@
 # Garden Design Application 🍃 _(early version)_
 > ASP.NET & Angular Garden Design Application
 
-### **Important Message: At the moment it is a early version of the project and newer and newer functionalities will appear with time.**
+### **Important Message: At the moment it is an early version of the project and newer and newer functionalities will appear with time.**
 
 <a name="top"></a>
 ## Table of Contents 📖
@@ -82,9 +82,13 @@ https://github.com/user-attachments/assets/a6ec2348-032f-45c2-bfcb-3a3d8644ed9c
 <a name="projects"></a>
 ## 4. User's Projects 🧑‍💻
 
-Users can create their own designs. At the moment, garden designer can set their width and depth, but the functionality for creating a new design will be extended in the future. Project owners can also delete and edit projects.
+Users can create their own designs. Garden designer can set their name, width, depth, ground type, fence type and environment type. Project owners can also delete and edit projects.
 
-https://github.com/user-attachments/assets/96d7864d-bb5c-4b5b-b971-9e60eac9b506
+https://github.com/user-attachments/assets/f0011377-3b87-46d4-8e4c-91aff2a90bea
+
+When browsing through the list of projects, pagination was used for optimisation purposes.
+
+https://github.com/user-attachments/assets/44f792c7-2b64-437b-84c5-a53b7802da27
 
 <a name="entrance"></a>
 ## 5. Adding entrance 🚪
