@@ -9,6 +9,7 @@ namespace backend.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
         public int Width { get; set; }
         public int Depth { get; set; }

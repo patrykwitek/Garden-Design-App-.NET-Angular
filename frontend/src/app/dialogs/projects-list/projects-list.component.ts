@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { ConfirmationComponent } from 'src/app/dialogs/confirmation/confirmation.component';
 import { ProjectsParams } from 'src/app/models/classes/projectsParams';
 import { IPagination } from 'src/app/models/interfaces/i-pagination';
 import { IProject } from 'src/app/models/interfaces/i-project';
@@ -26,7 +28,9 @@ export class ProjectsListComponent implements OnInit {
     private projectService: ProjectService,
     private projectLoaderService: ProjectLoaderService,
     private dateService: DateService,
-    private gardenService: GardenService
+    private gardenService: GardenService,
+    private toastr: ToastrService,
+    private dialog: MatDialog
   ) {
     this.projectsParams = projectService.getProjectsParams();
   }
@@ -36,7 +40,7 @@ export class ProjectsListComponent implements OnInit {
     await this.loadProjects();
     this.isLoading = false;
   }
-  
+
   public cancel() {
     this.dialogRef.close();
   }
@@ -85,5 +89,37 @@ export class ProjectsListComponent implements OnInit {
     this.projectLoaderService.loadOpenProjectTab(false);
 
     this.dialogRef.close();
+  }
+
+  public removeProject(id: string) {
+    let dialogRef = this.dialog.open(ConfirmationComponent, {
+      disableClose: false,
+      hasBackdrop: true,
+      panelClass: 'dialog',
+      backdropClass: 'dialog-backdrop',
+      height: 'fit-content',
+      width: '500px',
+      data: { text: 'DeleteProjectConfirmationText' }
+    });
+
+    dialogRef.afterClosed().subscribe(response => {
+      if (response.confirmation) {
+        const currentProject = this.gardenService.getCurrentProject();
+
+        if (currentProject && currentProject.id === id) {
+          this.projectLoaderService.setProject(null);
+          this.gardenService.setCurrentProject(undefined);
+        }
+
+        this.projectService.removeProject(id).subscribe({
+          next: () => {
+            this.loadProjects();
+          },
+          error: error => {
+            this.toastr.error('Error removing the project: ', error);
+          }
+        });
+      }
+    });
   }
 }

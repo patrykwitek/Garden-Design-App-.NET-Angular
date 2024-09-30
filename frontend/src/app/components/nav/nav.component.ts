@@ -118,8 +118,10 @@ export class NavComponent {
   }
 
   public receiveEntranceTool(direction: Direction) {
-    this.isOpenEntranceTool = true;
     const currentProject = this.gardenService.getCurrentProject();
+    if (!currentProject) return;
+
+    this.isOpenEntranceTool = true;
 
     if (direction == 'North' || direction == 'South') {
       this.entrancePositionX = currentProject.width / 2;
@@ -154,7 +156,9 @@ export class NavComponent {
       position: entrancePosition
     };
 
-    const currentProject: IProject = this.gardenService.getCurrentProject();
+    const currentProject: IProject | undefined = this.gardenService.getCurrentProject();
+    if(!currentProject) return;
+
     const baseUrl: string = environment.apiUrl;
     
     this.http.put(baseUrl + `solution/setEntrance/${currentProject.id}`, entrance).subscribe(

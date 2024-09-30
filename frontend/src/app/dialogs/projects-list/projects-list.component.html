@@ -62,7 +62,8 @@
                                 <button 
                                     matTooltip="{{'Delete' | translate}}"
                                     matTooltipShowDelay="500"
-                                    matTooltipPosition="below">
+                                    matTooltipPosition="below"
+                                    (click)="removeProject(project.id!)">
                                         <mat-icon 
                                             class="action-icon">
                                                 delete

@@ -28,11 +28,6 @@ namespace backend.Repositories
             _context.Projects.Add(project);
         }
 
-        public void DeleteProject(Project project)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<PagedList<ProjectDto>> GetProjectsForUser(ProjectsParams projectsParams)
         {
             var query = _context.Projects
@@ -42,7 +37,7 @@ namespace backend.Repositories
                 .Include(project => project.Entrances)
                 .AsQueryable();
 
-            query = query.Where(project => project.User.UserName == projectsParams.Username);
+            query = query.Where(project => (project.User.UserName == projectsParams.Username) && (project.IsDeleted == false));
 
             var projects = query.ProjectTo<ProjectDto>(_mapper.ConfigurationProvider);
 

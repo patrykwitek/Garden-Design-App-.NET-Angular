@@ -1,0 +1,59 @@
+.confirmation-container {
+    max-width: 100%;
+    background-color: var(--dialog-color);
+    padding: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    * {
+        align-self: center;
+    }
+
+    h5 {
+        color: var(--label-color);
+    }
+
+    .buttons-container {
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+
+        button {
+            width: 200px;
+            color: white;
+            border-radius: 5px;
+            padding: 3px 12px;
+            transition: .1s;
+
+            &:disabled {
+                opacity: .8;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .submit-button {
+            border: 1px var(--navbar-color) solid;
+            background-color: var(--navbar-color);
+
+            &:hover {
+                background-color: white;
+                color: var(--navbar-color);
+            }
+        }
+
+        .cancel-button {
+            border: 1px var(--cancel-confirmation-button-bg) solid;
+            background-color: var(--cancel-confirmation-button-bg);
+
+            &:hover {
+                background-color: white;
+                color: var(--cancel-confirmation-button-bg);
+            }
+        }
+    }
+}

@@ -15,8 +15,10 @@ export class EntranceToolService {
   ) { }
 
   public initializeEntranceVisualisation(direction: Direction) {
-    this.entranceDirection = direction;
     const currentProject = this.gardenService.getCurrentProject();
+    if (!currentProject) return;
+    
+    this.entranceDirection = direction;
 
     let x = 0;
     let y = 0;
