@@ -6,7 +6,6 @@ import { IProject } from '../models/interfaces/i-project';
   providedIn: 'root'
 })
 export class ProjectLoaderService {
-
   private currentProject = new BehaviorSubject<IProject | null>(null);
   private isOpenProjectTab: Subject<boolean> = new Subject();
 

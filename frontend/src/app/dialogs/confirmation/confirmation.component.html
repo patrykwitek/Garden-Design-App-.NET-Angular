@@ -1,0 +1,9 @@
+<form>
+    <div class="confirmation-container">
+        <h5>{{data.text | translate}}</h5>
+        <div class="buttons-container">
+            <button class="submit-button" type="submit" (click)="close(true)">{{"Yes" | translate}}</button>
+            <button class="cancel-button" (click)="close(false)">{{"No" | translate}}</button>
+        </div>
+    </div>
+</form>

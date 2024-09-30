@@ -32,6 +32,10 @@ export class ProjectService {
     return this.http.post(this.baseUrl + 'projects/create', project);
   }
 
+  public removeProject(id: string) {
+    return this.http.put(this.baseUrl + `projects/delete/${id}`, null);
+  }
+
   public getProjectsParams() {
     return this.projectsParams;
   }

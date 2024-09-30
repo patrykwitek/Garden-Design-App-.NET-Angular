@@ -34,6 +34,7 @@ import { BackButtonComponent } from './shared-components/back-button/back-button
 import { WelcomePageComponent } from './components/welcome-page/welcome-page.component';
 import { NavGardenOptionsComponent } from './components/nav-garden-options/nav-garden-options.component';
 import { ThemeToogleSwitchComponent } from './shared-components/theme-toogle-switch/theme-toogle-switch.component';
+import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { ThemeToogleSwitchComponent } from './shared-components/theme-toogle-swi
     BackButtonComponent,
     WelcomePageComponent,
     NavGardenOptionsComponent,
-    ThemeToogleSwitchComponent
+    ThemeToogleSwitchComponent,
+    ConfirmationComponent
   ],
   imports: [
     BrowserModule,

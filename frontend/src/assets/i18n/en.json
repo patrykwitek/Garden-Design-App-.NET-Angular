@@ -82,5 +82,8 @@
     "Metal": "Metal",
     "Details": "Details",
     "Size": "Size",
-    "MetersLong": "meters long"
+    "MetersLong": "meters long",
+    "DeleteProjectConfirmationText": "Are you sure you want to delete this project?",
+    "Yes": "Yes",
+    "No": "No"
 }

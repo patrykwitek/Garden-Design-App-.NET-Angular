@@ -125,8 +125,7 @@ export class GardenService {
     }
   }
 
-  public getCurrentProject(): IProject {
-    if (this.currentProject) return this.currentProject;
-    throw new Error("No current project loaded");
+  public getCurrentProject(): IProject | undefined {
+    return this.currentProject;
   }
 }

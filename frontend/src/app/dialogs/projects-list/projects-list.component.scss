@@ -170,10 +170,6 @@
                 .pagination-styles::ng-deep .page-item.active .page-link {
                     color: var(--bright-label-color);
                     background-color: var(--header-font-color) !important;
-
-                    &:hover {
-                        color: var(--header-font-color);
-                    }
                 }
 
                 .pagination-styles::ng-deep .page-item .page-link {

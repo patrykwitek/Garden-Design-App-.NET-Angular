@@ -95,7 +95,7 @@ export class CreateNewProjectComponent implements OnInit {
       },
       error: error => {
         this.validationErrors = error;
-        this.toastr.error('Error creating project', error);
+        this.toastr.error('Error creating the project: ', error);
       }
     });
 

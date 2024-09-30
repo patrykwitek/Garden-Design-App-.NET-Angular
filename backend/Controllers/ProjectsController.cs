@@ -30,6 +30,7 @@ namespace backend.Controllers
             Project project = new Project
             {
                 Name = projectDto.Name,
+                IsDeleted = false,
                 DateCreated = DateTime.UtcNow,
                 Width = projectDto.Width,
                 Depth = projectDto.Depth,
@@ -59,6 +60,20 @@ namespace backend.Controllers
             Response.AddPaginationHeader(new PaginationHeader(projects.CurrentPage, projects.PageSize, projects.TotalCount, projects.TotalPages));
 
             return Ok(projects);
+        }
+
+        [HttpPut("delete/{id}")]
+        public async Task<ActionResult> DeleteProject(int id)
+        {
+            Project project = await _unitOfWork.ProjectsRepository.GetProjectByIdAsync(id);
+            project.IsDeleted = true;
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to delete project");
         }
     }
 }
