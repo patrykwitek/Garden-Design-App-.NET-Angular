@@ -1,7 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { IEnvironment } from 'src/app/models/interfaces/i-environment';
 import { IFence } from 'src/app/models/interfaces/i-fence';
@@ -11,12 +10,12 @@ import { GardenService } from 'src/app/services/garden.service';
 import { ProjectService } from 'src/app/services/project.service';
 
 @Component({
-  selector: 'app-create-new-project',
-  templateUrl: './create-new-project.component.html',
-  styleUrls: ['./create-new-project.component.scss']
+  selector: 'app-edit-project',
+  templateUrl: './edit-project.component.html',
+  styleUrls: ['./edit-project.component.scss']
 })
-export class CreateNewProjectComponent implements OnInit {
-  public createProjectForm: FormGroup = new FormGroup({});
+export class EditProjectComponent {
+  public editProjectForm: FormGroup = new FormGroup({});
   public validationErrors: string[] | undefined;
 
   public name: string = '';
@@ -31,10 +30,10 @@ export class CreateNewProjectComponent implements OnInit {
   public fenceList: IFence[] = [];
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { template: IProject },
-    public dialogRef: MatDialogRef<CreateNewProjectComponent>,
-    private gardenService: GardenService,
+    public dialogRef: MatDialogRef<EditProjectComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { project: IProject },
     private formBuilder: FormBuilder,
+    private gardenService: GardenService,
     private projectService: ProjectService,
     private toastr: ToastrService
   ) { }
@@ -43,7 +42,6 @@ export class CreateNewProjectComponent implements OnInit {
     await this.gardenService.getGrounds().subscribe(
       (groundList: IGround[]) => {
         this.groundList = groundList;
-        this.groundChoice = groundList[0];
       },
       error => {
         console.error('Error loading grounds: ', error);
@@ -53,7 +51,6 @@ export class CreateNewProjectComponent implements OnInit {
     await this.gardenService.getFences().subscribe(
       (fenceList: IFence[]) => {
         this.fenceList = fenceList;
-        this.fenceChoice = fenceList[0];
       },
       error => {
         console.error('Error loading fences: ', error);
@@ -63,39 +60,43 @@ export class CreateNewProjectComponent implements OnInit {
     await this.gardenService.getEnvironments().subscribe(
       (environmentList: IEnvironment[]) => {
         this.environmentList = environmentList;
-        this.environmentChoice = environmentList[0];
       },
       error => {
         console.error('Error loading environments: ', error);
       }
     );
 
+    this.groundChoice = this.data.project.ground;
+    this.fenceChoice = this.data.project.fence;
+    this.environmentChoice = this.data.project.environment;
+
     this.initializeForm();
   }
 
-  public async create() {
-    const createProjectValues = { ...this.createProjectForm.value };
+  public async edit() {
+    const editProjectValues = { ...this.editProjectForm.value };
 
-    if (!createProjectValues || !this.groundChoice || !this.environmentChoice || !this.fenceChoice) return;
+    if (!editProjectValues || !this.groundChoice || !this.environmentChoice || !this.fenceChoice) return;
 
     const project: IProject = {
-      name: createProjectValues.name,
-      width: createProjectValues.width,
-      depth: createProjectValues.depth,
+      id: this.data.project.id,
+      name: editProjectValues.name,
+      width: editProjectValues.width,
+      depth: editProjectValues.depth,
       ground: this.groundChoice,
       environment: this.environmentChoice,
       fence: this.fenceChoice,
       entrances: []
     }
 
-    this.projectService.createProject(project).subscribe({
+    this.projectService.editProject(project).subscribe({
       next: () => {
-        this.toastr.success('New project successfully added');
+        this.toastr.success('Project successfully edited');
         this.dialogRef.close();
       },
       error: error => {
         this.validationErrors = error;
-        this.toastr.error('Error creating the project: ', error);
+        this.toastr.error('Error editing the project: ', error);
       }
     });
   }
@@ -117,13 +118,13 @@ export class CreateNewProjectComponent implements OnInit {
   }
 
   private initializeForm() {
-    this.createProjectForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      width: ['', [
+    this.editProjectForm = this.formBuilder.group({
+      name: [this.data.project.name, Validators.required],
+      width: [this.data.project.width, [
         Validators.required,
         Validators.min(5),
         Validators.max(300)]],
-      depth: ['', [
+      depth: [this.data.project.depth, [
         Validators.required,
         Validators.min(5),
         Validators.max(300)]]

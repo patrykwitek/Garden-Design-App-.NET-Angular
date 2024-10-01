@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationComponent } from 'src/app/dialogs/confirmation/confirmation.component';
 import { ProjectsParams } from 'src/app/models/classes/projectsParams';
@@ -9,6 +9,7 @@ import { DateService } from 'src/app/services/date.service';
 import { GardenService } from 'src/app/services/garden.service';
 import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 import { ProjectService } from 'src/app/services/project.service';
+import { EditProjectComponent } from '../edit-project/edit-project.component';
 
 @Component({
   selector: 'app-projects-list',
@@ -92,7 +93,7 @@ export class ProjectsListComponent implements OnInit {
   }
 
   public removeProject(id: string) {
-    let dialogRef = this.dialog.open(ConfirmationComponent, {
+    const removeProjectDialogConfig: MatDialogConfig = {
       disableClose: false,
       hasBackdrop: true,
       panelClass: 'dialog',
@@ -100,7 +101,9 @@ export class ProjectsListComponent implements OnInit {
       height: 'fit-content',
       width: '500px',
       data: { text: 'DeleteProjectConfirmationText' }
-    });
+    };
+
+    let dialogRef = this.dialog.open(ConfirmationComponent, removeProjectDialogConfig);
 
     dialogRef.afterClosed().subscribe(response => {
       if (response.confirmation) {
@@ -120,6 +123,24 @@ export class ProjectsListComponent implements OnInit {
           }
         });
       }
+    });
+  }
+
+  public editProject(project: IProject) {
+    const editProjectDialogConfig: MatDialogConfig = {
+      disableClose: false,
+      hasBackdrop: true,
+      panelClass: 'dialog',
+      backdropClass: 'dialog-backdrop',
+      height: 'fit-content',
+      width: '400px',
+      data: { project: project }
+    };
+
+    let dialogRef = this.dialog.open(EditProjectComponent, editProjectDialogConfig);
+
+    dialogRef.afterClosed().subscribe(_ => {
+      this.loadProjects();
     });
   }
 }

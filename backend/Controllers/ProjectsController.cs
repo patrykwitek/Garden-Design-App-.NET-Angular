@@ -47,7 +47,7 @@ namespace backend.Controllers
                 return Ok();
             }
 
-            return BadRequest("Failed to create project");
+            return BadRequest("Failed to create the project");
         }
 
         [HttpGet("getProjects")]
@@ -73,7 +73,31 @@ namespace backend.Controllers
                 return Ok();
             }
 
-            return BadRequest("Failed to delete project");
+            return BadRequest("Failed to delete the project");
+        }
+
+        [HttpPut("edit")]
+        public async Task<ActionResult> EditProject(EditProjectDto projectDto)
+        {
+            Project project = await _unitOfWork.ProjectsRepository.GetProjectByIdAsync(projectDto.Id);
+
+            Ground ground = await _unitOfWork.GroundRepository.GetGroundById(projectDto.Ground.Id);
+            Entities.Environment environment = await _unitOfWork.EnvironmentRepository.GetEnvironmentById(projectDto.Environment.Id);
+            Fence fence = await _unitOfWork.FenceRepository.GetFenceById(projectDto.Fence.Id);
+
+            project.Name = projectDto.Name;
+            project.Width = projectDto.Width;
+            project.Depth = projectDto.Depth;
+            project.Ground = ground;
+            project.Fence = fence;
+            project.Environment = environment;
+
+            if (await _unitOfWork.Complete())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to edit the project");
         }
     }
 }
