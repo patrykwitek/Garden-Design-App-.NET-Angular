@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavComponent } from './components/nav/nav.component';
@@ -35,6 +34,7 @@ import { WelcomePageComponent } from './components/welcome-page/welcome-page.com
 import { NavGardenOptionsComponent } from './components/nav-garden-options/nav-garden-options.component';
 import { ThemeToogleSwitchComponent } from './shared-components/theme-toogle-switch/theme-toogle-switch.component';
 import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
+import { EditProjectComponent } from './dialogs/edit-project/edit-project.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +60,8 @@ import { ConfirmationComponent } from './dialogs/confirmation/confirmation.compo
     WelcomePageComponent,
     NavGardenOptionsComponent,
     ThemeToogleSwitchComponent,
-    ConfirmationComponent
+    ConfirmationComponent,
+    EditProjectComponent
   ],
   imports: [
     BrowserModule,

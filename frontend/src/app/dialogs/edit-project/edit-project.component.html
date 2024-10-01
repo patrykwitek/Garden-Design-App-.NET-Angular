@@ -1,27 +1,27 @@
-<div class="create-new-project-container">
+<div class="edit-project-container">
     <app-back-button class="back" (click)="cancel()"></app-back-button>
     <form 
-        [formGroup]="createProjectForm" 
-        (ngSubmit)="createProjectForm.valid && create()" 
+        [formGroup]="editProjectForm" 
+        (ngSubmit)="editProjectForm.valid && edit()" 
         autocomplete="off"
         *ngIf="groundChoice && environmentChoice && fenceChoice">
-            <h3>{{"CreateNewProject" | translate}}</h3>
+            <h3>{{"Edit" | translate}} {{data.project.name}}</h3>
             <div class="break-line"></div>
             <div class="input-container">
                 <app-text-input 
-                    [formControl]="$any(createProjectForm.controls['name'])" 
+                    [formControl]="$any(editProjectForm.controls['name'])" 
                     [label]="'Name'" 
                     [type]="'text'">
                 </app-text-input>
                 <div class="two-columns">
                     <app-text-input 
-                        [formControl]="$any(createProjectForm.controls['width'])" 
+                        [formControl]="$any(editProjectForm.controls['width'])" 
                         [label]="'Width'"
                         [type]="'number'"
                         [class]="'small'">
                     </app-text-input>
                     <app-text-input 
-                        [formControl]="$any(createProjectForm.controls['depth'])" 
+                        [formControl]="$any(editProjectForm.controls['depth'])" 
                         [label]="'Depth'" 
                         [type]="'number'"
                         [class]="'small'">
@@ -84,8 +84,8 @@
                 <button 
                     class="submit-button" 
                     type="submit"
-                    [disabled]="!createProjectForm.valid">
-                        {{"Create" | translate}}
+                    [disabled]="!editProjectForm.valid">
+                        {{"Edit" | translate}}
                 </button>
             </div>
     </form>
