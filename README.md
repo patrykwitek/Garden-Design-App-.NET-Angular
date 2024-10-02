@@ -182,7 +182,9 @@ https://github.com/user-attachments/assets/30e5483a-f638-4552-838c-72cacb361712
 <a name="edit"></a>
 ## 13. Profile Edit ✍️
 
-*This functionality will come in the future*
+In the top panel, user can enter the edit profile tab, where he or she can edit the username and date of birth.
+
+https://github.com/user-attachments/assets/0105c8ab-436b-40b0-85bb-8342f653a6af
 
 <a name="admin"></a>
 ## 14. Admin Role 🛡️
