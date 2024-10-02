@@ -111,7 +111,7 @@ export class NavComponent {
       panelClass: 'dialog',
       backdropClass: 'dialog-backdrop',
       height: 'fit-content',
-      width: '800px'
+      width: 'fit-content'
     };
 
     this.dialog.open(EditProfileComponent, dialogConfig);

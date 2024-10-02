@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IUser } from '../models/interfaces/i-user';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,8 +10,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class LoginService {
   baseUrl = environment.apiUrl;
+
   private currentUserSource = new BehaviorSubject<IUser | null>(null);
-  currentUser$ = this.currentUserSource.asObservable();
+  public currentUser$ = this.currentUserSource.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -50,5 +51,13 @@ export class LoginService {
     localStorage.removeItem('garden-design-app-user');
     this.currentUserSource.next(null);
     this.translateService.use('en');
+  }
+
+  public getUserDataForEditProfile(username: string): Observable<{username: string, dateOfBirth: string}> {
+    return this.http.get<{username: string, dateOfBirth: string}>(this.baseUrl + `login/getUserDataForEditProfile/${username}`);
+  }
+
+  public editProfile(userData: {oldUsername: string, newUsername: string, dateOfBirth: string}) {
+    return this.http.put(this.baseUrl + 'login/editProfile', userData);
   }
 }

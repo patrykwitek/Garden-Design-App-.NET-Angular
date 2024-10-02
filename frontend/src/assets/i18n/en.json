@@ -85,5 +85,7 @@
     "MetersLong": "meters long",
     "DeleteProjectConfirmationText": "Are you sure you want to delete this project?",
     "Yes": "Yes",
-    "No": "No"
+    "No": "No",
+    "Information": "Information",
+    "YouHaveMadeChanges": "You have made changes"
 }

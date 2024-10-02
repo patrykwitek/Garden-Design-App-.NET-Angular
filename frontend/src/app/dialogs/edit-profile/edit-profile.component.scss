@@ -28,6 +28,23 @@
             align-self: center;
         }
 
+        .save-changes-info-section {
+            border: 1px rgb(98, 156, 104) solid;
+            background-color: rgba(98, 156, 104, 0.1);
+            padding: .2rem .5rem;
+            text-align: left;
+            width: 300px;
+            align-self: center;
+            margin: 10px 0;
+
+            p {
+                margin: 0;
+                padding: 0;
+                color: rgb(98, 156, 104);
+                font-size: .9rem;
+            }
+        }
+
         .edit-profile-options-container {
             width: 100%;
             display: flex;
@@ -35,6 +52,35 @@
             gap: 10px;
             margin-top: .5rem;
             padding: 0 3rem;
+
+            .buttons-container {
+                margin-top: 20px;
+                width: 100%;
+                align-self: center;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+
+                .submit-button {
+                    width: 300px;
+                    border: 1px var(--navbar-color) solid;
+                    background-color: var(--navbar-color);
+                    color: white;
+                    border-radius: 5px;
+                    padding: 3px 12px;
+                    transition: .2s;
+
+                    &:disabled {
+                        opacity: .8;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                        color: var(--bright-label-color);
+                        background-color: var(--header-font-color);
+                    }
+                }
+            }
         }
     }
 }

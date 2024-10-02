@@ -27,6 +27,23 @@
             align-self: center;
         }
 
+        .save-changes-info-section {
+            border: 1px rgb(98, 156, 104) solid;
+            background-color: rgba(98, 156, 104, 0.1);
+            padding: .2rem .5rem;
+            text-align: left;
+            width: 300px;
+            align-self: center;
+            margin: 10px 0;
+
+            p {
+                margin: 0;
+                padding: 0;
+                color: rgb(98, 156, 104);
+                font-size: .9rem;
+            }
+        }
+
         .input-container {
             display: flex;
             flex-direction: column;

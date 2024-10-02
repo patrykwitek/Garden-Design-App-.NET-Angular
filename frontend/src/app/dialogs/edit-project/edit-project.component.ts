@@ -91,8 +91,8 @@ export class EditProjectComponent {
 
     this.projectService.editProject(project).subscribe({
       next: () => {
+        this.editProjectForm.reset(editProjectValues);
         this.toastr.success('Project successfully edited');
-        this.dialogRef.close();
       },
       error: error => {
         this.validationErrors = error;
