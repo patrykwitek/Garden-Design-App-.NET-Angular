@@ -3,8 +3,35 @@
     <div class="content-container">
         <h3>{{"EditProfile" | translate}}</h3>
         <div class="break-line"></div>
-        <div class="edit-profile-options-container">
-            <p>TODO</p>
+        <div class="save-changes-info-section" *ngIf="editProfileForm.dirty">
+            <p>
+                <strong>{{"Information" | translate}}: </strong>
+                {{"YouHaveMadeChanges" | translate}}
+            </p>
         </div>
+        <form
+            [formGroup]="editProfileForm" 
+            (ngSubmit)="editProfileForm.valid && edit()" 
+            autocomplete="off"
+            class="edit-profile-options-container">
+                <app-text-input
+                    [formControl]="$any(editProfileForm.controls['username'])" 
+                    [label]="'Username'" 
+                    [type]="'text'">
+                </app-text-input>
+                <app-date-picker
+                    [formControl]="$any(editProfileForm.controls['dateOfBirth'])" 
+                    [label]="'DateOfBirth'" 
+                    [maxDate]="maxDate">
+                </app-date-picker>
+                <div class="buttons-container">
+                    <button 
+                        class="submit-button" 
+                        type="submit"
+                        [disabled]="!editProfileForm.valid">
+                            {{"Edit" | translate}}
+                    </button>
+                </div>
+        </form>
     </div>
 </div>

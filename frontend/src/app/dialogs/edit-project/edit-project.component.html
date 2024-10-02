@@ -7,6 +7,12 @@
         *ngIf="groundChoice && environmentChoice && fenceChoice">
             <h3>{{"Edit" | translate}} {{data.project.name}}</h3>
             <div class="break-line"></div>
+            <div class="save-changes-info-section" *ngIf="editProjectForm.dirty">
+                <p>
+                    <strong>{{"Information" | translate}}: </strong>
+                    {{"YouHaveMadeChanges" | translate}}
+                </p>
+            </div>
             <div class="input-container">
                 <app-text-input 
                     [formControl]="$any(editProjectForm.controls['name'])" 

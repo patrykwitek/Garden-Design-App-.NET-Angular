@@ -82,6 +82,45 @@ namespace backend.Controllers
             };
         }
 
+        [HttpGet("getUserDataForEditProfile/{username}")]
+        public async Task<ActionResult<GetUserDto>> GetUserDataForEditProfile(string username)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.UserName == username);
+
+            if (user is null) return NotFound("User not found");
+
+            return new GetUserDto
+            {
+                Username = user.UserName,
+                DateOfBirth = user.DateOfBirth
+            };
+        }
+
+        [HttpPut("editProfile")]
+        public async Task<ActionResult> EditProject(EditUserDto editUserDto)
+        {
+            if (editUserDto.NewUsername != editUserDto.OldUsername && await UserExists(editUserDto.NewUsername))
+            {
+                return BadRequest("That username is taken");
+            }
+
+            User user = await _context.Users
+                .FirstOrDefaultAsync(x => x.UserName == editUserDto.OldUsername);
+
+            if (user is null) return NotFound("User not found");
+
+            user.UserName = editUserDto.NewUsername;
+            user.DateOfBirth = editUserDto.DateOfBirth;
+
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to edit the profile");
+        }
+
         private async Task<bool> UserExists(string username)
         {
             return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());

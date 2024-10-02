@@ -16,7 +16,6 @@ export class RegisterComponent {
 
   constructor(
     private loginService: LoginService,
-    private toastr: ToastrService,
     private formBuilder: FormBuilder,
     private router: Router
   ) { }
