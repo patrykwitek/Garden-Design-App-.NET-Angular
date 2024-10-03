@@ -29,7 +29,7 @@
                 flex-direction: column;
                 gap: 1rem;
                 margin-bottom: 1rem;
-                
+
                 input {
                     border: 1px black solid;
                     font-size: 1rem;
@@ -93,16 +93,5 @@
                 }
             }
         }
-    }
-
-    .slidebar {
-        align-self: center;
-        width: 820px;
-        height: 250px;
-        box-shadow: 0px 0px 10px -5px var(--box-shadow);
-        padding: 1rem 2rem;
-        background-color: var(--projects-bg-color);
-        border-radius: 10px;
-        color: var(--label-color);
     }
 }

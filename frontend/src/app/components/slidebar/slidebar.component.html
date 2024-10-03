@@ -1,0 +1,21 @@
+<div class="slider-container">
+  <div class="slidebar">
+    <div
+      class="slides"
+      [style.transform]="getSlideTransform()"
+      [style.transition]="getSlideTransition()"
+      (transitionend)="handleTransitionEnd()">
+        <img *ngFor="let image of images" [src]="'../../../assets/images/' + image" alt="Slide Image" />
+        <img [src]="'../../../assets/images/' + images[0]" alt="Slide Image" />
+    </div>
+    <div class="dots">
+      <ul>
+        <li
+          *ngFor="let image of images; let i = index"
+          [class.active]="i === getDisplayIndex()"
+          (click)="goToSlide(i)"
+        ></li>
+      </ul>
+    </div>
+  </div>
+</div>

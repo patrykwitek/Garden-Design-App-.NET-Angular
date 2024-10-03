@@ -11,13 +11,18 @@ import { LoginService } from 'src/app/services/login.service';
 export class WelcomeComponent {
   @Output() changeMode = new EventEmitter();
 
-  username: string = '';
-  password: string = '';
+  public username: string = '';
+  public password: string = '';
+  public slidebarImageList: string[] = [
+    'welcome-page-slidebar/slidebar-add-entrance.jpg',
+    'welcome-page-slidebar/slidebar-city.jpg',
+    'welcome-page-slidebar/slidebar-elements.jpg',
+    'welcome-page-slidebar/slidebar-night-mode.jpg',
+    'welcome-page-slidebar/slidebar-pavements.jpg'
+  ];
 
   constructor(
-    private loginService: LoginService,
-    private router: Router,
-    private formBuilder: FormBuilder
+    private loginService: LoginService
   ) { }
 
   public login() {
