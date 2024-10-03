@@ -77,7 +77,7 @@ The user skipping a field will see an appropriate message, as field validation h
 
 The login uses the JWT Token, which is generated on the backend side and saved in local storage.
 
-https://github.com/user-attachments/assets/a6ec2348-032f-45c2-bfcb-3a3d8644ed9c
+https://github.com/user-attachments/assets/dbde3655-d1a2-43d9-ad36-2b4c042c2821
 
 <a name="projects"></a>
 ## 4. User's Projects 🧑‍💻
@@ -198,13 +198,13 @@ https://github.com/user-attachments/assets/0105c8ab-436b-40b0-85bb-8342f653a6af
 
 The application supports English and Polish translations. Logged-in user can change application language in settings tab. After that, the selected language will be assigned to user's account (not local storage), so after changing the device, the language will be the same as previously selected.
 
-https://github.com/user-attachments/assets/b29b2d64-3cb6-49f7-b597-92d20c64e4de
+https://github.com/user-attachments/assets/438a6c65-9242-4e63-8be9-4356299a0c8a
 
 ### **For not logged-in user:**
 
 A non-logged-in user can select the language on the welcome page.
 
-https://github.com/user-attachments/assets/139caae6-188f-4d82-b39e-f70667bc457e
+https://github.com/user-attachments/assets/2ebf22a0-4fe2-4f03-9246-4c0b1b6d0f58
 
 <a name="lightdarkmode"></a>
 ## 16. Light & Dark Mode 🌙
