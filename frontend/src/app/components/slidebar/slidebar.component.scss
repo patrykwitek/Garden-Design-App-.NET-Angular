@@ -1,0 +1,55 @@
+.slider-container {
+    position: relative;
+    width: 820px;
+    margin: auto;
+    padding: 0;
+
+    .slidebar {
+        position: relative;
+        width: 820px;
+        height: 250px;
+        overflow: hidden;
+        box-shadow: 0px 0px 10px -5px var(--box-shadow);
+        background-color: var(--projects-bg-color);
+        border-radius: 10px;
+        color: var(--label-color);
+
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+
+            img {
+                width: 820px;
+                height: 250px;
+                object-fit: cover;
+            }
+        }
+
+        .dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            ul {
+                display: flex;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            li {
+                width: 8px;
+                height: 8px;
+                margin: 0 5px;
+                border-radius: 50%;
+                background-color: grey;
+                cursor: pointer;
+
+                &.active {
+                    background-color: white;
+                }
+            }
+        }
+    }
+}

@@ -35,6 +35,7 @@ import { NavGardenOptionsComponent } from './components/nav-garden-options/nav-g
 import { ThemeToogleSwitchComponent } from './shared-components/theme-toogle-switch/theme-toogle-switch.component';
 import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
 import { EditProjectComponent } from './dialogs/edit-project/edit-project.component';
+import { SlidebarComponent } from './components/slidebar/slidebar.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { EditProjectComponent } from './dialogs/edit-project/edit-project.compon
     NavGardenOptionsComponent,
     ThemeToogleSwitchComponent,
     ConfirmationComponent,
-    EditProjectComponent
+    EditProjectComponent,
+    SlidebarComponent
   ],
   imports: [
     BrowserModule,
