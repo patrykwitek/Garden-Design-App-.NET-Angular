@@ -193,6 +193,10 @@ Each user has one of two possible roles: admin or user. Administrator has two ad
 1. admin has access to view, edit and delete all projects from the database (while the ordinary user has access only to his own)
 2. admin can give and take away the admin role from other users
 
+Every newly created user has the role of user by default. In order to change it, this must be done by admin.
+
+After the first start of the application, an administrator account is seeded. The username for seeded admin account is "admin" and password "AdminPassword123@".
+
 https://github.com/user-attachments/assets/ac772445-1001-42b0-9037-5729a00543f0
 
 https://github.com/user-attachments/assets/c072ac6b-dc5a-4552-a048-5513f4ed428f
