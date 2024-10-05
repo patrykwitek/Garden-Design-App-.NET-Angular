@@ -16,6 +16,7 @@ namespace backend.Helpers
             CreateMap<DateTime?, DateTime?>()
                 .ConvertUsing(date => date.HasValue ? DateTime.SpecifyKind(date.Value, DateTimeKind.Utc) : null);
             CreateMap<Entrance, EntranceDto>().ReverseMap();
+            CreateMap<User, UserDataDto>();
         }
     }
 }

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from './services/login.service';
 import { IUser } from './models/interfaces/i-user';
 import { TranslateService } from '@ngx-translate/core';
 import { Language } from './models/types/language';
 import { take } from 'rxjs';
 import { ThemeService } from './services/theme.service';
+import { UserRoleService } from './services/user-role.service';
+import { jwtDecode } from 'jwt-decode';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +15,10 @@ import { ThemeService } from './services/theme.service';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private loginService: LoginService,
+    private userService: UserService,
     private translateService: TranslateService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private userRoleService: UserRoleService
   ) { }
 
   ngOnInit(): void {
@@ -46,7 +49,14 @@ export class AppComponent implements OnInit {
     }
 
     const user: IUser = JSON.parse(userString);
-    this.loginService.setCurrentUser(user);
+    this.userService.setCurrentUser(user);
     this.translateService.use(user.language);
+
+    const token: string = user.token;
+
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      this.userRoleService.setUserRole(decodedToken.role);
+    }
   }
 }

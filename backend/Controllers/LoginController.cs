@@ -1,10 +1,14 @@
+using System.Data;
 using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using backend.Data.Context;
 using backend.DTO;
 using backend.Entities;
+using backend.Extensions;
+using backend.Helpers;
 using backend.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +20,19 @@ namespace backend.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
 
+        private readonly IUnitOfWork _unitOfWork;
+
         public LoginController(
             DataContext context,
             ITokenService tokenService,
-            IMapper mapper
+            IMapper mapper,
+            IUnitOfWork unitOfWork
         )
         {
             _tokenService = tokenService;
             _context = context;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost("register")]
@@ -52,7 +60,6 @@ namespace backend.Controllers
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                Role = user.Role,
                 Language = user.Language
             };
         }
@@ -77,9 +84,18 @@ namespace backend.Controllers
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                Role = user.Role,
                 Language = user.Language
             };
+        }
+
+        [HttpGet("getUsersList")]
+        public async Task<ActionResult<PagedList<UserDataDto>>> GetUsersList([FromQuery] PaginationParams projectsParams)
+        {
+            PagedList<UserDataDto> usersList = await _unitOfWork.UserRepository.GetPaginatedUsersList(projectsParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(usersList.CurrentPage, usersList.PageSize, usersList.TotalCount, usersList.TotalPages));
+
+            return Ok(usersList);
         }
 
         [HttpGet("getUserDataForEditProfile/{username}")]
@@ -119,6 +135,25 @@ namespace backend.Controllers
             }
 
             return BadRequest("Failed to edit the profile");
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPut("changeRole")]
+        public async Task<ActionResult> ChangeRole(UserDataDto userData)
+        {
+            User user = await _context.Users
+                .FirstOrDefaultAsync(x => x.UserName == userData.Username);
+
+            if (user is null) return NotFound("User not found");
+
+            user.Role = (user.Role == "admin") ? "user" : "admin";
+
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                return Ok();
+            }
+
+            return BadRequest("Failed to change the role");
         }
 
         private async Task<bool> UserExists(string username)

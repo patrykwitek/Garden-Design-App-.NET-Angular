@@ -62,6 +62,16 @@ namespace backend.Controllers
             return Ok(projects);
         }
 
+        [HttpGet("getAllUsersProjects")]
+        public async Task<ActionResult<PagedList<ProjectDto>>> GetAllUsersProjects([FromQuery] PaginationParams projectsParams)
+        {
+            var projects = await _unitOfWork.ProjectsRepository.GetAllProjects(projectsParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(projects.CurrentPage, projects.PageSize, projects.TotalCount, projects.TotalPages));
+
+            return Ok(projects);
+        }
+
         [HttpPut("delete/{id}")]
         public async Task<ActionResult> DeleteProject(int id)
         {

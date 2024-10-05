@@ -1,0 +1,50 @@
+<div class="set-roles-container">
+    <app-back-button class="back" (click)="cancel()"></app-back-button>
+    <div class="content-container">
+        <h3>{{"UsersList" | translate}}</h3>
+        <div class="break-line"></div>
+        <div class="users-list-container">
+            <div class="loading-container" *ngIf="isLoading">
+                <h5>{{"Loading" | translate}}...</h5>
+            </div>
+            <div class="no-users-container" *ngIf="!isLoading && usersList.length === 0">
+                <h5>{{"NoUsers" | translate}}</h5>
+            </div>
+            <table *ngIf="!isLoading && usersList.length !== 0">
+                <thead>
+                    <tr>
+                        <th class="username-section">{{"Username" | translate}}</th>
+                        <th class="th-role-section">{{"Role" | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of usersList">
+                        <td class="username-section">{{user.username}}</td>
+                        <td class="td-role-section">
+                            <app-on-off-toogle-switch 
+                                [isTurnOn]="user.role === 'admin'" 
+                                class="turn-on-off-toogle-switch" 
+                                (click)="changeRole(user)">
+                            </app-on-off-toogle-switch>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!isLoading && pagination && usersList.length != 0" class="pagination-container">
+                <pagination 
+                    [boundaryLinks]="true" 
+                    [totalItems]="pagination.totalItems" 
+                    [itemsPerPage]="pagination.itemsPerPage"
+                    [maxSize]="10"
+                    [(ngModel)]="pagination.currentPage"
+                    (pageChanged)="pageChanged($event)"
+                    previousText="&lsaquo;" 
+                    nextText="&rsaquo;" 
+                    firstText="&laquo;"
+                    lastText="&raquo;"
+                    class="pagination-styles">
+                </pagination>
+            </div>
+        </div>
+    </div>
+</div>

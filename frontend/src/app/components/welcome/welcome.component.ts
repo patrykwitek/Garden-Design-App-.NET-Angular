@@ -1,7 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { LoginService } from 'src/app/services/login.service';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-welcome',
@@ -22,7 +20,7 @@ export class WelcomeComponent {
   ];
 
   constructor(
-    private loginService: LoginService
+    private userService: UserService
   ) { }
 
   public login() {
@@ -31,7 +29,7 @@ export class WelcomeComponent {
       password: this.password
     };
 
-    this.loginService.login(loginValues).subscribe({
+    this.userService.login(loginValues).subscribe({
       next: () => { },
       error: error => {
         console.error(error);

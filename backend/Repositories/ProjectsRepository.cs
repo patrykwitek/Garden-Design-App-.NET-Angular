@@ -44,6 +44,21 @@ namespace backend.Repositories
             return await PagedList<ProjectDto>.CreateAsync(projects, projectsParams.PageNumber, projectsParams.PageSize);
         }
 
+        public async Task<PagedList<ProjectDto>> GetAllProjects(PaginationParams projectsParams)
+        {
+            var query = _context.Projects
+                .Include(project => project.Ground)
+                .Include(project => project.Fence)
+                .Include(project => project.Environment)
+                .Include(project => project.Entrances)
+                .Where(project => project.IsDeleted == false)
+                .AsQueryable();
+
+            var projects = query.ProjectTo<ProjectDto>(_mapper.ConfigurationProvider);
+
+            return await PagedList<ProjectDto>.CreateAsync(projects, projectsParams.PageNumber, projectsParams.PageSize);
+        }
+
         public async Task<Project> GetProjectByIdAsync(int id)
         {
             return await _context.Projects

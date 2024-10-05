@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { LoginService } from 'src/app/services/login.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +14,7 @@ export class RegisterComponent {
   validationErrors: string[] | undefined;
 
   constructor(
-    private loginService: LoginService,
+    private userService: UserService,
     private formBuilder: FormBuilder,
     private router: Router
   ) { }
@@ -55,7 +54,7 @@ export class RegisterComponent {
 
     const registerValues = { ...this.registerForm.value, dateOfBirth: dateOfBirth };
 
-    this.loginService.register(registerValues).subscribe({
+    this.userService.register(registerValues).subscribe({
       next: () => {
         this.router.navigateByUrl('/');
       },

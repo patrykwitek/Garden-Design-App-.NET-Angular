@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using backend.Data.Context;
 using backend.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,22 @@ namespace backend.Data
         {
             using (var context = new DataContext(serviceProvider.GetRequiredService<DbContextOptions<DataContext>>()))
             {
+                if (!context.Users.Any(user => user.UserName == "admin"))
+                {
+                    using HMACSHA512 hmac = new HMACSHA512();
+                    User adminUser = new User
+                    {
+                        UserName = "admin",
+                        DateOfBirth = DateTime.UtcNow,
+                        PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("AdminPassword123@")),
+                        PasswordSalt = hmac.Key,
+                        Role = "admin",
+                        Language = "en"
+                    };
+
+                    context.Users.Add(adminUser);
+                }
+
                 if (!context.Grounds.Any())
                 {
                     context.Grounds.AddRange(

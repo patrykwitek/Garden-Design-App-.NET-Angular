@@ -1,0 +1,114 @@
+<div class="open-existings-projects-container">
+    <app-back-button class="back" (click)="cancel()"></app-back-button>
+    <div class="content-container">
+        <h3>{{"Projects" | translate}}</h3>
+        <div class="break-line"></div>
+        <div class="projects-list-container">
+            <div class="loading-container" *ngIf="isLoading">
+                <h5>{{"Loading" | translate}}...</h5>
+            </div>
+            <div class="no-projects-container" *ngIf="!isLoading && projects.length === 0">
+                <h5>{{"NoProjectsYet" | translate}}</h5>
+            </div>
+            <table *ngIf="!isLoading && projects.length !== 0">
+                <thead>
+                    <tr>
+                        <th>{{"Name" | translate}}</th>
+                        <th>{{"DateCreated" | translate}}</th>
+                        <th>{{"Author" | translate}}</th>
+                        <th>{{"Size" | translate}}</th>
+                        <th class="details-column">{{"Details" | translate}}</th>
+                        <th class="actions-column"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let project of projects">
+                        <td>{{project.name}}</td>
+                        <td 
+                            matTooltip="{{project.dateCreated | timeago}}" 
+                            matTooltipShowDelay="500"
+                            matTooltipPosition="below">
+                                {{project.dateCreated | date: "dd MMMM yyyy"}}
+                        </td>
+                        <td>{{project.ownerUsername}}</td>
+                        <td>{{project.width}}m x {{project.depth}}m</td>
+                        <td class="details-column">
+                            <div class="details-section">
+                                <div 
+                                    class="single-project-detail-icon"
+                                    matTooltip="{{project.ground.name | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                        <img [src]="'../../../assets/textures/grounds/' + project.ground.img + ' thumbnail.png'" alt={{project.ground.img}}>
+                                </div>
+                                <div 
+                                    class="single-project-detail-icon"
+                                    matTooltip="{{project.fence.name | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                        <img [src]="'../../../assets/textures/fences/' + project.fence.img + '.png'" alt={{project.fence.name}}>
+                                </div>
+                                <div 
+                                    class="single-project-detail-icon"
+                                    matTooltip="{{project.environment.name | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below">
+                                    <img [src]="'../../../assets/images/environments/' + project.environment.name.toLowerCase() + '.png'" alt={{project.environment.name}}>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="actions-column">
+                            <div class="actions-section">
+                                <button 
+                                    matTooltip="{{'Delete' | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below"
+                                    (click)="removeProject(project.id!)">
+                                        <mat-icon 
+                                            class="action-icon">
+                                                delete
+                                        </mat-icon>
+                                </button>
+                                <button
+                                    matTooltip="{{'Edit' | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below"
+                                    (click)="editProject(project)">
+                                        <mat-icon 
+                                            class="action-icon">
+                                                edit
+                                        </mat-icon>
+                                </button>
+                                <button
+                                    matTooltip="{{'Open' | translate}}"
+                                    matTooltipShowDelay="500"
+                                    matTooltipPosition="below"
+                                    (click)="openProject(project)">
+                                        <mat-icon 
+                                            class="action-icon">
+                                                send
+                                        </mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!isLoading && pagination && projects.length != 0" class="pagination-container">
+                <pagination 
+                    [boundaryLinks]="true" 
+                    [totalItems]="pagination.totalItems" 
+                    [itemsPerPage]="pagination.itemsPerPage"
+                    [maxSize]="10"
+                    [(ngModel)]="pagination.currentPage"
+                    (pageChanged)="pageChanged($event)"
+                    previousText="&lsaquo;" 
+                    nextText="&rsaquo;" 
+                    firstText="&laquo;"
+                    lastText="&raquo;"
+                    class="pagination-styles">
+                </pagination>
+            </div>
+        </div>
+    </div>
+</div>

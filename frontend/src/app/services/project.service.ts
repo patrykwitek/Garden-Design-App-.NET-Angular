@@ -4,10 +4,11 @@ import { environment } from 'src/environments/environment';
 import { ProjectsParams } from '../models/classes/projectsParams';
 import { map, of, take } from 'rxjs';
 import { getPaginatedResult, getPaginationHeaders } from '../models/functions/paginationHelper';
-import { LoginService } from './login.service';
+import { UserService } from './user.service';
 import { IProject } from '../models/interfaces/i-project';
 import { IPagination } from '../models/interfaces/i-pagination';
 import { IUser } from '../models/interfaces/i-user';
+import { PaginationParams } from '../models/classes/paginationParams';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class ProjectService {
 
   constructor(
     private http: HttpClient,
-    private loginService: LoginService
+    private userService: UserService
   ) {
     this.initializeService();
   }
@@ -63,13 +64,6 @@ export class ProjectService {
   }
 
   public getProjects(projectsParams: ProjectsParams) {
-    // TODO: check if optimisation is possible
-    // const response = this.projectCache.get(Object.values(projectsParams).join('-'));
-
-    // if (response) {
-    //   return of(response);
-    // }
-
     let params: HttpParams = getPaginationHeaders(projectsParams.pageNumber, projectsParams.pageSize);
 
     params = params.append('username', projectsParams.username);
@@ -82,8 +76,19 @@ export class ProjectService {
     );
   }
 
+  public getAllUsersProjects(projectsParams: PaginationParams) {
+    let params: HttpParams = getPaginationHeaders(projectsParams.pageNumber, projectsParams.pageSize);
+
+    return getPaginatedResult<IProject[]>(this.baseUrl + 'projects/getAllUsersProjects', params, this.http).pipe(
+      map(response => {
+        this.projectCache.set(Object.values(projectsParams).join('-'), response);
+        return response;
+      })
+    );
+  }
+
   public initializeService() {
-    this.loginService.currentUser$.pipe(take(1)).subscribe({
+    this.userService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user) {
           this.projectsParams = new ProjectsParams(user);

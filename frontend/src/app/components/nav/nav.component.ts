@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { EngineService } from 'src/app/services/engine.service';
-import { LoginService } from 'src/app/services/login.service';
 import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 import { SettingsComponent } from '../../dialogs/settings/settings.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -15,13 +14,19 @@ import { IProject } from 'src/app/models/interfaces/i-project';
 import { IEntrance } from 'src/app/models/interfaces/i-entrance';
 import { ConstantHelper } from 'src/app/utils/constant-helper';
 import { ThemeService } from 'src/app/services/theme.service';
+import { jwtDecode } from 'jwt-decode';
+import { IUser } from 'src/app/models/interfaces/i-user';
+import { Subscription } from 'rxjs';
+import { UserRoleService } from 'src/app/services/user-role.service';
+import { Role } from 'src/app/models/types/role';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss']
 })
-export class NavComponent {
+export class NavComponent implements OnInit, OnDestroy {
   @Input() isOpenProjectTab: boolean = true;
 
   public model: any = {};
@@ -31,9 +36,12 @@ export class NavComponent {
   public entrancePositionX: number | undefined;
   public entrancePositionMin: number = ConstantHelper.entranceWidth / 2;
   public entrancePositionMax: number | undefined;
+  public userRole: Role | undefined;
+
+  private userRoleSubscription: Subscription | undefined;
 
   constructor(
-    public loginService: LoginService,
+    public userService: UserService,
     public themeService: ThemeService,
     private router: Router,
     private projectLoaderService: ProjectLoaderService,
@@ -41,13 +49,41 @@ export class NavComponent {
     private dialog: MatDialog,
     private entranceTool: EntranceToolService,
     private gardenService: GardenService,
-    private http: HttpClient
+    private http: HttpClient,
+    private userRoleService: UserRoleService
   ) { }
+
+  async ngOnInit(): Promise<void> {
+    const userString = localStorage.getItem('garden-design-app-user');
+
+    if (userString) {
+      const user: IUser = JSON.parse(userString);
+      this.userService.setCurrentUser(user);
+
+      const token: string = user.token;
+
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        this.userRole = decodedToken.role;
+      }
+    }
+
+    this.userRoleSubscription = (this.userRoleService.getUserRole()).subscribe(
+      userRole => {
+        this.userRole = userRole
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.userRoleSubscription)
+      this.userRoleSubscription.unsubscribe();
+  }
 
   public login() {
     this.showDropdownMenu = false;
 
-    this.loginService.login(this.model).subscribe({
+    this.userService.login(this.model).subscribe({
       next: () => {
         this.router.navigateByUrl('/');
         this.model = {};
@@ -56,7 +92,7 @@ export class NavComponent {
   }
 
   public logout() {
-    this.loginService.logout();
+    this.userService.logout();
     this.router.navigateByUrl('/');
     this.toggleDropdownMenu();
 
@@ -149,18 +185,18 @@ export class NavComponent {
     const entranceDirection: Direction | undefined = this.entranceTool.entranceDirection;
     const entrancePosition: number | undefined = this.entrancePositionX;
 
-    if(!entranceDirection || !entrancePosition) return;
-    
+    if (!entranceDirection || !entrancePosition) return;
+
     const entrance: IEntrance = {
       direction: entranceDirection,
       position: entrancePosition
     };
 
     const currentProject: IProject | undefined = this.gardenService.getCurrentProject();
-    if(!currentProject) return;
+    if (!currentProject) return;
 
     const baseUrl: string = environment.apiUrl;
-    
+
     this.http.put(baseUrl + `solution/setEntrance/${currentProject.id}`, entrance).subscribe(
       _ => { },
       error => {

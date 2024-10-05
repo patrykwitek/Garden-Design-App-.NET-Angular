@@ -18,39 +18,35 @@
     <app-nav-garden-options *ngIf="!isOpenProjectTab" (isOpenEntranceTool)="receiveEntranceTool($event)"></app-nav-garden-options>
     <!-- note: for testing purposes -->
     <!-- <app-nav-garden-options></app-nav-garden-options> -->
-    <div class="dropdown-list" clickOutside (clickOutside)="clickOutside()" *ngIf="(loginService.currentUser$ | async) as user">
+    <div class="dropdown-list" clickOutside (clickOutside)="clickOutside()" *ngIf="(userService.currentUser$ | async) as user">
         <a 
             [className]="'dropdown-list-toggle ' + (showDropdownMenu ? 'highlighted' : '')"
             (click)="toggleDropdownMenu()"
-            matTooltip="{{'Menu' | translate}}"
+            matTooltip="{{user.username | titlecase}} ({{userRole! | translate | titlecase}})"
             matTooltipShowDelay="500"
             matTooltipPosition="below">
                 <div>
-                    <mat-icon class="account-icon">person</mat-icon>
+                    <mat-icon class="account-icon" *ngIf="userRole === 'user'">person</mat-icon>
+                    <mat-icon class="account-icon admin-icon" *ngIf="userRole === 'admin'">shield</mat-icon>
                     {{user.username | titlecase}}
                 </div>
                 <mat-icon class="icon">keyboard_arrow_down</mat-icon>
         </a>
         <div [className]="'dropdown-list-menu ' + (showDropdownMenu ? 'active' : 'inactive')">
             <a 
-                matTooltip="{{'Admin' | translate}}"
-                matTooltipPosition="left"
-                matTooltipShowDelay="500"
-                class="dropdown-list-item" 
-                routerLink="/admin" 
-                *ngIf="user.role == 'admin'" 
-                (click)="toggleDropdownMenu()">
-                    <mat-icon class="icon">shield</mat-icon>
-                    <div>{{"Admin" | translate}}</div>
-            </a>
-            <a 
-                matTooltip="{{'MyProjects' | translate}}"
+                [matTooltip]="userRole === 'admin' ? ('AdminPanel' | translate) : ('MyProjects' | translate)"
                 matTooltipPosition="left"
                 matTooltipShowDelay="500"
                 class="dropdown-list-item" 
                 (click)="goToMyProjects()">
-                    <mat-icon class="icon">park</mat-icon>
-                    <div>{{"MyProjects" | translate}}</div>
+                    <ng-container *ngIf="userRole === 'user'">
+                        <mat-icon class="icon">park</mat-icon>
+                        <div>{{"MyProjects" | translate}}</div>
+                    </ng-container>
+                    <ng-container *ngIf="userRole === 'admin'">
+                        <mat-icon class="icon">shield</mat-icon>
+                        <div>{{"AdminPanel" | translate}}</div>
+                    </ng-container>
             </a>
             <a 
                 matTooltip="{{'EditProfile' | translate}}"

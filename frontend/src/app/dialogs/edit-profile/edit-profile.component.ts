@@ -4,8 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs';
 import { IUser } from 'src/app/models/interfaces/i-user';
-import { LoginService } from 'src/app/services/login.service';
-import { string } from 'three/examples/jsm/nodes/Nodes';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -22,18 +21,18 @@ export class EditProfileComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<EditProfileComponent>,
     private formBuilder: FormBuilder,
-    private loginService: LoginService,
+    private userService: UserService,
     private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
-    this.loginService.currentUser$.pipe(take(1)).subscribe({
+    this.userService.currentUser$.pipe(take(1)).subscribe({
       next: async (user) => {
         if (!user) throw new Error('Current user is not set up');
 
         this.currentUserUsername = user.username;
 
-        this.loginService.getUserDataForEditProfile(user.username).subscribe(
+        this.userService.getUserDataForEditProfile(user.username).subscribe(
           (userData) => {
             const date = this.formatDate(userData.dateOfBirth);
 
@@ -69,13 +68,13 @@ export class EditProfileComponent implements OnInit {
       dateOfBirth: dateOfBirth
     };
 
-    this.loginService.editProfile(editProfileValues).subscribe({
+    this.userService.editProfile(editProfileValues).subscribe({
       next: () => {
         const currentUser = localStorage.getItem('garden-design-app-user');
         if (currentUser) {
           const currentUserJson: IUser = JSON.parse(currentUser);
           currentUserJson.username = editProfileValues.newUsername;
-          this.loginService.setCurrentUser(currentUserJson);
+          this.userService.setCurrentUser(currentUserJson);
 
           this.editProfileForm.reset(editProfileFormValues);
           this.toastr.success('Profile successfully edited');
