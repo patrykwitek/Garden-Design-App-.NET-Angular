@@ -189,7 +189,13 @@ https://github.com/user-attachments/assets/0105c8ab-436b-40b0-85bb-8342f653a6af
 <a name="admin"></a>
 ## 14. Admin Role 🛡️
 
-*This functionality will come in the future*
+Each user has one of two possible roles: admin or user. Administrator has two additional functionalities: 
+1. admin has access to view, edit and delete all projects from the database (while the ordinary user has access only to his own)
+2. admin can give and take away the admin role from other users
+
+https://github.com/user-attachments/assets/ac772445-1001-42b0-9037-5729a00543f0
+
+https://github.com/user-attachments/assets/c072ac6b-dc5a-4552-a048-5513f4ed428f
 
 <a name="translations"></a>
 ## 15. Translations 💁‍♂️
