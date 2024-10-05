@@ -87,5 +87,11 @@
     "Yes": "Tak",
     "No": "Nie",
     "Information": "Informacja",
-    "YouHaveMadeChanges": "Dokonałeś zmian"
+    "YouHaveMadeChanges": "Dokonałeś zmian",
+    "AdminPanel": "Panel Admina",
+    "OpenAllExisting": "Projekty użytkowników",
+    "NoUsers": "Brak użytkowników",
+    "UsersList": "Lista użytkowników",
+    "SetRoles": "Role użytkowników",
+    "Role": "Rola"
 }

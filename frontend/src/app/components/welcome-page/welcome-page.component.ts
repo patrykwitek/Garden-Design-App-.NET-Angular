@@ -4,8 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs';
 import { HomeDisplayMode } from 'src/app/models/types/home-display-mode';
 import { Language } from 'src/app/models/types/language';
-import { LoginService } from 'src/app/services/login.service';
-import { ThemeService } from 'src/app/services/theme.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-welcome-page',
@@ -17,13 +16,13 @@ export class WelcomePageComponent {
   public currentLang: string | undefined;
 
   constructor(
-    public loginService: LoginService,
+    public userService: UserService,
     private router: Router,
     private translateService: TranslateService
   ) { }
 
   ngOnInit(): void {
-    this.loginService.currentUser$.pipe(take(1)).subscribe({
+    this.userService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user != null) {
           this.router.navigateByUrl(`/`);

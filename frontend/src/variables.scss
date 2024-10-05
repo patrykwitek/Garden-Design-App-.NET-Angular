@@ -26,6 +26,8 @@
     --cancel-button-bg: rgb(255, 42, 63);
     --input-header: rgb(77, 77, 77);
     --cancel-confirmation-button-bg: rgb(255, 42, 63);
+    --turn-on-button: rgb(36, 110, 26);
+    --turn-off-button: rgb(255, 42, 63);
 }
 
 body.dark-mode {
@@ -55,4 +57,6 @@ body.dark-mode {
     --cancel-button-bg: white;
     --input-header: rgb(255, 255, 255);
     --cancel-confirmation-button-bg: rgb(28, 28, 28);
+    --turn-on-button: rgb(75, 75, 75);
+    --turn-off-button: rgb(156, 156, 156);
 }

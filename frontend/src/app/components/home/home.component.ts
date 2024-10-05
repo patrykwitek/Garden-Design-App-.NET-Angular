@@ -1,9 +1,13 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 import { Subscription } from 'rxjs';
+import { IUser } from 'src/app/models/interfaces/i-user';
+import { Role } from 'src/app/models/types/role';
 import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
-import { LoginService } from 'src/app/services/login.service';
 import { ProjectLoaderService } from 'src/app/services/project-loader.service';
+import { UserRoleService } from 'src/app/services/user-role.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -12,26 +16,42 @@ import { ProjectLoaderService } from 'src/app/services/project-loader.service';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public openProjectTab: boolean | undefined;
+  public userRole: Role | undefined;
 
   private id = "";
 
   private isOpenProjectTabSubscription: Subscription | undefined;
   private isCurrentProjectSubscription: Subscription | undefined;
-
+  private userRoleSubscription: Subscription | undefined;
 
   constructor(
-    public loginService: LoginService,
+    public userService: UserService,
     private projectLoaderService: ProjectLoaderService,
     private engineService: EngineService,
-    private gardenService: GardenService
+    private gardenService: GardenService,
+    private userRoleService: UserRoleService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.openProjectTab = true;
+
+    const userString = localStorage.getItem('garden-design-app-user');
+
+    if (userString) {
+      const user: IUser = JSON.parse(userString);
+      this.userService.setCurrentUser(user);
+
+      const token: string = user.token;
+
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        this.userRole = decodedToken.role;
+      }
+    }
 
     this.isOpenProjectTabSubscription = this.projectLoaderService.getIsOpenProjectTab().subscribe(
       openProjectTab => {
-          this.openProjectTab = openProjectTab;
+        this.openProjectTab = openProjectTab;
       }
     );
 
@@ -43,6 +63,12 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       }
     );
+
+    this.userRoleSubscription = this.userRoleService.getUserRole().subscribe(
+      userRole => {
+        this.userRole = userRole
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -50,8 +76,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.isOpenProjectTabSubscription.unsubscribe();
     if (this.isCurrentProjectSubscription)
       this.isCurrentProjectSubscription.unsubscribe();
-
-    // TODO: set animation state of engine to 1 (?)
+    if (this.userRoleSubscription)
+      this.userRoleSubscription.unsubscribe();
   }
 
   @HostListener("window:keyup", ["$event"])

@@ -24,7 +24,6 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { SettingsComponent } from './dialogs/settings/settings.component';
 import { EditProfileComponent } from './dialogs/edit-profile/edit-profile.component';
-import { AdminComponent } from './components/admin/admin/admin.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreateNewProjectComponent } from './dialogs/create-new-project/create-new-project.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -36,6 +35,10 @@ import { ThemeToogleSwitchComponent } from './shared-components/theme-toogle-swi
 import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
 import { EditProjectComponent } from './dialogs/edit-project/edit-project.component';
 import { SlidebarComponent } from './components/slidebar/slidebar.component';
+import { AdminHomePageComponent } from './components/admin/admin-home-page/admin-home-page.component';
+import { AllUsersProjectsListComponent } from './components/admin/all-users-projects-list/all-users-projects-list.component';
+import { SetRolesComponent } from './components/admin/set-roles/set-roles.component';
+import { OnOffToogleSwitchComponent } from './shared-components/on-off-toogle-switch/on-off-toogle-switch.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,6 @@ import { SlidebarComponent } from './components/slidebar/slidebar.component';
     DatePickerComponent,
     SettingsComponent,
     EditProfileComponent,
-    AdminComponent,
     CreateNewProjectComponent,
     ProjectsListComponent,
     BackButtonComponent,
@@ -63,7 +65,11 @@ import { SlidebarComponent } from './components/slidebar/slidebar.component';
     ThemeToogleSwitchComponent,
     ConfirmationComponent,
     EditProjectComponent,
-    SlidebarComponent
+    SlidebarComponent,
+    AdminHomePageComponent,
+    AllUsersProjectsListComponent,
+    SetRolesComponent,
+    OnOffToogleSwitchComponent
   ],
   imports: [
     BrowserModule,

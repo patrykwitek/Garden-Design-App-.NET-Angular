@@ -1,0 +1,36 @@
+.toggle-switch {
+    width: 30px;
+    height: 17px;
+    background-color: var(--turn-off-button);
+    border-radius: 25px;
+    position: relative;
+    transition: .2s;
+
+    .toggle-ball {
+        width: 15px;
+        height: 15px;
+        background-color: rgb(255, 255, 255);
+        border-radius: 50%;
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        transition: .2s;
+
+        &.active-toggle-ball {
+            background-color: rgb(255, 255, 255);
+            transform: translateX(13px);
+
+            .theme-icon {
+                right: 0;
+            }
+        }
+    }
+
+    &.active-toggle-switch {
+        background-color: var(--turn-on-button);
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}

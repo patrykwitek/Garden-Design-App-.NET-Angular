@@ -1,6 +1,7 @@
-<app-welcome-page *ngIf="!(loginService.currentUser$ | async)"></app-welcome-page>
-<div *ngIf="(loginService.currentUser$ | async)">
+<app-welcome-page *ngIf="!(userService.currentUser$ | async)"></app-welcome-page>
+<div *ngIf="(userService.currentUser$ | async)">
     <app-nav [isOpenProjectTab]="openProjectTab != undefined ? openProjectTab : true"></app-nav>
-    <app-projects *ngIf="openProjectTab"></app-projects>
+    <app-projects *ngIf="userRole === 'user' && openProjectTab"></app-projects>
+    <app-admin-home-page *ngIf="userRole === 'admin' && openProjectTab"></app-admin-home-page>
     <canvas #viewerCanvas id="viewer-canvas" *ngIf="!openProjectTab"></canvas>
 </div>
