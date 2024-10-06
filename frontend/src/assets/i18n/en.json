@@ -93,5 +93,7 @@
     "NoUsers": "No Users",
     "UsersList": "Users List",
     "SetRoles": "Users Roles",
-    "Role": "Role"
+    "Role": "Role",
+    "InternalServerError": "Internal server error",
+    "BackToHomePage": "Back to home page"
 }

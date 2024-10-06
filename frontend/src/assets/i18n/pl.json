@@ -93,5 +93,7 @@
     "NoUsers": "Brak użytkowników",
     "UsersList": "Lista użytkowników",
     "SetRoles": "Role użytkowników",
-    "Role": "Rola"
+    "Role": "Rola",
+    "InternalServerError": "Błąd serwera",
+    "BackToHomePage": "Powrót"
 }

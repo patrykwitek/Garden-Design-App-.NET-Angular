@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CreateNewProjectComponent } from 'src/app/dialogs/create-new-project/create-new-project.component';
-import { ProjectsListComponent } from 'src/app/dialogs/projects-list/projects-list.component';
 import { AllUsersProjectsListComponent } from '../all-users-projects-list/all-users-projects-list.component';
 import { SetRolesComponent } from '../set-roles/set-roles.component';
 

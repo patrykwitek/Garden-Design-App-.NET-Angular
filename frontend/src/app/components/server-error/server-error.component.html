@@ -1,1 +1,23 @@
-<p>server-error works!</p>
+<div class="server-error-container">
+    <app-theme-toogle-switch class="theme-switch"></app-theme-toogle-switch>
+    <div class="error-message-container">
+        <h3>
+            <img 
+                src="../../../assets/images/server-error-logo.png" 
+                alt="{{'InternalServerError' | translate}}" 
+                class="logo"
+                [ngClass]="(themeService.isDarkMode$| async) ? 'white-logo' : ''">
+            {{"InternalServerError" | translate}}
+        </h3>
+        <ng-container *ngIf="error">
+            <div class="break-line"></div>
+            <div class="message-container">
+                <h5>Error: {{error.message}}</h5>
+                <code>
+                    {{error.details}}
+                </code>
+                <button routerLink="/">{{"BackToHomePage" | translate}}</button>
+            </div>
+        </ng-container>
+    </div>
+</div>
