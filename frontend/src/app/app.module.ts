@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedModule } from './shared-modules/shared.module';
 import { HomeComponent } from './components/home/home.component';
 import { ProjectsComponent } from './components/projects/projects.component';
-import { TestErrorsComponent } from './components/test-errors/test-errors.component';
 import { AuthorComponent } from './components/author/author.component';
 import { ServerErrorComponent } from './components/server-error/server-error.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -48,7 +47,6 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
     ClickOutsideDirective,
     HomeComponent,
     ProjectsComponent,
-    TestErrorsComponent,
     AuthorComponent,
     ServerErrorComponent,
     TextInputComponent,
