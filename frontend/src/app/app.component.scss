@@ -2,6 +2,10 @@ body {
     background-color: #fafafa;
 }
 
+.loading-text {
+    color: var(--header-font-color);
+}
+
 .app-container {
     max-width: 100vw;
     min-height: 100vh;

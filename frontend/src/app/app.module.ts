@@ -39,6 +39,7 @@ import { AdminHomePageComponent } from './components/admin/admin-home-page/admin
 import { AllUsersProjectsListComponent } from './components/admin/all-users-projects-list/all-users-projects-list.component';
 import { SetRolesComponent } from './components/admin/set-roles/set-roles.component';
 import { OnOffToogleSwitchComponent } from './shared-components/on-off-toogle-switch/on-off-toogle-switch.component';
+import { LoadingInterceptor } from './interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { OnOffToogleSwitchComponent } from './shared-components/on-off-toogle-sw
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
