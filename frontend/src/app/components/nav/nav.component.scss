@@ -186,7 +186,7 @@ nav {
     }
 }
 
-.entrance-tool {
+.slider-tool {
     position: absolute;
     left: 0;
     right: 0;
@@ -221,7 +221,7 @@ nav {
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         background-color: var(--bright-label-color);
 
-        .entrance-tool-button {
+        .tool-button {
             width: 8%;
             height: 1.6rem;
             font-size: .8rem;
@@ -231,12 +231,12 @@ nav {
             color: var(--back-button-arrow);
             border-radius: 15px;
             transition: .2s;
-            
-            &:hover{
+
+            &:hover {
                 scale: 105%;
             }
         }
-        
+
         .cancel-button {
             background-color: var(--cancel-button-bg);
             border: 1px var(--cancel-button-bg) solid;
@@ -256,7 +256,9 @@ nav {
             &:hover {
                 opacity: 1;
             }
+        }
 
+        .entrance-slider {
             &::-webkit-slider-thumb {
                 appearance: none;
                 width: 40px;
@@ -271,6 +273,27 @@ nav {
                 width: 40px;
                 height: 40px;
                 background: url('../../../assets/textures/fences/wooden thumbnail.png') no-repeat center;
+                background-size: contain;
+                cursor: pointer;
+                border: none;
+            }
+        }
+
+        .rotation-slider {
+            &::-webkit-slider-thumb {
+                appearance: none;
+                width: 40px;
+                height: 40px;
+                background: url('../../../assets/images/rotation-slider-icon.png') no-repeat center;
+                background-size: contain;
+                cursor: pointer;
+                border: none;
+            }
+
+            &::-moz-range-thumb {
+                width: 40px;
+                height: 40px;
+                background: url('../../../assets/images/rotation-slider-icon.png') no-repeat center;
                 background-size: contain;
                 cursor: pointer;
                 border: none;

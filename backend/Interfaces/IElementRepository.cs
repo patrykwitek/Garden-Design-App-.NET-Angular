@@ -7,7 +7,7 @@ namespace backend.Interfaces
     {
         Task<List<ElementCategory>> GetElementCategoriesList();
         Task<List<Element>> GetElementsListByCategory(string category);
-        void AddPavement(GardenElement pavement);
+        void AddGardenElement(GardenElement gardenElement);
         Task<List<GardenElement>> GetElementListForGarden(int projectId);
     }
 }

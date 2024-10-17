@@ -95,5 +95,6 @@
     "SetRoles": "Role użytkowników",
     "Role": "Rola",
     "InternalServerError": "Błąd serwera",
-    "BackToHomePage": "Powrót"
+    "BackToHomePage": "Powrót",
+    "Apply": "Zatwierdź"
 }

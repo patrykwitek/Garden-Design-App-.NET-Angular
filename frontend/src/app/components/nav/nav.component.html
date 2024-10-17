@@ -78,13 +78,20 @@
         </div>
     </div>
 </nav>
-<div class="entrance-tool" *ngIf="isOpenEntranceTool">
+<div class="slider-tool" *ngIf="isOpenEntranceTool">
     <div class="value-section" *ngIf="entrancePositionX">
         {{entrancePositionX}} m
     </div>
     <div class="tool-section">
-        <button class="entrance-tool-button cancel-button" (click)="closeEntranceTool()">{{'Cancel' | translate}}</button>
-        <input type="range" class="slider" [min]="entrancePositionMin" [max]="entrancePositionMax" [step]="0.1" [(ngModel)]="entrancePositionX" (ngModelChange)="onEntrancePositionChange($event)">
-        <button class="entrance-tool-button" (click)="applyEntrancePosition()">{{'Add' | translate}}</button>
+        <button class="tool-button cancel-button" (click)="closeEntranceTool()">{{'Cancel' | translate}}</button>
+        <input type="range" class="slider entrance-slider" [min]="entrancePositionMin" [max]="entrancePositionMax" [step]="0.1" [(ngModel)]="entrancePositionX" (ngModelChange)="onEntrancePositionChange($event)">
+        <button class="tool-button" (click)="applyEntrancePosition()">{{'Add' | translate}}</button>
+    </div>
+</div>
+<div class="slider-tool" *ngIf="(treeToolService.showTool$ | async)">
+    <div class="tool-section">
+        <button class="tool-button cancel-button" (click)="closeRotationTool()">{{'Cancel' | translate}}</button>
+        <input type="range" class="slider rotation-slider" [min]="0" [max]="360" [step]="1" [(ngModel)]="treeRotation" (ngModelChange)="onTreeRotationChange($event)">
+        <button class="tool-button" (click)="applyTreeRotation()">{{'Apply' | translate}}</button>
     </div>
 </div>

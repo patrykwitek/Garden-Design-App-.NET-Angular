@@ -29,9 +29,9 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public void AddPavement(GardenElement pavement)
+        public void AddGardenElement(GardenElement gardenElement)
         {
-            _context.GardenElements.Add(pavement);
+            _context.GardenElements.Add(gardenElement);
         }
 
         public async Task<List<GardenElement>> GetElementListForGarden(int projectId)

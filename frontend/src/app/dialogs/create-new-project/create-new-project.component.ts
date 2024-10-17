@@ -9,6 +9,7 @@ import { IGround } from 'src/app/models/interfaces/i-ground';
 import { IProject } from 'src/app/models/interfaces/i-project';
 import { GardenService } from 'src/app/services/garden.service';
 import { ProjectService } from 'src/app/services/project.service';
+import { ConstantHelper } from 'src/app/utils/constant-helper';
 
 @Component({
   selector: 'app-create-new-project',
@@ -121,12 +122,12 @@ export class CreateNewProjectComponent implements OnInit {
       name: ['', Validators.required],
       width: ['', [
         Validators.required,
-        Validators.min(5),
-        Validators.max(300)]],
+        Validators.min(ConstantHelper.minGardenWidth),
+        Validators.max(ConstantHelper.maxGardenWidth)]],
       depth: ['', [
         Validators.required,
-        Validators.min(5),
-        Validators.max(300)]]
+        Validators.min(ConstantHelper.minGardenWidth),
+        Validators.max(ConstantHelper.maxGardenWidth)]]
     });
   }
 }

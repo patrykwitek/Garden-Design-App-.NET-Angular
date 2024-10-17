@@ -11,7 +11,6 @@ namespace backend.Entities
         public double PositionX { get; set; }
         public double PositionY { get; set; }
         public int ProjectId { get; set; }
-        public double? RotationX { get; set; }
-        public double? RotationY { get; set; }
+        public double? Rotation { get; set; }
     }
 }

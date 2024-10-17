@@ -126,8 +126,8 @@ public class SolutionController : BaseApiController
         return await _unitOfWork.EntranceRepository.GetEntranceListForProject(projectId);
     }
 
-    [HttpPost("addPavement/{projectId}")]
-    public async Task<ActionResult> AddPavement(int projectId, PavementDto pavementDto)
+    [HttpPost("addGardenElement/{projectId}")]
+    public async Task<ActionResult> AddGardenElement(int projectId, AddGardenElementDto addGardenElementDto)
     {
         Project project = await _unitOfWork.ProjectsRepository.GetProjectByIdAsync(projectId);
 
@@ -136,24 +136,25 @@ public class SolutionController : BaseApiController
             return NotFound("Project not found.");
         }
 
-        GardenElement pavement = new GardenElement
+        GardenElement gardenElement = new GardenElement
         {
-            Name = pavementDto.Name,
-            Category = "Pavement",
-            PositionX = pavementDto.X,
-            PositionY = pavementDto.Y,
-            ProjectId = projectId,
+            Name = addGardenElementDto.Name,
+            Category = addGardenElementDto.Category,
+            PositionX = addGardenElementDto.PositionX,
+            PositionY = addGardenElementDto.PositionY,
+            Rotation = addGardenElementDto.Rotation,
+            ProjectId = projectId
         };
 
-        _unitOfWork.ElementRepository.AddPavement(pavement);
-        project.GardenElements.Add(pavement);
+        _unitOfWork.ElementRepository.AddGardenElement(gardenElement);
+        project.GardenElements.Add(gardenElement);
 
         if (await _unitOfWork.Complete())
         {
             return Ok();
         }
 
-        return BadRequest("Failed to add pavement");
+        return BadRequest("Failed to add element: " + gardenElement.Name);
     }
 
     [HttpGet("getElementsForProject/{projectId}")]

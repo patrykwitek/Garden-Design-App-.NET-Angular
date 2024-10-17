@@ -20,6 +20,9 @@ import { Subscription } from 'rxjs';
 import { UserRoleService } from 'src/app/services/user-role.service';
 import { Role } from 'src/app/models/types/role';
 import { UserService } from 'src/app/services/user.service';
+import { Vector3 } from 'three';
+import { IGardenElement } from 'src/app/models/interfaces/i-garden-element';
+import { TreeToolService } from 'src/app/tools/tree-tool.service';
 
 @Component({
   selector: 'app-nav',
@@ -36,13 +39,17 @@ export class NavComponent implements OnInit, OnDestroy {
   public entrancePositionX: number | undefined;
   public entrancePositionMin: number = ConstantHelper.entranceWidth / 2;
   public entrancePositionMax: number | undefined;
+
   public userRole: Role | undefined;
+
+  public treeRotation: number = 1;
 
   private userRoleSubscription: Subscription | undefined;
 
   constructor(
     public userService: UserService,
     public themeService: ThemeService,
+    public treeToolService: TreeToolService,
     private router: Router,
     private projectLoaderService: ProjectLoaderService,
     private engineService: EngineService,
@@ -50,7 +57,7 @@ export class NavComponent implements OnInit, OnDestroy {
     private entranceTool: EntranceToolService,
     private gardenService: GardenService,
     private http: HttpClient,
-    private userRoleService: UserRoleService
+    private userRoleService: UserRoleService,
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -176,9 +183,20 @@ export class NavComponent implements OnInit, OnDestroy {
     this.entranceTool.clearVisualisation();
   }
 
+  public closeRotationTool() {
+    this.treeToolService.showToolSource.next(false);
+    this.engineService.resetCameraPosition();
+    this.engineService.clearTreeVisualisation();
+  }
+
   public onEntrancePositionChange(newValue: number) {
     this.entrancePositionX = newValue;
     this.entranceTool.changeEntranceVisualisationPosition(this.entrancePositionX);
+  }
+
+  public onTreeRotationChange(newValue: number) {
+    this.treeRotation = newValue;
+    this.engineService.changeTreeVisualisationRotation(this.treeRotation);
   }
 
   public applyEntrancePosition() {
@@ -209,6 +227,29 @@ export class NavComponent implements OnInit, OnDestroy {
     this.isOpenEntranceTool = false;
     this.engineService.resetCameraPosition();
     this.entranceTool.clearVisualisation();
+  }
+
+  public applyTreeRotation() {
+    const treeName: string | undefined = this.treeToolService.getTreeName();
+    const treePosition: Vector3 | undefined = this.treeToolService.getTreePosition();
+
+    if (!treeName) throw new Error("Tree name is undefinded");
+    if (!treePosition) throw new Error("Tree position is undefinded");
+
+    const treeRotation: number = this.treeRotation;
+
+    const tree: IGardenElement = {
+      name: treeName,
+      category: 'Tree',
+      positionX: treePosition.x,
+      positionY: treePosition.z,
+      rotation: treeRotation
+    };
+
+    this.engineService.saveGardenElementToDatabase(tree);
+
+    this.treeToolService.showToolSource.next(false);
+    this.engineService.applyTreeVisualisation();
   }
 
   private changeDropdownIcon() {
