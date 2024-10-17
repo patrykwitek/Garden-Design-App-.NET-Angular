@@ -1,7 +1,5 @@
-# Garden Design Application 🍃 _(early version)_
+# Garden Design Application 🍃
 > ASP.NET & Angular Garden Design Application
-
-### **Important Message: At the moment it is an early version of the project and newer and newer functionalities will appear with time.**
 
 <a name="top"></a>
 ## Table of Contents 📖
@@ -124,7 +122,12 @@ https://github.com/user-attachments/assets/7b75062d-1138-4eac-9ffc-e163d3190c57
 <a name="trees"></a>
 ### Trees 🌳
 
-*This functionality will come in the future*
+User has a choice of three tree types: pine, oak and birch. Trees, like all other elements, cannot be placed in position of another element so they do not overlap.
+While tree tool is open, user can cancel the tree selection at any time by clicking the Escape button.
+
+After the tree position has been chosen, user chooses a tree rotation.
+
+https://github.com/user-attachments/assets/af90ce4b-d268-47af-accf-d3227f840a2c
 
 <a name="bushes"></a>
 ### Bushes 🌲
