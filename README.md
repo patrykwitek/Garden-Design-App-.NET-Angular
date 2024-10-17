@@ -166,7 +166,9 @@ https://github.com/user-attachments/assets/8b350fca-b907-4af5-b3d2-cad5fdcff976
 <a name="camera"></a>
 ## 10. Reset Camera 🎥
 
-When the user "flies away" with the camera too far or to a place far away, they can quickly return to the centre of a particular garden by clicking the "Reset Camera" button.
+When the users "flies away" with the camera too far or to a place far away, they can quickly return to the centre of a particular garden by clicking the "Reset Camera" button.
+
+You can also click "r" on the keyboard in design mode and camera will also reset its position.
 
 https://github.com/user-attachments/assets/edd0350e-e93e-498d-95fd-82c96382ea16
 
