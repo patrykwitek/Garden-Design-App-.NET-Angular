@@ -86,12 +86,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (event.key === "t") {
-      // TODO: adding tree tool
-    }
-
-    if (event.key === "p") {
-      // TODO: adding pavement tool
+    if (event.key === "r") {
+      this.engineService.resetCameraPosition();
     }
   }
 
