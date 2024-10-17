@@ -14,14 +14,12 @@ import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { gsap } from 'gsap';
 import { CSG } from 'three-csg-ts';
-import { IPavement } from '../models/interfaces/i-pavement';
 import { IGardenElement } from '../models/interfaces/i-garden-element';
-import { ITree } from '../models/interfaces/i-tree';
-import { IBush } from '../models/interfaces/i-bush';
 import { Environment } from '../models/types/environment';
 import { ForestElement } from '../models/types/forest-element';
-import { IFlower } from '../models/interfaces/i-flower';
 import { CityGeneratorService } from './city-generator.service';
+import { Tree3DModelData } from '../models/types/tree-3d-model-data';
+import { TreeToolService } from '../tools/tree-tool.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,10 +45,12 @@ export class EngineService {
 
   private entranceVisualisation: THREE.Mesh | undefined;
   private pavementVisualisation: THREE.Mesh | undefined;
+  private treeVisualisation: THREE.Group<THREE.Object3DEventMap> | undefined;
 
   private tempPavementType: string | undefined;
 
   private isSavePavementPossible: boolean | undefined;
+  private isSaveTreePossible: boolean | undefined;
 
   private eventListeners: { type: string, listener: EventListenerOrEventListenerObject }[] = [];
 
@@ -66,10 +66,12 @@ export class EngineService {
 
   private entrancesList: IEntrance[] = [];
   private gardenElementsList: IGardenElement[] = [];
-  private pavementsList: IPavement[] = [];
-  private treesList: ITree[] = [];
-  private bushesList: IBush[] = [];
-  private flowersList: IBush[] = [];
+
+  private pavementsList: IGardenElement[] = [];
+  private treesList: IGardenElement[] = [];
+  private bushesList: IGardenElement[] = [];
+  private flowersList: IGardenElement[] = [];
+  private benchesList: IGardenElement[] = [];
 
   private currentProjectId: string | undefined;
 
@@ -82,7 +84,8 @@ export class EngineService {
   constructor(
     private themeService: ThemeService,
     private http: HttpClient,
-    private cityService: CityGeneratorService
+    private cityService: CityGeneratorService,
+    private treeToolService: TreeToolService
   ) { }
 
   public initialize(canvas: HTMLCanvasElement): void {
@@ -509,6 +512,66 @@ export class EngineService {
     });
   }
 
+  public initializeTreeVisualisation(treeName: string): void {
+    if (this.treeVisualisation) {
+      this.scene.remove(this.treeVisualisation);
+      this.treeVisualisation = undefined;
+      this.removeAllEventListeners();
+      this.raycaster = undefined;
+      this.mouse = undefined;
+    }
+
+    const tree: Tree3DModelData = ConstantHelper.getTree3DModelData(treeName);
+
+    this.get3DModelForTool(
+      tree.fileName,
+      tree.fileExtension,
+      0,
+      0,
+      0,
+      1,
+      tree.width,
+      tree.depth,
+      tree.height,
+      `${treeName}-garden-element`
+    );
+
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
+    this.isSaveTreePossible = true;
+
+    gsap.to(this.camera.position, {
+      duration: 1,
+      x: 0,
+      y: 15,
+      z: -(this.depth! / 2) - (this.width! / 3),
+      onUpdate: () => {
+        this.camera.lookAt(0, 0, 0);
+      }
+    });
+
+    this.controls.enableRotate = false;
+    this.controls.enableZoom = false;
+    this.controls.enablePan = false;
+
+    this.addEventListener('mousemove', this.changeTreePositionOnMouseMove.bind(this));
+    this.addEventListener('click', this.saveTreePosition.bind(this));
+    this.addEventListener('keydown', this.closeTreeTool.bind(this));
+  }
+
+  public clearTreeVisualisation(): void {
+    if (this.treeVisualisation) {
+      this.scene.remove(this.treeVisualisation);
+      this.treeVisualisation = undefined;
+    }
+  }
+
+  public applyTreeVisualisation(): void {
+    this.treeVisualisation = undefined;
+    this.resetCameraPosition();
+  }
+
   public clearEntranceVisualisation() {
     this.objects = this.objects.filter(obj => {
       if (obj.userData['type'] === 'entranceVisualisation') {
@@ -552,9 +615,64 @@ export class EngineService {
     }
   }
 
+  public changeTreeVisualisationRotation(newRotation: number) {
+    if (this.treeVisualisation) {
+      const rotationInRadians = newRotation * (Math.PI / 180);
+      this.treeVisualisation.rotation.y = rotationInRadians;
+    }
+  }
+
+  public saveGardenElementToDatabase(gardenElement: IGardenElement) {
+    return this.http.post(this.baseUrl + `solution/addGardenElement/${this.currentProjectId}`, gardenElement).subscribe(
+      () => {
+        switch(gardenElement.category) {
+          case 'Pavement': {
+            this.pavementsList.push(gardenElement);
+            break;
+          }
+          case 'Tree': {
+            this.treesList.push(gardenElement);
+            break;
+          }
+          case 'Bush': {
+            this.bushesList.push(gardenElement);
+            break;
+          }
+          case 'Flower': {
+            this.flowersList.push(gardenElement);
+            break;
+          }
+          case 'Bench': {
+            this.benchesList.push(gardenElement);
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+      },
+      error => {
+        console.error('Error during adding element: ', error);
+      }
+    );
+  }
+
   public setEntrance(direction: Direction) {
     // TODO: optimise this method
     if (this.fenceType) this.setFence(this.fenceType);
+  }
+
+  private closeTreeTool(event: any): void {
+    if (event.key === 'Escape') {
+      this.clearTreeVisualisation();
+      this.removeAllEventListeners();
+      this.treeToolService.showToolSource.next(false);
+      this.treeToolService.setTreeName(undefined);
+      this.treeToolService.setTreePosition(undefined);
+
+      this.raycaster = undefined;
+      this.mouse = undefined;
+    }
   }
 
   private closePavementTool(event: any): void {
@@ -581,6 +699,7 @@ export class EngineService {
       { amount: gardenArea > 1000 ? 30 : 60, name: 'birch', fileExtension: 'gltf', width: 9, depth: 9, height: 17 },
       // yew 3D model link: https://www.cgtrader.com/free-3d-models/plant/leaf/tree-02-efe818d1-771f-4e4f-912b-b7958d329ad2
       { amount: gardenArea > 1000 ? 20 : 40, name: 'yew', fileExtension: 'gltf', width: 5, depth: 5, height: 2 },
+      // oak 3D model link: https://sketchfab.com/3d-models/leaf-tree-ps1-low-poly-d799c08100974e1ba352fcd646cb0694
     ];
 
     const environmentPromises: Promise<void>[] = [];
@@ -618,7 +737,7 @@ export class EngineService {
     const city = this.cityService.createCityEnvironment(this.width, this.depth);
 
     this.mirrorCamera = city.mirrorCamera;
-    
+
     this.scene.add(city.group);
     this.objects.push(city.group);
   }
@@ -642,6 +761,23 @@ export class EngineService {
           reject(error);
         });
       }
+    });
+  }
+
+  private get3DModelForTool(name: string, fileExtension: 'gltf' | 'glb', positionX: number, positionY: number, rotation: number, scale: number, width: number, depth: number, height: number, elementType: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const loader: GLTFLoader = new GLTFLoader();
+      loader.load(`../../assets/3d models/${name}/${name}.${fileExtension}`, (gltf) => {
+        const originModel = gltf.scene;
+
+        const modelClone = originModel.clone();
+        this.addModelToScene(modelClone, positionX, positionY, rotation, scale, width, depth, height, elementType);
+        this.treeVisualisation = modelClone;
+
+        resolve();
+      }, undefined, (error) => {
+        reject(error);
+      });
     });
   }
 
@@ -718,6 +854,158 @@ export class EngineService {
       window.removeEventListener(type, listener, false);
     });
     this.eventListeners = [];
+  }
+
+  private changeTreePositionOnMouseMove(event: any) {
+    if (!this.mouse || !this.raycaster || !this.treeVisualisation || !this.ground || !this.width || !this.depth) {
+      return;
+    }
+
+    this.camera.lookAt(this.treeVisualisation.position.x, 2, this.treeVisualisation.position.z);
+
+    if (this.isSaveTreePossible) {
+      this.treeVisualisation.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          const material = child.material;
+          if (Array.isArray(material)) {
+            material.forEach((mat) => {
+              mat.transparent = true;
+              mat.opacity = 1;
+            });
+          } else {
+            material.transparent = true;
+            material.opacity = 1;
+          }
+        }
+      });
+    }
+    else {
+      this.treeVisualisation.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          const material = child.material;
+          if (Array.isArray(material)) {
+            material.forEach((mat) => {
+              mat.transparent = true;
+              mat.opacity = 0.5;
+            });
+          } else {
+            material.transparent = true;
+            material.opacity = 0.5;
+          }
+        }
+      });
+    }
+
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    const intersects = this.raycaster.intersectObject(this.ground);
+    if (intersects.length > 0) {
+      let isCursorInside: boolean = true;
+
+      const point = intersects[0].point;
+
+      const borderWidth = (this.width / 2) - (ConstantHelper.entranceWidth / 2);
+      const borderDepth = (this.depth / 2) - (ConstantHelper.entranceWidth / 2);
+
+      if (point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.treeVisualisation.position.set(-borderWidth, 0.01, point.z);
+      }
+
+      if (point.x >= borderWidth) {
+        isCursorInside = false;
+        this.treeVisualisation.position.set(borderWidth, 0.01, point.z);
+      }
+
+      if (point.z <= -borderDepth) {
+        isCursorInside = false;
+        this.treeVisualisation.position.set(point.x, 0.01, -borderDepth);
+      }
+
+      if (point.z >= borderDepth) {
+        isCursorInside = false;
+        this.treeVisualisation.position.set(point.x, 0.01, borderDepth);
+      }
+
+      if (point.z >= borderDepth && point.x >= borderWidth) {
+        isCursorInside = false;
+        this.treeVisualisation.position.set(borderWidth, 0.01, borderDepth);
+      }
+
+      if (point.z >= borderDepth && point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.treeVisualisation.position.set(-borderWidth, 0.01, borderDepth);
+      }
+
+      if (point.z <= -borderDepth && point.x >= borderWidth) {
+        isCursorInside = false;
+        this.treeVisualisation.position.set(borderWidth, 0.01, -borderDepth);
+      }
+
+      if (point.z <= -borderDepth && point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.treeVisualisation.position.set(-borderWidth, 0.01, -borderDepth);
+      }
+
+      if (isCursorInside) {
+        this.treeVisualisation.position.set(point.x, 0.01, point.z);
+      }
+
+      this.isSaveTreePossible = true;
+
+      this.pavementsList.forEach(pavement => {
+        if (this.treeVisualisation!.position.x <= pavement.positionX + (ConstantHelper.entranceWidth / 2) + .1
+          && this.treeVisualisation!.position.x >= pavement.positionX - (ConstantHelper.entranceWidth / 2) - .1
+          && this.treeVisualisation!.position.z <= pavement.positionY + (ConstantHelper.entranceWidth / 2) + .1
+          && this.treeVisualisation!.position.z >= pavement.positionY - (ConstantHelper.entranceWidth / 2) - .1
+        ) {
+          this.isSaveTreePossible = false;
+
+          this.treeVisualisation!.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              const material = child.material;
+              if (Array.isArray(material)) {
+                material.forEach((mat) => {
+                  mat.transparent = true;
+                  mat.opacity = 0.5;
+                });
+              } else {
+                material.transparent = true;
+                material.opacity = 0.5;
+              }
+            }
+          });
+        }
+      });
+
+      this.treesList.forEach(tree => {
+        if (this.treeVisualisation!.position.x <= tree.positionX + ConstantHelper.minDistanceFromTree
+          && this.treeVisualisation!.position.x >= tree.positionX - ConstantHelper.minDistanceFromTree
+          && this.treeVisualisation!.position.z <= tree.positionY + ConstantHelper.minDistanceFromTree
+          && this.treeVisualisation!.position.z >= tree.positionY - ConstantHelper.minDistanceFromTree
+        ) {
+          this.isSaveTreePossible = false;
+
+          this.treeVisualisation!.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              const material = child.material;
+              if (Array.isArray(material)) {
+                material.forEach((mat) => {
+                  mat.transparent = true;
+                  mat.opacity = 0.5;
+                });
+              } else {
+                material.transparent = true;
+                material.opacity = 0.5;
+              }
+            }
+          });
+        }
+      });
+    }
   }
 
   private changePavementPositionOnMouseMove(event: any) {
@@ -833,42 +1121,42 @@ export class EngineService {
 
       this.pavementsList.forEach(pavement => {
         // under pavement
-        if (this.pavementVisualisation!.position.x <= pavement.x + (ConstantHelper.entranceWidth / 2) + .1
-          && this.pavementVisualisation!.position.x >= pavement.x - (ConstantHelper.entranceWidth / 2) - .1
-          && this.pavementVisualisation!.position.z >= pavement.y - ConstantHelper.entranceWidth - .1
-          && this.pavementVisualisation!.position.z <= pavement.y - (ConstantHelper.entranceWidth / 2)
+        if (this.pavementVisualisation!.position.x <= pavement.positionX + (ConstantHelper.entranceWidth / 2) + .1
+          && this.pavementVisualisation!.position.x >= pavement.positionX - (ConstantHelper.entranceWidth / 2) - .1
+          && this.pavementVisualisation!.position.z >= pavement.positionY - ConstantHelper.entranceWidth - .1
+          && this.pavementVisualisation!.position.z <= pavement.positionY - (ConstantHelper.entranceWidth / 2)
         ) {
-          this.pavementVisualisation!.position.set(pavement.x, 0.01, pavement.y - ConstantHelper.entranceWidth);
+          this.pavementVisualisation!.position.set(pavement.positionX, 0.01, pavement.positionY - ConstantHelper.entranceWidth);
           this.isSavePavementPossible = true;
           (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
         }
         // above pavement
-        else if (this.pavementVisualisation!.position.x <= pavement.x + (ConstantHelper.entranceWidth / 2) + .1
-          && this.pavementVisualisation!.position.x >= pavement.x - (ConstantHelper.entranceWidth / 2) - .1
-          && this.pavementVisualisation!.position.z <= pavement.y + ConstantHelper.entranceWidth + .1
-          && this.pavementVisualisation!.position.z >= pavement.y + (ConstantHelper.entranceWidth / 2)
+        else if (this.pavementVisualisation!.position.x <= pavement.positionX + (ConstantHelper.entranceWidth / 2) + .1
+          && this.pavementVisualisation!.position.x >= pavement.positionX - (ConstantHelper.entranceWidth / 2) - .1
+          && this.pavementVisualisation!.position.z <= pavement.positionY + ConstantHelper.entranceWidth + .1
+          && this.pavementVisualisation!.position.z >= pavement.positionY + (ConstantHelper.entranceWidth / 2)
         ) {
-          this.pavementVisualisation!.position.set(pavement.x, 0.01, pavement.y + ConstantHelper.entranceWidth);
+          this.pavementVisualisation!.position.set(pavement.positionX, 0.01, pavement.positionY + ConstantHelper.entranceWidth);
           this.isSavePavementPossible = true;
           (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
         }
         // on the left side of pavement
-        else if (this.pavementVisualisation!.position.x <= pavement.x + ConstantHelper.entranceWidth + .1
-          && this.pavementVisualisation!.position.x >= pavement.x + (ConstantHelper.entranceWidth / 2)
-          && this.pavementVisualisation!.position.z <= pavement.y + (ConstantHelper.entranceWidth / 2)
-          && this.pavementVisualisation!.position.z >= pavement.y - (ConstantHelper.entranceWidth / 2)
+        else if (this.pavementVisualisation!.position.x <= pavement.positionX + ConstantHelper.entranceWidth + .1
+          && this.pavementVisualisation!.position.x >= pavement.positionX + (ConstantHelper.entranceWidth / 2)
+          && this.pavementVisualisation!.position.z <= pavement.positionY + (ConstantHelper.entranceWidth / 2)
+          && this.pavementVisualisation!.position.z >= pavement.positionY - (ConstantHelper.entranceWidth / 2)
         ) {
-          this.pavementVisualisation!.position.set(pavement.x + ConstantHelper.entranceWidth, 0.01, pavement.y);
+          this.pavementVisualisation!.position.set(pavement.positionX + ConstantHelper.entranceWidth, 0.01, pavement.positionY);
           this.isSavePavementPossible = true;
           (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
         }
         // on the right side of pavement
-        else if (this.pavementVisualisation!.position.x >= pavement.x - ConstantHelper.entranceWidth + .1
-          && this.pavementVisualisation!.position.x <= pavement.x - (ConstantHelper.entranceWidth / 2)
-          && this.pavementVisualisation!.position.z <= pavement.y + (ConstantHelper.entranceWidth / 2)
-          && this.pavementVisualisation!.position.z >= pavement.y - (ConstantHelper.entranceWidth / 2)
+        else if (this.pavementVisualisation!.position.x >= pavement.positionX - ConstantHelper.entranceWidth + .1
+          && this.pavementVisualisation!.position.x <= pavement.positionX - (ConstantHelper.entranceWidth / 2)
+          && this.pavementVisualisation!.position.z <= pavement.positionY + (ConstantHelper.entranceWidth / 2)
+          && this.pavementVisualisation!.position.z >= pavement.positionY - (ConstantHelper.entranceWidth / 2)
         ) {
-          this.pavementVisualisation!.position.set(pavement.x - ConstantHelper.entranceWidth, 0.01, pavement.y);
+          this.pavementVisualisation!.position.set(pavement.positionX - ConstantHelper.entranceWidth, 0.01, pavement.positionY);
           this.isSavePavementPossible = true;
           (this.pavementVisualisation!.material as THREE.MeshStandardMaterial).opacity = 1;
         }
@@ -876,16 +1164,39 @@ export class EngineService {
     }
   }
 
+  private saveTreePosition(): void {
+    if (this.isSaveTreePossible && this.treeVisualisation) {
+      this.removeAllEventListeners();
+
+      this.raycaster = undefined;
+      this.mouse = undefined;
+
+      this.camera.position.set(this.treeVisualisation.position.x - 10, 7, this.treeVisualisation.position.z - 10);
+      this.camera.lookAt(this.treeVisualisation.position.x, 2, this.treeVisualisation.position.z);
+
+      this.controls.enableRotate = false;
+      this.controls.enableZoom = false;
+      this.controls.enablePan = false;
+
+      this.controls.target.set(this.treeVisualisation.position.x, 5, this.treeVisualisation.position.z);
+      this.controls.update();
+
+      this.treeToolService.showToolSource.next(true);
+      this.treeToolService.setTreePosition(this.treeVisualisation.position);
+    }
+  }
+
   private savePavementPosition(): void {
     if (this.isSavePavementPossible && this.pavementVisualisation && this.tempPavementType) {
-      const pavement: IPavement = {
+      const pavement: IGardenElement = {
+        category: 'Pavement',
         name: this.tempPavementType,
-        x: this.pavementVisualisation.position.x,
-        y: this.pavementVisualisation.position.z
+        positionX: this.pavementVisualisation.position.x,
+        positionY: this.pavementVisualisation.position.z
       };
 
       this.pavementsList.push(pavement);
-      this.addPavementToDatabase(pavement);
+      this.saveGardenElementToDatabase(pavement);
 
       this.removeAllEventListeners();
 
@@ -1018,47 +1329,25 @@ export class EngineService {
         this.gardenElementsList = gardenElementsList;
 
         this.pavementsList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Pavement')
-          .map((element: IGardenElement): IPavement => ({
-            name: element.name,
-            x: element.positionX,
-            y: element.positionY,
-          }));
+          .filter((element: IGardenElement) => element.category === 'Pavement');
 
         this.treesList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Tree')
-          .map((element: IGardenElement): ITree => ({
-            name: element.name,
-            x: element.positionX,
-            y: element.positionY,
-            rotationX: element.rotationX,
-            rotationY: element.rotationY
-          }));
+          .filter((element: IGardenElement) => element.category === 'Tree');
 
         this.bushesList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Bush')
-          .map((element: IGardenElement): IBush => ({
-            name: element.name,
-            x: element.positionX,
-            y: element.positionY,
-            rotationX: element.rotationX,
-            rotationY: element.rotationY
-          }));
+          .filter((element: IGardenElement) => element.category === 'Bush');
 
         this.flowersList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Flower')
-          .map((element: IGardenElement): IFlower => ({
-            name: element.name,
-            x: element.positionX,
-            y: element.positionY,
-            rotationX: element.rotationX,
-            rotationY: element.rotationY
-          }));
+          .filter((element: IGardenElement) => element.category === 'Flower');
+
+        this.benchesList = this.gardenElementsList
+          .filter((element: IGardenElement) => element.category === 'Bench');
 
         this.addPavementsToGarden();
         this.addTreesToGarden();
         this.addBushesToGarden();
         this.addFlowersToGarden();
+        this.addBenchesToGarden();
       },
       error => {
         console.error('Error loading garden elements: ', error);
@@ -1082,7 +1371,7 @@ export class EngineService {
 
         const pavementVisualisation = new THREE.Mesh(pavementGeometry, pavementMaterial);
         pavementVisualisation.rotation.x = -Math.PI / 2;
-        pavementVisualisation.position.set(pavement.x, 0.01, pavement.y);
+        pavementVisualisation.position.set(pavement.positionX, 0.01, pavement.positionY);
         pavementVisualisation.receiveShadow = true;
 
         this.scene.add(pavementVisualisation);
@@ -1093,7 +1382,20 @@ export class EngineService {
 
   private addTreesToGarden(): void {
     this.treesList.forEach(tree => {
-      // TODO
+      const tree3DModelData: Tree3DModelData = ConstantHelper.getTree3DModelData(tree.name);
+
+      this.loadGLTF3DModel(
+        tree3DModelData.fileName,
+        tree3DModelData.fileExtension,
+        tree.positionX,
+        tree.positionY,
+        tree.rotation! * (Math.PI / 180),
+        1,
+        tree3DModelData.width,
+        tree3DModelData.depth,
+        tree3DModelData.height,
+        tree.name
+      )
     });
   }
 
@@ -1109,17 +1411,10 @@ export class EngineService {
     });
   }
 
-  private async addPavementToDatabase(pavement: IPavement) {
-    await this.savePavementToDatabase(pavement).subscribe(
-      () => { },
-      error => {
-        console.error('Error during adding pavement: ', error);
-      }
-    );
-  }
-
-  public savePavementToDatabase(pavement: IPavement) {
-    return this.http.post(this.baseUrl + `solution/addPavement/${this.currentProjectId}`, pavement);
+  private addBenchesToGarden(): void {
+    this.benchesList.forEach(bench => {
+      // TODO
+    });
   }
 
   private cutFencesForEntrances(entrances: IEntrance[]): void {

@@ -95,5 +95,6 @@
     "SetRoles": "Users Roles",
     "Role": "Role",
     "InternalServerError": "Internal server error",
-    "BackToHomePage": "Back to home page"
+    "BackToHomePage": "Back to home page",
+    "Apply": "Apply"
 }

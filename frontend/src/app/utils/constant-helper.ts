@@ -1,13 +1,20 @@
 import { ElementCategory } from "../models/types/element-category";
 import { Fence } from "../models/types/fence";
+import { Tree3DModelData } from "../models/types/tree-3d-model-data";
 
 export class ConstantHelper {
     public static readonly entranceWidth: number = 1.6;
-    
+
+    public static readonly minGardenWidth: number = 5;
+    public static readonly maxGardenWidth: number = 300;
+
+    public static readonly minDistanceFromTree: number = 4;
+
     public static readonly pavementCategory: ElementCategory = 'Pavement';
     public static readonly treeCategory: ElementCategory = 'Tree';
     public static readonly bushCategory: ElementCategory = 'Bush';
     public static readonly flowerCategory: ElementCategory = 'Flower';
+    public static readonly benchCategory: ElementCategory = 'Bench';
 
     public static readonly citySidewalkWidth: number = 2;
     public static readonly citySidewalkHeight: number = .15;
@@ -30,7 +37,28 @@ export class ConstantHelper {
         if (fenceType == "wooden") return ConstantHelper.woodenFence;
         if (fenceType == "hedge") return ConstantHelper.hedge;
         if (fenceType == "wire") return ConstantHelper.wireFence;
-        throw new Error('Fence Not Found');
+        throw new Error('Fence not found');
+    }
+
+    public static getTree3DModelData(treeName: string): Tree3DModelData {
+        switch (treeName) {
+            case "Pine": {
+                return ConstantHelper.pine;
+                break;
+            }
+            case "Oak": {
+                return ConstantHelper.oak;
+                break;
+            }
+            case "Birch": {
+                return ConstantHelper.birch;
+                break;
+            }
+            default: {
+                throw new Error('Tree not found');
+                break;
+            }
+        }
     }
 
     // wooden fence 3d model link: https://www.cgtrader.com/free-3d-models/exterior/other/cc0-wood-fence
@@ -67,5 +95,29 @@ export class ConstantHelper {
             fileName: 'scene.gltf'
         },
         positionZ: 0
+    };
+
+    private static readonly pine: Tree3DModelData = {
+        fileName: 'pine-1',
+        fileExtension: 'gltf',
+        width: 8,
+        depth: 8,
+        height: 10
+    };
+
+    private static readonly oak: Tree3DModelData = {
+        fileName: 'oak',
+        fileExtension: 'glb',
+        width: 12,
+        depth: 12,
+        height: 13
+    };
+
+    private static readonly birch: Tree3DModelData = {
+        fileName: 'birch',
+        fileExtension: 'gltf',
+        width: 8,
+        depth: 8,
+        height: 10
     };
 }

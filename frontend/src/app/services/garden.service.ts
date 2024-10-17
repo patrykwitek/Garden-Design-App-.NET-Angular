@@ -10,6 +10,7 @@ import { IElementCategory } from '../models/interfaces/i-element-category';
 import { IElement } from '../models/interfaces/i-element';
 import { IEnvironment } from '../models/interfaces/i-environment';
 import { Environment } from '../models/types/environment';
+import { GardenElement } from '../models/types/garden-element';
 
 @Injectable({
   providedIn: 'root'
@@ -98,7 +99,7 @@ export class GardenService {
   public setEnvironment(environment: IEnvironment) {
     if (this.currentProject) {
       this.http.put(this.baseUrl + `solution/setEnvironment/${this.currentProject.id}`, environment).subscribe(
-        _ => { 
+        _ => {
           this.currentProject!.environment = environment;
         },
         error => {

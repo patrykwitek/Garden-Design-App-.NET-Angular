@@ -10,6 +10,7 @@ import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
 import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
 import { PavementToolService } from 'src/app/tools/pavement-tool.service';
+import { TreeToolService } from 'src/app/tools/tree-tool.service';
 import { ConstantHelper } from 'src/app/utils/constant-helper';
 
 @Component({
@@ -52,7 +53,8 @@ export class NavGardenOptionsComponent implements OnInit {
     public gardenService: GardenService,
     public engineService: EngineService,
     private entranceTool: EntranceToolService,
-    private pavementTool: PavementToolService
+    private pavementTool: PavementToolService,
+    private treeTool: TreeToolService
   ) { }
 
   ngOnInit(): void {
@@ -129,12 +131,16 @@ export class NavGardenOptionsComponent implements OnInit {
         this.pavementTool.initializePavementVisualisation(element.name);
         break;
       case ConstantHelper.treeCategory:
-        // TODO
+        this.engineService.initializeTreeVisualisation(element.name);
+        this.treeTool.setTreeName(element.name);
         break;
       case ConstantHelper.bushCategory:
         // TODO
         break;
       case ConstantHelper.flowerCategory:
+        // TODO
+        break;
+      case ConstantHelper.benchCategory:
         // TODO
         break;
       default:

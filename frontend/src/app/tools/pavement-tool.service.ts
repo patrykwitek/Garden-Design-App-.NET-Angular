@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { EngineService } from '../services/engine.service';
-import { GardenService } from '../services/garden.service';
 
 @Injectable({
   providedIn: 'root'
