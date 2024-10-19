@@ -19,7 +19,7 @@ import { Environment } from '../models/types/environment';
 import { ForestElement } from '../models/types/forest-element';
 import { CityGeneratorService } from './city-generator.service';
 import { Tree3DModelData } from '../models/types/tree-3d-model-data';
-import { TreeToolService } from '../tools/tree-tool.service';
+import { GardenElementToolService } from '../tools/garden-element-tool.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +45,7 @@ export class EngineService {
 
   private entranceVisualisation: THREE.Mesh | undefined;
   private pavementVisualisation: THREE.Mesh | undefined;
-  private treeVisualisation: THREE.Group<THREE.Object3DEventMap> | undefined;
+  private elementVisualisation: THREE.Group<THREE.Object3DEventMap> | undefined;
 
   private tempPavementType: string | undefined;
 
@@ -67,12 +67,6 @@ export class EngineService {
   private entrancesList: IEntrance[] = [];
   private gardenElementsList: IGardenElement[] = [];
 
-  private pavementsList: IGardenElement[] = [];
-  private treesList: IGardenElement[] = [];
-  private bushesList: IGardenElement[] = [];
-  private flowersList: IGardenElement[] = [];
-  private benchesList: IGardenElement[] = [];
-
   private currentProjectId: string | undefined;
 
   private modelCache: { [key: string]: THREE.Group } = {};
@@ -85,7 +79,7 @@ export class EngineService {
     private themeService: ThemeService,
     private http: HttpClient,
     private cityService: CityGeneratorService,
-    private treeToolService: TreeToolService
+    private gardenElementTool: GardenElementToolService
   ) { }
 
   public initialize(canvas: HTMLCanvasElement): void {
@@ -512,16 +506,16 @@ export class EngineService {
     });
   }
 
-  public initializeTreeVisualisation(treeName: string): void {
-    if (this.treeVisualisation) {
-      this.scene.remove(this.treeVisualisation);
-      this.treeVisualisation = undefined;
+  public initializeElementVisualisation(treeName: string): void {
+    if (this.elementVisualisation) {
+      this.scene.remove(this.elementVisualisation);
+      this.elementVisualisation = undefined;
       this.removeAllEventListeners();
       this.raycaster = undefined;
       this.mouse = undefined;
     }
 
-    const tree: Tree3DModelData = ConstantHelper.getTree3DModelData(treeName);
+    const tree: Tree3DModelData = ConstantHelper.get3DModelData(treeName);
 
     this.get3DModelForTool(
       tree.fileName,
@@ -555,20 +549,20 @@ export class EngineService {
     this.controls.enableZoom = false;
     this.controls.enablePan = false;
 
-    this.addEventListener('mousemove', this.changeTreePositionOnMouseMove.bind(this));
-    this.addEventListener('click', this.saveTreePosition.bind(this));
-    this.addEventListener('keydown', this.closeTreeTool.bind(this));
+    this.addEventListener('mousemove', this.changeElementPositionOnMouseMove.bind(this));
+    this.addEventListener('click', this.saveElementPosition.bind(this));
+    this.addEventListener('keydown', this.closeElementTool.bind(this));
   }
 
-  public clearTreeVisualisation(): void {
-    if (this.treeVisualisation) {
-      this.scene.remove(this.treeVisualisation);
-      this.treeVisualisation = undefined;
+  public clearElementVisualisation(): void {
+    if (this.elementVisualisation) {
+      this.scene.remove(this.elementVisualisation);
+      this.elementVisualisation = undefined;
     }
   }
 
-  public applyTreeVisualisation(): void {
-    this.treeVisualisation = undefined;
+  public applyElementVisualisation(): void {
+    this.elementVisualisation = undefined;
     this.resetCameraPosition();
   }
 
@@ -615,41 +609,18 @@ export class EngineService {
     }
   }
 
-  public changeTreeVisualisationRotation(newRotation: number) {
-    if (this.treeVisualisation) {
+  public changeElementVisualisationRotation(newRotation: number) {
+    if (this.elementVisualisation) {
       const rotationInRadians = newRotation * (Math.PI / 180);
-      this.treeVisualisation.rotation.y = rotationInRadians;
+      this.elementVisualisation.rotation.y = rotationInRadians;
     }
   }
 
   public saveGardenElementToDatabase(gardenElement: IGardenElement) {
     return this.http.post(this.baseUrl + `solution/addGardenElement/${this.currentProjectId}`, gardenElement).subscribe(
       () => {
-        switch(gardenElement.category) {
-          case 'Pavement': {
-            this.pavementsList.push(gardenElement);
-            break;
-          }
-          case 'Tree': {
-            this.treesList.push(gardenElement);
-            break;
-          }
-          case 'Bush': {
-            this.bushesList.push(gardenElement);
-            break;
-          }
-          case 'Flower': {
-            this.flowersList.push(gardenElement);
-            break;
-          }
-          case 'Bench': {
-            this.benchesList.push(gardenElement);
-            break;
-          }
-          default: {
-            break;
-          }
-        }
+
+        this.gardenElementsList.push(gardenElement);
       },
       error => {
         console.error('Error during adding element: ', error);
@@ -662,16 +633,21 @@ export class EngineService {
     if (this.fenceType) this.setFence(this.fenceType);
   }
 
-  private closeTreeTool(event: any): void {
+  private closeElementTool(event: any): void {
     if (event.key === 'Escape') {
-      this.clearTreeVisualisation();
+      this.clearElementVisualisation();
       this.removeAllEventListeners();
-      this.treeToolService.showToolSource.next(false);
-      this.treeToolService.setTreeName(undefined);
-      this.treeToolService.setTreePosition(undefined);
+
+      this.gardenElementTool.showToolSource.next(false);
+      this.gardenElementTool.setElementName(undefined);
+      this.gardenElementTool.setElementPosition(undefined);
+      this.gardenElementTool.setElementCategory(undefined);
 
       this.raycaster = undefined;
       this.mouse = undefined;
+
+      this.controls.dispose();
+      this.setOrbitControlsSettings();
     }
   }
 
@@ -772,7 +748,7 @@ export class EngineService {
 
         const modelClone = originModel.clone();
         this.addModelToScene(modelClone, positionX, positionY, rotation, scale, width, depth, height, elementType);
-        this.treeVisualisation = modelClone;
+        this.elementVisualisation = modelClone;
 
         resolve();
       }, undefined, (error) => {
@@ -856,15 +832,15 @@ export class EngineService {
     this.eventListeners = [];
   }
 
-  private changeTreePositionOnMouseMove(event: any) {
-    if (!this.mouse || !this.raycaster || !this.treeVisualisation || !this.ground || !this.width || !this.depth) {
+  private changeElementPositionOnMouseMove(event: any) {
+    if (!this.mouse || !this.raycaster || !this.elementVisualisation || !this.ground || !this.width || !this.depth) {
       return;
     }
 
-    this.camera.lookAt(this.treeVisualisation.position.x, 2, this.treeVisualisation.position.z);
+    this.camera.lookAt(this.elementVisualisation.position.x, 2, this.elementVisualisation.position.z);
 
     if (this.isSaveTreePossible) {
-      this.treeVisualisation.traverse((child) => {
+      this.elementVisualisation.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const material = child.material;
           if (Array.isArray(material)) {
@@ -880,7 +856,7 @@ export class EngineService {
       });
     }
     else {
-      this.treeVisualisation.traverse((child) => {
+      this.elementVisualisation.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const material = child.material;
           if (Array.isArray(material)) {
@@ -912,84 +888,81 @@ export class EngineService {
 
       if (point.x <= -borderWidth) {
         isCursorInside = false;
-        this.treeVisualisation.position.set(-borderWidth, 0.01, point.z);
+        this.elementVisualisation.position.set(-borderWidth, 0.01, point.z);
       }
 
       if (point.x >= borderWidth) {
         isCursorInside = false;
-        this.treeVisualisation.position.set(borderWidth, 0.01, point.z);
+        this.elementVisualisation.position.set(borderWidth, 0.01, point.z);
       }
 
       if (point.z <= -borderDepth) {
         isCursorInside = false;
-        this.treeVisualisation.position.set(point.x, 0.01, -borderDepth);
+        this.elementVisualisation.position.set(point.x, 0.01, -borderDepth);
       }
 
       if (point.z >= borderDepth) {
         isCursorInside = false;
-        this.treeVisualisation.position.set(point.x, 0.01, borderDepth);
+        this.elementVisualisation.position.set(point.x, 0.01, borderDepth);
       }
 
       if (point.z >= borderDepth && point.x >= borderWidth) {
         isCursorInside = false;
-        this.treeVisualisation.position.set(borderWidth, 0.01, borderDepth);
+        this.elementVisualisation.position.set(borderWidth, 0.01, borderDepth);
       }
 
       if (point.z >= borderDepth && point.x <= -borderWidth) {
         isCursorInside = false;
-        this.treeVisualisation.position.set(-borderWidth, 0.01, borderDepth);
+        this.elementVisualisation.position.set(-borderWidth, 0.01, borderDepth);
       }
 
       if (point.z <= -borderDepth && point.x >= borderWidth) {
         isCursorInside = false;
-        this.treeVisualisation.position.set(borderWidth, 0.01, -borderDepth);
+        this.elementVisualisation.position.set(borderWidth, 0.01, -borderDepth);
       }
 
       if (point.z <= -borderDepth && point.x <= -borderWidth) {
         isCursorInside = false;
-        this.treeVisualisation.position.set(-borderWidth, 0.01, -borderDepth);
+        this.elementVisualisation.position.set(-borderWidth, 0.01, -borderDepth);
       }
 
       if (isCursorInside) {
-        this.treeVisualisation.position.set(point.x, 0.01, point.z);
+        this.elementVisualisation.position.set(point.x, 0.01, point.z);
       }
 
       this.isSaveTreePossible = true;
 
-      this.pavementsList.forEach(pavement => {
-        if (this.treeVisualisation!.position.x <= pavement.positionX + (ConstantHelper.entranceWidth / 2) + .1
-          && this.treeVisualisation!.position.x >= pavement.positionX - (ConstantHelper.entranceWidth / 2) - .1
-          && this.treeVisualisation!.position.z <= pavement.positionY + (ConstantHelper.entranceWidth / 2) + .1
-          && this.treeVisualisation!.position.z >= pavement.positionY - (ConstantHelper.entranceWidth / 2) - .1
-        ) {
-          this.isSaveTreePossible = false;
+      this.gardenElementsList.forEach(element => {
+        let minDistanceDifferece: number = 0;
 
-          this.treeVisualisation!.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              const material = child.material;
-              if (Array.isArray(material)) {
-                material.forEach((mat) => {
-                  mat.transparent = true;
-                  mat.opacity = 0.5;
-                });
-              } else {
-                material.transparent = true;
-                material.opacity = 0.5;
-              }
+        switch (element.category) {
+          case 'Pavement': {
+            minDistanceDifferece = (ConstantHelper.entranceWidth / 2) + .1;
+            break;
+          }
+          case 'Tree':
+            {
+              minDistanceDifferece = ConstantHelper.minDistanceFromTree;
+              break;
             }
-          });
+          case 'Bush':
+            {
+              minDistanceDifferece = ConstantHelper.minDistanceFromBush;
+              break;
+            }
+          default: {
+            break;
+          }
         }
-      });
 
-      this.treesList.forEach(tree => {
-        if (this.treeVisualisation!.position.x <= tree.positionX + ConstantHelper.minDistanceFromTree
-          && this.treeVisualisation!.position.x >= tree.positionX - ConstantHelper.minDistanceFromTree
-          && this.treeVisualisation!.position.z <= tree.positionY + ConstantHelper.minDistanceFromTree
-          && this.treeVisualisation!.position.z >= tree.positionY - ConstantHelper.minDistanceFromTree
+        if (this.elementVisualisation!.position.x <= element.positionX + minDistanceDifferece
+          && this.elementVisualisation!.position.x >= element.positionX - minDistanceDifferece
+          && this.elementVisualisation!.position.z <= element.positionY + minDistanceDifferece
+          && this.elementVisualisation!.position.z >= element.positionY - minDistanceDifferece
         ) {
           this.isSaveTreePossible = false;
 
-          this.treeVisualisation!.traverse((child) => {
+          this.elementVisualisation!.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               const material = child.material;
               if (Array.isArray(material)) {
@@ -1119,7 +1092,11 @@ export class EngineService {
         }
       });
 
-      this.pavementsList.forEach(pavement => {
+      this.gardenElementsList.forEach(pavement => {
+        if (pavement.category !== 'Pavement') {
+          return;
+        }
+
         // under pavement
         if (this.pavementVisualisation!.position.x <= pavement.positionX + (ConstantHelper.entranceWidth / 2) + .1
           && this.pavementVisualisation!.position.x >= pavement.positionX - (ConstantHelper.entranceWidth / 2) - .1
@@ -1164,25 +1141,25 @@ export class EngineService {
     }
   }
 
-  private saveTreePosition(): void {
-    if (this.isSaveTreePossible && this.treeVisualisation) {
+  private saveElementPosition(): void {
+    if (this.isSaveTreePossible && this.elementVisualisation) {
       this.removeAllEventListeners();
 
       this.raycaster = undefined;
       this.mouse = undefined;
 
-      this.camera.position.set(this.treeVisualisation.position.x - 10, 7, this.treeVisualisation.position.z - 10);
-      this.camera.lookAt(this.treeVisualisation.position.x, 2, this.treeVisualisation.position.z);
+      this.camera.position.set(this.elementVisualisation.position.x - 10, 7, this.elementVisualisation.position.z - 10);
+      this.camera.lookAt(this.elementVisualisation.position.x, 2, this.elementVisualisation.position.z);
 
       this.controls.enableRotate = false;
       this.controls.enableZoom = false;
       this.controls.enablePan = false;
 
-      this.controls.target.set(this.treeVisualisation.position.x, 5, this.treeVisualisation.position.z);
+      this.controls.target.set(this.elementVisualisation.position.x, 5, this.elementVisualisation.position.z);
       this.controls.update();
 
-      this.treeToolService.showToolSource.next(true);
-      this.treeToolService.setTreePosition(this.treeVisualisation.position);
+      this.gardenElementTool.showToolSource.next(true);
+      this.gardenElementTool.setElementPosition(this.elementVisualisation.position);
     }
   }
 
@@ -1195,7 +1172,7 @@ export class EngineService {
         positionY: this.pavementVisualisation.position.z
       };
 
-      this.pavementsList.push(pavement);
+      this.gardenElementsList.push(pavement);
       this.saveGardenElementToDatabase(pavement);
 
       this.removeAllEventListeners();
@@ -1327,27 +1304,7 @@ export class EngineService {
     await this.getElementsForGarden(this.currentProjectId).subscribe(
       (gardenElementsList: IGardenElement[]) => {
         this.gardenElementsList = gardenElementsList;
-
-        this.pavementsList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Pavement');
-
-        this.treesList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Tree');
-
-        this.bushesList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Bush');
-
-        this.flowersList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Flower');
-
-        this.benchesList = this.gardenElementsList
-          .filter((element: IGardenElement) => element.category === 'Bench');
-
-        this.addPavementsToGarden();
-        this.addTreesToGarden();
-        this.addBushesToGarden();
-        this.addFlowersToGarden();
-        this.addBenchesToGarden();
+        this.addElementsToGarden();
       },
       error => {
         console.error('Error loading garden elements: ', error);
@@ -1359,61 +1316,48 @@ export class EngineService {
     return this.http.get<IGardenElement[]>(this.baseUrl + `solution/getElementsForProject/${projectId}`);
   }
 
-  private addPavementsToGarden(): void {
-    this.pavementsList.forEach(pavement => {
-      this.textureLoader.load(`assets/textures/pavements/${pavement.name.toLowerCase()}.jpg`, (texture) => {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(ConstantHelper.entranceWidth * 1.17, ConstantHelper.entranceWidth * 1.17);
+  private addElementsToGarden(): void {
+    this.gardenElementsList.forEach(element => {
+      switch (element.category) {
+        case 'Pavement': {
+          this.textureLoader.load(`assets/textures/pavements/${element.name.toLowerCase()}.jpg`, (texture) => {
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(ConstantHelper.entranceWidth * 1.17, ConstantHelper.entranceWidth * 1.17);
 
-        const pavementGeometry = new THREE.PlaneGeometry(ConstantHelper.entranceWidth, ConstantHelper.entranceWidth);
-        const pavementMaterial = new THREE.MeshStandardMaterial({ map: texture, roughness: 1, metalness: 0 });
+            const pavementGeometry = new THREE.PlaneGeometry(ConstantHelper.entranceWidth, ConstantHelper.entranceWidth);
+            const pavementMaterial = new THREE.MeshStandardMaterial({ map: texture, roughness: 1, metalness: 0 });
 
-        const pavementVisualisation = new THREE.Mesh(pavementGeometry, pavementMaterial);
-        pavementVisualisation.rotation.x = -Math.PI / 2;
-        pavementVisualisation.position.set(pavement.positionX, 0.01, pavement.positionY);
-        pavementVisualisation.receiveShadow = true;
+            const pavementVisualisation = new THREE.Mesh(pavementGeometry, pavementMaterial);
+            pavementVisualisation.rotation.x = -Math.PI / 2;
+            pavementVisualisation.position.set(element.positionX, 0.01, element.positionY);
+            pavementVisualisation.receiveShadow = true;
 
-        this.scene.add(pavementVisualisation);
-        this.objects.push(pavementVisualisation);
-      });
-    });
-  }
+            this.scene.add(pavementVisualisation);
+            this.objects.push(pavementVisualisation);
+          });
+          break;
+        }
+        case 'Tree':
+        case 'Bush':
+          {
+            const tree3DModelData: Tree3DModelData = ConstantHelper.get3DModelData(element.name);
 
-  private addTreesToGarden(): void {
-    this.treesList.forEach(tree => {
-      const tree3DModelData: Tree3DModelData = ConstantHelper.getTree3DModelData(tree.name);
-
-      this.loadGLTF3DModel(
-        tree3DModelData.fileName,
-        tree3DModelData.fileExtension,
-        tree.positionX,
-        tree.positionY,
-        tree.rotation! * (Math.PI / 180),
-        1,
-        tree3DModelData.width,
-        tree3DModelData.depth,
-        tree3DModelData.height,
-        tree.name
-      )
-    });
-  }
-
-  private addBushesToGarden(): void {
-    this.bushesList.forEach(bush => {
-      // TODO
-    });
-  }
-
-  private addFlowersToGarden(): void {
-    this.flowersList.forEach(flower => {
-      // TODO
-    });
-  }
-
-  private addBenchesToGarden(): void {
-    this.benchesList.forEach(bench => {
-      // TODO
+            this.loadGLTF3DModel(
+              tree3DModelData.fileName,
+              tree3DModelData.fileExtension,
+              element.positionX,
+              element.positionY,
+              element.rotation! * (Math.PI / 180),
+              1,
+              tree3DModelData.width,
+              tree3DModelData.depth,
+              tree3DModelData.height,
+              element.name
+            )
+            break;
+          }
+      }
     });
   }
 

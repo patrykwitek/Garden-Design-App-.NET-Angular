@@ -88,10 +88,10 @@
         <button class="tool-button" (click)="applyEntrancePosition()">{{'Add' | translate}}</button>
     </div>
 </div>
-<div class="slider-tool" *ngIf="(treeToolService.showTool$ | async)">
+<div class="slider-tool" *ngIf="(gardenElementTool.showTool$ | async)">
     <div class="tool-section">
         <button class="tool-button cancel-button" (click)="closeRotationTool()">{{'Cancel' | translate}}</button>
         <input type="range" class="slider rotation-slider" [min]="0" [max]="360" [step]="1" [(ngModel)]="treeRotation" (ngModelChange)="onTreeRotationChange($event)">
-        <button class="tool-button" (click)="applyTreeRotation()">{{'Apply' | translate}}</button>
+        <button class="tool-button" (click)="applyElementRotation()">{{'Apply' | translate}}</button>
     </div>
 </div>

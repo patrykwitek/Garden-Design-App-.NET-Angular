@@ -9,8 +9,8 @@ import { Direction } from 'src/app/models/types/direction';
 import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
 import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
+import { GardenElementToolService } from 'src/app/tools/garden-element-tool.service';
 import { PavementToolService } from 'src/app/tools/pavement-tool.service';
-import { TreeToolService } from 'src/app/tools/tree-tool.service';
 import { ConstantHelper } from 'src/app/utils/constant-helper';
 
 @Component({
@@ -54,7 +54,7 @@ export class NavGardenOptionsComponent implements OnInit {
     public engineService: EngineService,
     private entranceTool: EntranceToolService,
     private pavementTool: PavementToolService,
-    private treeTool: TreeToolService
+    private gardenElementTool: GardenElementToolService
   ) { }
 
   ngOnInit(): void {
@@ -131,11 +131,14 @@ export class NavGardenOptionsComponent implements OnInit {
         this.pavementTool.initializePavementVisualisation(element.name);
         break;
       case ConstantHelper.treeCategory:
-        this.engineService.initializeTreeVisualisation(element.name);
-        this.treeTool.setTreeName(element.name);
+        this.engineService.initializeElementVisualisation(element.name);
+        this.gardenElementTool.setElementName(element.name);
+        this.gardenElementTool.setElementCategory('Tree');
         break;
       case ConstantHelper.bushCategory:
-        // TODO
+        this.engineService.initializeElementVisualisation(element.name);
+        this.gardenElementTool.setElementName(element.name);
+        this.gardenElementTool.setElementCategory('Bush');
         break;
       case ConstantHelper.flowerCategory:
         // TODO
