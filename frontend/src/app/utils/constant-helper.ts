@@ -9,6 +9,7 @@ export class ConstantHelper {
     public static readonly maxGardenWidth: number = 300;
 
     public static readonly minDistanceFromTree: number = 4;
+    public static readonly minDistanceFromBush: number = 2;
 
     public static readonly pavementCategory: ElementCategory = 'Pavement';
     public static readonly treeCategory: ElementCategory = 'Tree';
@@ -40,7 +41,7 @@ export class ConstantHelper {
         throw new Error('Fence not found');
     }
 
-    public static getTree3DModelData(treeName: string): Tree3DModelData {
+    public static get3DModelData(treeName: string): Tree3DModelData {
         switch (treeName) {
             case "Pine": {
                 return ConstantHelper.pine;
@@ -52,6 +53,18 @@ export class ConstantHelper {
             }
             case "Birch": {
                 return ConstantHelper.birch;
+                break;
+            }
+            case "Juniper": {
+                return ConstantHelper.juniper;
+                break;
+            }
+            case "Yew": {
+                return ConstantHelper.yew;
+                break;
+            }
+            case "Salix caprea": {
+                return ConstantHelper.salixCaprea;
                 break;
             }
             default: {
@@ -119,5 +132,31 @@ export class ConstantHelper {
         width: 8,
         depth: 8,
         height: 10
+    };
+
+    // juniper model link: https://sketchfab.com/3d-models/bush-490fb2c6fcd2408290f667436730020e
+    private static readonly juniper: Tree3DModelData = {
+        fileName: 'juniper',
+        fileExtension: 'gltf',
+        width: 3,
+        depth: 4,
+        height: 3
+    };
+
+    private static readonly yew: Tree3DModelData = {
+        fileName: 'yew',
+        fileExtension: 'gltf',
+        width: 3,
+        depth: 3,
+        height: 4
+    };
+
+    // salix caprea model link: https://sketchfab.com/3d-models/green-bush-53fc57039ada4414b5aa8eba6c663fe2
+    private static readonly salixCaprea: Tree3DModelData = {
+        fileName: 'salix caprea',
+        fileExtension: 'gltf',
+        width: 3,
+        depth: 3,
+        height: 3
     };
 }

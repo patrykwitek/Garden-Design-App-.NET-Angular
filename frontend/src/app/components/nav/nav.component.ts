@@ -22,7 +22,8 @@ import { Role } from 'src/app/models/types/role';
 import { UserService } from 'src/app/services/user.service';
 import { Vector3 } from 'three';
 import { IGardenElement } from 'src/app/models/interfaces/i-garden-element';
-import { TreeToolService } from 'src/app/tools/tree-tool.service';
+import { ElementCategory } from 'src/app/models/types/element-category';
+import { GardenElementToolService } from 'src/app/tools/garden-element-tool.service';
 
 @Component({
   selector: 'app-nav',
@@ -49,7 +50,7 @@ export class NavComponent implements OnInit, OnDestroy {
   constructor(
     public userService: UserService,
     public themeService: ThemeService,
-    public treeToolService: TreeToolService,
+    public gardenElementTool: GardenElementToolService,
     private router: Router,
     private projectLoaderService: ProjectLoaderService,
     private engineService: EngineService,
@@ -184,9 +185,9 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   public closeRotationTool() {
-    this.treeToolService.showToolSource.next(false);
+    this.gardenElementTool.showToolSource.next(false);
     this.engineService.resetCameraPosition();
-    this.engineService.clearTreeVisualisation();
+    this.engineService.clearElementVisualisation();
   }
 
   public onEntrancePositionChange(newValue: number) {
@@ -196,7 +197,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   public onTreeRotationChange(newValue: number) {
     this.treeRotation = newValue;
-    this.engineService.changeTreeVisualisationRotation(this.treeRotation);
+    this.engineService.changeElementVisualisationRotation(this.treeRotation);
   }
 
   public applyEntrancePosition() {
@@ -229,27 +230,29 @@ export class NavComponent implements OnInit, OnDestroy {
     this.entranceTool.clearVisualisation();
   }
 
-  public applyTreeRotation() {
-    const treeName: string | undefined = this.treeToolService.getTreeName();
-    const treePosition: Vector3 | undefined = this.treeToolService.getTreePosition();
+  public applyElementRotation() {
+    const elementName: string | undefined = this.gardenElementTool.getElementName();
+    const elementPosition: Vector3 | undefined = this.gardenElementTool.getElementPosition();
+    const elementCategory: ElementCategory | undefined = this.gardenElementTool.getElementCategory();
 
-    if (!treeName) throw new Error("Tree name is undefinded");
-    if (!treePosition) throw new Error("Tree position is undefinded");
+    if (!elementCategory) throw new Error("Element category is undefinded");
+    if (!elementName) throw new Error("Tree name is undefinded");
+    if (!elementPosition) throw new Error("Tree position is undefinded");
 
-    const treeRotation: number = this.treeRotation;
+    const elementRotation: number = this.treeRotation;
 
-    const tree: IGardenElement = {
-      name: treeName,
-      category: 'Tree',
-      positionX: treePosition.x,
-      positionY: treePosition.z,
-      rotation: treeRotation
+    const element: IGardenElement = {
+      name: elementName,
+      category: elementCategory,
+      positionX: elementPosition.x,
+      positionY: elementPosition.z,
+      rotation: elementRotation
     };
 
-    this.engineService.saveGardenElementToDatabase(tree);
+    this.engineService.saveGardenElementToDatabase(element);
 
-    this.treeToolService.showToolSource.next(false);
-    this.engineService.applyTreeVisualisation();
+    this.gardenElementTool.showToolSource.next(false);
+    this.engineService.applyElementVisualisation();
   }
 
   private changeDropdownIcon() {
