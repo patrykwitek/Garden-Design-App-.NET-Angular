@@ -132,12 +132,12 @@ https://github.com/user-attachments/assets/af90ce4b-d268-47af-accf-d3227f840a2c
 <a name="bushes"></a>
 ### Bushes 🌲
 
-*This functionality will come in the future*
+https://github.com/user-attachments/assets/14565824-1405-4e0d-8839-6d93638b0d80
 
 <a name="flowers"></a>
 ### Flowers 🌼
 
-*This functionality will come in the future*
+https://github.com/user-attachments/assets/da028268-c0cc-46c6-95c8-266c7d8eb46d
 
 <a name="benches"></a>
 ### Benches 🪑
