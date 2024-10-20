@@ -10,6 +10,7 @@ export class ConstantHelper {
 
     public static readonly minDistanceFromTree: number = 4;
     public static readonly minDistanceFromBush: number = 2;
+    public static readonly minDistanceFromFlower: number = .6;
 
     public static readonly pavementCategory: ElementCategory = 'Pavement';
     public static readonly treeCategory: ElementCategory = 'Tree';
@@ -41,8 +42,8 @@ export class ConstantHelper {
         throw new Error('Fence not found');
     }
 
-    public static get3DModelData(treeName: string): Tree3DModelData {
-        switch (treeName) {
+    public static get3DModelData(elmentName: string): Tree3DModelData {
+        switch (elmentName) {
             case "Pine": {
                 return ConstantHelper.pine;
                 break;
@@ -67,8 +68,20 @@ export class ConstantHelper {
                 return ConstantHelper.salixCaprea;
                 break;
             }
+            case "Tulip": {
+                return ConstantHelper.tulip;
+                break;
+            }
+            case "Crocus": {
+                return ConstantHelper.crocus;
+                break;
+            }
+            case "Narcissus": {
+                return ConstantHelper.narcissus;
+                break;
+            }
             default: {
-                throw new Error('Tree not found');
+                throw new Error('Element not found');
                 break;
             }
         }
@@ -158,5 +171,32 @@ export class ConstantHelper {
         width: 3,
         depth: 3,
         height: 3
+    };
+
+    // crocus model link: https://sketchfab.com/3d-models/generic-tulip-flower-d75f531255ad47a99051a4c421c8861b
+    private static readonly crocus: Tree3DModelData = {
+        fileName: 'crocus',
+        fileExtension: 'gltf',
+        width: .4,
+        depth: .3,
+        height: 1
+    };
+    
+    // narcissus model link: https://sketchfab.com/3d-models/generic-narcissus-flower-cf16e483ce7b4b9281b62366d9b1e52c
+    private static readonly narcissus: Tree3DModelData = {
+        fileName: 'narcissus',
+        fileExtension: 'gltf',
+        width: .6,
+        depth: .6,
+        height: 1
+    };
+    
+    // tulip model link: https://sketchfab.com/3d-models/tulip-5908b2665e58414a8dbc70e20c7ee021
+    private static readonly tulip: Tree3DModelData = {
+        fileName: 'tulip',
+        fileExtension: 'gltf',
+        width: .3,
+        depth: .3,
+        height: .95
     };
 }

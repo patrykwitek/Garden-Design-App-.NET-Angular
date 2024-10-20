@@ -131,17 +131,11 @@ export class NavGardenOptionsComponent implements OnInit {
         this.pavementTool.initializePavementVisualisation(element.name);
         break;
       case ConstantHelper.treeCategory:
-        this.engineService.initializeElementVisualisation(element.name);
-        this.gardenElementTool.setElementName(element.name);
-        this.gardenElementTool.setElementCategory('Tree');
-        break;
       case ConstantHelper.bushCategory:
+      case ConstantHelper.flowerCategory:
         this.engineService.initializeElementVisualisation(element.name);
         this.gardenElementTool.setElementName(element.name);
-        this.gardenElementTool.setElementCategory('Bush');
-        break;
-      case ConstantHelper.flowerCategory:
-        // TODO
+        this.gardenElementTool.setElementCategory(element.category);
         break;
       case ConstantHelper.benchCategory:
         // TODO
