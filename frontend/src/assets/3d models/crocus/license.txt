@@ -1,0 +1,8 @@
+Model Information:
+* title:	Generic tulip flower
+* source:	https://sketchfab.com/3d-models/generic-tulip-flower-d75f531255ad47a99051a4c421c8861b
+* author:	assetfactory (https://sketchfab.com/assetfactory)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

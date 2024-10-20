@@ -950,6 +950,11 @@ export class EngineService {
               minDistanceDifferece = ConstantHelper.minDistanceFromBush;
               break;
             }
+          case 'Flower':
+            {
+              minDistanceDifferece = ConstantHelper.minDistanceFromFlower;
+              break;
+            }
           default: {
             break;
           }
@@ -1340,6 +1345,7 @@ export class EngineService {
         }
         case 'Tree':
         case 'Bush':
+        case 'Flower':
           {
             const tree3DModelData: Tree3DModelData = ConstantHelper.get3DModelData(element.name);
 
