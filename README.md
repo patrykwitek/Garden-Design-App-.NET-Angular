@@ -142,7 +142,9 @@ https://github.com/user-attachments/assets/da028268-c0cc-46c6-95c8-266c7d8eb46d
 <a name="benches"></a>
 ### Benches 🪑
 
-*This functionality will come in the future*
+Benches can only be added next to the pavement. When the mouse is close enough, the tool will automatically adjust the bench next to the pavement.
+
+https://github.com/user-attachments/assets/1d838bd8-f2e1-4623-936f-8a2a526c4431
 
 <a name="remove"></a>
 ## 7. Removing Elements 🗑️
