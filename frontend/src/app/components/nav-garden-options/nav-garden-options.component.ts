@@ -10,7 +10,6 @@ import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
 import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
 import { GardenElementToolService } from 'src/app/tools/garden-element-tool.service';
-import { PavementToolService } from 'src/app/tools/pavement-tool.service';
 import { ConstantHelper } from 'src/app/utils/constant-helper';
 
 @Component({
@@ -53,7 +52,6 @@ export class NavGardenOptionsComponent implements OnInit {
     public gardenService: GardenService,
     public engineService: EngineService,
     private entranceTool: EntranceToolService,
-    private pavementTool: PavementToolService,
     private gardenElementTool: GardenElementToolService
   ) { }
 
@@ -128,7 +126,7 @@ export class NavGardenOptionsComponent implements OnInit {
     this.showChooseElementOptions = false;
     switch (element.category) {
       case ConstantHelper.pavementCategory:
-        this.pavementTool.initializePavementVisualisation(element.name);
+        this.engineService.initializePavementVisualisation(element.name);
         break;
       case ConstantHelper.treeCategory:
       case ConstantHelper.bushCategory:
@@ -138,7 +136,7 @@ export class NavGardenOptionsComponent implements OnInit {
         this.gardenElementTool.setElementCategory(element.category);
         break;
       case ConstantHelper.benchCategory:
-        // TODO
+        this.engineService.initializeBenchVisualisation(element.name);
         break;
       default:
         throw new Error('Element category not found');

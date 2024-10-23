@@ -1,6 +1,6 @@
 import { ElementCategory } from "../models/types/element-category";
 import { Fence } from "../models/types/fence";
-import { Tree3DModelData } from "../models/types/tree-3d-model-data";
+import { GardenElement3DModelData } from "../models/types/garden-element-3d-model-data";
 
 export class ConstantHelper {
     public static readonly entranceWidth: number = 1.6;
@@ -11,6 +11,8 @@ export class ConstantHelper {
     public static readonly minDistanceFromTree: number = 4;
     public static readonly minDistanceFromBush: number = 2;
     public static readonly minDistanceFromFlower: number = .6;
+
+    public static readonly benchDistanceFromPavement: number = .2;
 
     public static readonly pavementCategory: ElementCategory = 'Pavement';
     public static readonly treeCategory: ElementCategory = 'Tree';
@@ -35,6 +37,9 @@ export class ConstantHelper {
     public static readonly cityWindowWidth: number = 1.2
     public static readonly cityWindowHeight: number = 1.5;
 
+    public static readonly benchWidth: number = 3;
+    public static readonly benchDepth: number = 1;
+
     public static getFenceByType(fenceType: string) {
         if (fenceType == "wooden") return ConstantHelper.woodenFence;
         if (fenceType == "hedge") return ConstantHelper.hedge;
@@ -42,7 +47,7 @@ export class ConstantHelper {
         throw new Error('Fence not found');
     }
 
-    public static get3DModelData(elmentName: string): Tree3DModelData {
+    public static get3DModelData(elmentName: string): GardenElement3DModelData {
         switch (elmentName) {
             case "Pine": {
                 return ConstantHelper.pine;
@@ -78,6 +83,18 @@ export class ConstantHelper {
             }
             case "Narcissus": {
                 return ConstantHelper.narcissus;
+                break;
+            }
+            case "Wooden bench": {
+                return ConstantHelper.woodenBench;
+                break;
+            }
+            case "Modern bench": {
+                return ConstantHelper.modernBench;
+                break;
+            }
+            case "Metal bench": {
+                return ConstantHelper.metalBench;
                 break;
             }
             default: {
@@ -123,7 +140,7 @@ export class ConstantHelper {
         positionZ: 0
     };
 
-    private static readonly pine: Tree3DModelData = {
+    private static readonly pine: GardenElement3DModelData = {
         fileName: 'pine-1',
         fileExtension: 'gltf',
         width: 8,
@@ -131,7 +148,7 @@ export class ConstantHelper {
         height: 10
     };
 
-    private static readonly oak: Tree3DModelData = {
+    private static readonly oak: GardenElement3DModelData = {
         fileName: 'oak',
         fileExtension: 'glb',
         width: 12,
@@ -139,7 +156,7 @@ export class ConstantHelper {
         height: 13
     };
 
-    private static readonly birch: Tree3DModelData = {
+    private static readonly birch: GardenElement3DModelData = {
         fileName: 'birch',
         fileExtension: 'gltf',
         width: 8,
@@ -148,7 +165,7 @@ export class ConstantHelper {
     };
 
     // juniper model link: https://sketchfab.com/3d-models/bush-490fb2c6fcd2408290f667436730020e
-    private static readonly juniper: Tree3DModelData = {
+    private static readonly juniper: GardenElement3DModelData = {
         fileName: 'juniper',
         fileExtension: 'gltf',
         width: 3,
@@ -156,7 +173,7 @@ export class ConstantHelper {
         height: 3
     };
 
-    private static readonly yew: Tree3DModelData = {
+    private static readonly yew: GardenElement3DModelData = {
         fileName: 'yew',
         fileExtension: 'gltf',
         width: 3,
@@ -165,7 +182,7 @@ export class ConstantHelper {
     };
 
     // salix caprea model link: https://sketchfab.com/3d-models/green-bush-53fc57039ada4414b5aa8eba6c663fe2
-    private static readonly salixCaprea: Tree3DModelData = {
+    private static readonly salixCaprea: GardenElement3DModelData = {
         fileName: 'salix caprea',
         fileExtension: 'gltf',
         width: 3,
@@ -174,7 +191,7 @@ export class ConstantHelper {
     };
 
     // crocus model link: https://sketchfab.com/3d-models/generic-tulip-flower-d75f531255ad47a99051a4c421c8861b
-    private static readonly crocus: Tree3DModelData = {
+    private static readonly crocus: GardenElement3DModelData = {
         fileName: 'crocus',
         fileExtension: 'gltf',
         width: .4,
@@ -183,7 +200,7 @@ export class ConstantHelper {
     };
     
     // narcissus model link: https://sketchfab.com/3d-models/generic-narcissus-flower-cf16e483ce7b4b9281b62366d9b1e52c
-    private static readonly narcissus: Tree3DModelData = {
+    private static readonly narcissus: GardenElement3DModelData = {
         fileName: 'narcissus',
         fileExtension: 'gltf',
         width: .6,
@@ -192,11 +209,38 @@ export class ConstantHelper {
     };
     
     // tulip model link: https://sketchfab.com/3d-models/tulip-5908b2665e58414a8dbc70e20c7ee021
-    private static readonly tulip: Tree3DModelData = {
+    private static readonly tulip: GardenElement3DModelData = {
         fileName: 'tulip',
         fileExtension: 'gltf',
         width: .3,
         depth: .3,
         height: .95
+    };
+
+    // wooden bench model link: https://sketchfab.com/3d-models/street-bench-1ddafec2fda5430697aaf403b3deba96
+    private static readonly woodenBench: GardenElement3DModelData = {
+        fileName: 'wooden bench',
+        fileExtension: 'gltf',
+        width: this.benchWidth,
+        depth: this.benchDepth,
+        height: 1
+    };
+
+    // modern bench model link: https://sketchfab.com/3d-models/bench-street-furniture-2eec0b2d47f94db38ea31e8c3d2aab07
+    private static readonly modernBench: GardenElement3DModelData = {
+        fileName: 'modern bench',
+        fileExtension: 'gltf',
+        width: this.benchWidth,
+        depth: this.benchDepth,
+        height: 1
+    };
+
+    // metal bench model link: https://sketchfab.com/3d-models/metallic-bench-00cc7cfdd780453e89fc101fd3e7db19
+    private static readonly metalBench: GardenElement3DModelData = {
+        fileName: 'metal bench',
+        fileExtension: 'gltf',
+        width: this.benchWidth,
+        depth: this.benchDepth,
+        height: 1
     };
 }
