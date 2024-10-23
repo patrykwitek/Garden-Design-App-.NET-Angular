@@ -18,7 +18,7 @@ import { IGardenElement } from '../models/interfaces/i-garden-element';
 import { Environment } from '../models/types/environment';
 import { ForestElement } from '../models/types/forest-element';
 import { CityGeneratorService } from './city-generator.service';
-import { Tree3DModelData } from '../models/types/tree-3d-model-data';
+import { GardenElement3DModelData } from '../models/types/garden-element-3d-model-data';
 import { GardenElementToolService } from '../tools/garden-element-tool.service';
 
 @Injectable({
@@ -48,9 +48,12 @@ export class EngineService {
   private elementVisualisation: THREE.Group<THREE.Object3DEventMap> | undefined;
 
   private tempPavementType: string | undefined;
+  private tempBenchType: string | undefined;
 
   private isSavePavementPossible: boolean | undefined;
-  private isSaveTreePossible: boolean | undefined;
+  private isSaveElementPossible: boolean | undefined;
+
+  private benchRotation: 0 | 90 | 180 | 270 | undefined;
 
   private eventListeners: { type: string, listener: EventListenerOrEventListenerObject }[] = [];
 
@@ -303,6 +306,16 @@ export class EngineService {
     this.is2DMode = !this.is2DMode;
     this.is2DModeSource.next(this.is2DMode);
 
+    if (this.elementVisualisation) {
+      this.scene.remove(this.elementVisualisation);
+      this.elementVisualisation = undefined;
+      this.removeAllEventListeners();
+      this.raycaster = undefined;
+      this.mouse = undefined;
+      this.tempBenchType = undefined;
+      this.benchRotation = undefined;
+    }
+
     if (this.is2DMode) {
       if (this.width && this.depth) {
         this.set2DModeCamera();
@@ -515,7 +528,7 @@ export class EngineService {
       this.mouse = undefined;
     }
 
-    const tree: Tree3DModelData = ConstantHelper.get3DModelData(treeName);
+    const tree: GardenElement3DModelData = ConstantHelper.get3DModelData(treeName);
 
     this.get3DModelForTool(
       tree.fileName,
@@ -533,7 +546,7 @@ export class EngineService {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-    this.isSaveTreePossible = true;
+    this.isSaveElementPossible = true;
 
     gsap.to(this.camera.position, {
       duration: 1,
@@ -552,6 +565,54 @@ export class EngineService {
     this.addEventListener('mousemove', this.changeElementPositionOnMouseMove.bind(this));
     this.addEventListener('click', this.saveElementPosition.bind(this));
     this.addEventListener('keydown', this.closeElementTool.bind(this));
+  }
+
+  public initializeBenchVisualisation(benchName: string): void {
+    if (!this.is2DMode && this.width && this.depth) {
+      this.is2DMode = !this.is2DMode;
+      this.is2DModeSource.next(this.is2DMode);
+
+      this.set2DModeCamera();
+      this.addBorderVisualisation();
+
+      this.controls.dispose();
+      this.setOrbitControlsSettings();
+    }
+
+    if (this.elementVisualisation) {
+      this.scene.remove(this.elementVisualisation);
+      this.elementVisualisation = undefined;
+      this.removeAllEventListeners();
+      this.raycaster = undefined;
+      this.mouse = undefined;
+      this.tempBenchType = undefined;
+    }
+
+    const bench: GardenElement3DModelData = ConstantHelper.get3DModelData(benchName);
+
+    this.get3DModelForTool(
+      bench.fileName,
+      bench.fileExtension,
+      0,
+      0,
+      0,
+      1,
+      bench.width,
+      bench.depth,
+      bench.height,
+      `${benchName}-garden-element`
+    );
+
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
+    this.isSaveElementPossible = true;
+    this.benchRotation = 0;
+    this.tempBenchType = benchName;
+
+    this.addEventListener('mousemove', this.changeBenchPositionOnMouseMove.bind(this));
+    this.addEventListener('click', this.saveBenchPosition.bind(this));
+    this.addEventListener('keydown', this.closeBenchTool.bind(this));
   }
 
   public clearElementVisualisation(): void {
@@ -660,6 +721,19 @@ export class EngineService {
       this.raycaster = undefined;
       this.mouse = undefined;
       this.tempPavementType = undefined;
+    }
+  }
+
+  private closeBenchTool(event: any): void {
+    if (event.key === 'Escape') {
+      this.clearElementVisualisation()
+      this.removeAllEventListeners();
+
+      this.raycaster = undefined;
+      this.mouse = undefined;
+
+      this.controls.dispose();
+      this.setOrbitControlsSettings();
     }
   }
 
@@ -839,7 +913,7 @@ export class EngineService {
 
     this.camera.lookAt(this.elementVisualisation.position.x, 2, this.elementVisualisation.position.z);
 
-    if (this.isSaveTreePossible) {
+    if (this.isSaveElementPossible) {
       this.elementVisualisation.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           const material = child.material;
@@ -930,7 +1004,7 @@ export class EngineService {
         this.elementVisualisation.position.set(point.x, 0.01, point.z);
       }
 
-      this.isSaveTreePossible = true;
+      this.isSaveElementPossible = true;
 
       this.gardenElementsList.forEach(element => {
         let minDistanceDifferece: number = 0;
@@ -940,21 +1014,22 @@ export class EngineService {
             minDistanceDifferece = (ConstantHelper.entranceWidth / 2) + .1;
             break;
           }
-          case 'Tree':
-            {
-              minDistanceDifferece = ConstantHelper.minDistanceFromTree;
-              break;
-            }
-          case 'Bush':
-            {
-              minDistanceDifferece = ConstantHelper.minDistanceFromBush;
-              break;
-            }
-          case 'Flower':
-            {
-              minDistanceDifferece = ConstantHelper.minDistanceFromFlower;
-              break;
-            }
+          case 'Tree': {
+            minDistanceDifferece = ConstantHelper.minDistanceFromTree;
+            break;
+          }
+          case 'Bush': {
+            minDistanceDifferece = ConstantHelper.minDistanceFromBush;
+            break;
+          }
+          case 'Flower': {
+            minDistanceDifferece = ConstantHelper.minDistanceFromFlower;
+            break;
+          }
+          case 'Bench': {
+            minDistanceDifferece = ConstantHelper.benchWidth / 2;
+            break;
+          }
           default: {
             break;
           }
@@ -965,7 +1040,7 @@ export class EngineService {
           && this.elementVisualisation!.position.z <= element.positionY + minDistanceDifferece
           && this.elementVisualisation!.position.z >= element.positionY - minDistanceDifferece
         ) {
-          this.isSaveTreePossible = false;
+          this.isSaveElementPossible = false;
 
           this.elementVisualisation!.traverse((child) => {
             if (child instanceof THREE.Mesh) {
@@ -1146,8 +1221,187 @@ export class EngineService {
     }
   }
 
+  private changeBenchPositionOnMouseMove(event: any) {
+    if (!this.mouse || !this.raycaster || !this.elementVisualisation || !this.ground || !this.width || !this.depth) {
+      return;
+    }
+
+    this.camera.lookAt(this.elementVisualisation.position.x, 2, this.elementVisualisation.position.z);
+
+    if (this.isSaveElementPossible) {
+      this.enableElementVisualisation();
+    }
+    else {
+      this.disableElementVisualisation();
+    }
+
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    const intersects = this.raycaster.intersectObject(this.ground);
+    if (intersects.length > 0) {
+      let isCursorInside: boolean = true;
+
+      const point = intersects[0].point;
+
+      const borderWidth = this.benchRotation === 0 || this.benchRotation === 90 ? (this.width / 2) - (ConstantHelper.benchWidth / 2) : (this.width / 2) - (ConstantHelper.benchDepth / 2);
+      const borderDepth = this.benchRotation === 90 || this.benchRotation === 270 ? (this.depth / 2) - (ConstantHelper.benchDepth / 2) : (this.depth / 2) - (ConstantHelper.benchWidth / 2);
+
+      if (point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.elementVisualisation.position.set(-borderWidth, 0.01, point.z);
+      }
+
+      if (point.x >= borderWidth) {
+        isCursorInside = false;
+        this.elementVisualisation.position.set(borderWidth, 0.01, point.z);
+      }
+
+      if (point.z <= -borderDepth) {
+        isCursorInside = false;
+        this.elementVisualisation.position.set(point.x, 0.01, -borderDepth);
+      }
+
+      if (point.z >= borderDepth) {
+        isCursorInside = false;
+        this.elementVisualisation.position.set(point.x, 0.01, borderDepth);
+      }
+
+      if (point.z >= borderDepth && point.x >= borderWidth) {
+        isCursorInside = false;
+        this.elementVisualisation.position.set(borderWidth, 0.01, borderDepth);
+      }
+
+      if (point.z >= borderDepth && point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.elementVisualisation.position.set(-borderWidth, 0.01, borderDepth);
+      }
+
+      if (point.z <= -borderDepth && point.x >= borderWidth) {
+        isCursorInside = false;
+        this.elementVisualisation.position.set(borderWidth, 0.01, -borderDepth);
+      }
+
+      if (point.z <= -borderDepth && point.x <= -borderWidth) {
+        isCursorInside = false;
+        this.elementVisualisation.position.set(-borderWidth, 0.01, -borderDepth);
+      }
+
+      if (isCursorInside) {
+        this.elementVisualisation.position.set(point.x, 0.01, point.z);
+      }
+
+      let isSaveElementPossible = false;
+
+      this.gardenElementsList.some(element => {
+        let minDistanceDifferece: number = 0;
+
+        switch (element.category) {
+          case 'Pavement': {
+            minDistanceDifferece = (ConstantHelper.entranceWidth / 2) + .1;
+            break;
+          }
+          case 'Tree': {
+            minDistanceDifferece = ConstantHelper.minDistanceFromTree;
+            break;
+          }
+          case 'Bush': {
+            minDistanceDifferece = ConstantHelper.minDistanceFromBush;
+            break;
+          }
+          case 'Flower': {
+            minDistanceDifferece = ConstantHelper.minDistanceFromFlower;
+            break;
+          }
+          case 'Bench': {
+            minDistanceDifferece = ConstantHelper.benchWidth / 2;
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+
+        if (this.elementVisualisation!.position.x <= element.positionX + minDistanceDifferece
+          && this.elementVisualisation!.position.x >= element.positionX - minDistanceDifferece
+          && this.elementVisualisation!.position.z <= element.positionY + minDistanceDifferece
+          && this.elementVisualisation!.position.z >= element.positionY - minDistanceDifferece
+        ) {
+          this.isSaveElementPossible = false;
+
+          this.disableElementVisualisation();
+
+          return true;
+        }
+
+        if (element.category === 'Pavement') {
+          // under pavement
+          if (this.elementVisualisation!.position.x <= element.positionX + (ConstantHelper.entranceWidth / 2) + .1
+            && this.elementVisualisation!.position.x >= element.positionX - (ConstantHelper.entranceWidth / 2) - .1
+            && this.elementVisualisation!.position.z >= element.positionY - ConstantHelper.entranceWidth - .1
+            && this.elementVisualisation!.position.z <= element.positionY - (ConstantHelper.entranceWidth / 2)
+          ) {
+            isSaveElementPossible = true;
+            this.benchRotation = 0;
+
+            this.elementVisualisation!.position.set(point.x, 0.01, element.positionY - (ConstantHelper.entranceWidth / 2) - (ConstantHelper.benchDepth / 2) - ConstantHelper.benchDistanceFromPavement);
+
+            this.enableElementVisualisation();
+          }
+          // above pavement
+          else if (this.elementVisualisation!.position.x <= element.positionX + (ConstantHelper.entranceWidth / 2) + .1
+            && this.elementVisualisation!.position.x >= element.positionX - (ConstantHelper.entranceWidth / 2) - .1
+            && this.elementVisualisation!.position.z <= element.positionY + ConstantHelper.entranceWidth + .1
+            && this.elementVisualisation!.position.z >= element.positionY + (ConstantHelper.entranceWidth / 2)
+          ) {
+            isSaveElementPossible = true;
+            this.benchRotation = 180;
+
+            this.elementVisualisation!.position.set(point.x, 0.01, element.positionY + (ConstantHelper.entranceWidth / 2) + (ConstantHelper.benchDepth / 2) + ConstantHelper.benchDistanceFromPavement);
+
+            this.enableElementVisualisation();
+          }
+          // on the left side of pavement
+          else if (this.elementVisualisation!.position.x <= element.positionX + ConstantHelper.entranceWidth + .1
+            && this.elementVisualisation!.position.x >= element.positionX + (ConstantHelper.entranceWidth / 2)
+            && this.elementVisualisation!.position.z <= element.positionY + (ConstantHelper.entranceWidth / 2)
+            && this.elementVisualisation!.position.z >= element.positionY - (ConstantHelper.entranceWidth / 2)
+          ) {
+            isSaveElementPossible = true;
+            this.benchRotation = 270;
+
+            this.elementVisualisation!.position.set(element.positionX + (ConstantHelper.entranceWidth / 2) + (ConstantHelper.benchDepth / 2) + ConstantHelper.benchDistanceFromPavement, 0.01, point.z);
+
+            this.enableElementVisualisation();
+          }
+          // on the right side of pavement
+          else if (this.elementVisualisation!.position.x >= element.positionX - ConstantHelper.entranceWidth + .1
+            && this.elementVisualisation!.position.x <= element.positionX - (ConstantHelper.entranceWidth / 2)
+            && this.elementVisualisation!.position.z <= element.positionY + (ConstantHelper.entranceWidth / 2)
+            && this.elementVisualisation!.position.z >= element.positionY - (ConstantHelper.entranceWidth / 2)
+          ) {
+            isSaveElementPossible = true;
+            this.benchRotation = 90;
+
+            this.elementVisualisation!.position.set(element.positionX - (ConstantHelper.entranceWidth / 2) - (ConstantHelper.benchDepth / 2) - ConstantHelper.benchDistanceFromPavement, 0.01, point.z);
+
+            this.enableElementVisualisation();
+          }
+
+          this.changeElementVisualisationRotation(this.benchRotation!);
+        }
+
+        return false;
+      });
+
+      this.isSaveElementPossible = isSaveElementPossible;
+    }
+  }
+
   private saveElementPosition(): void {
-    if (this.isSaveTreePossible && this.elementVisualisation) {
+    if (this.isSaveElementPossible && this.elementVisualisation) {
       this.removeAllEventListeners();
 
       this.raycaster = undefined;
@@ -1165,6 +1419,28 @@ export class EngineService {
 
       this.gardenElementTool.showToolSource.next(true);
       this.gardenElementTool.setElementPosition(this.elementVisualisation.position);
+    }
+  }
+
+  private saveBenchPosition(): void {
+    if (this.isSaveElementPossible && this.elementVisualisation) {
+      const pavement: IGardenElement = {
+        category: 'Bench',
+        name: this.tempBenchType!,
+        positionX: this.elementVisualisation.position.x,
+        positionY: this.elementVisualisation.position.z,
+        rotation: this.benchRotation
+      };
+
+      this.gardenElementsList.push(pavement);
+      this.saveGardenElementToDatabase(pavement);
+
+      this.removeAllEventListeners();
+
+      this.elementVisualisation = undefined;
+      this.benchRotation = undefined;
+      this.raycaster = undefined;
+      this.mouse = undefined;
     }
   }
 
@@ -1346,19 +1622,20 @@ export class EngineService {
         case 'Tree':
         case 'Bush':
         case 'Flower':
+        case 'Bench':
           {
-            const tree3DModelData: Tree3DModelData = ConstantHelper.get3DModelData(element.name);
+            const gardenElement3DModelData: GardenElement3DModelData = ConstantHelper.get3DModelData(element.name);
 
             this.loadGLTF3DModel(
-              tree3DModelData.fileName,
-              tree3DModelData.fileExtension,
+              gardenElement3DModelData.fileName,
+              gardenElement3DModelData.fileExtension,
               element.positionX,
               element.positionY,
               element.rotation! * (Math.PI / 180),
               1,
-              tree3DModelData.width,
-              tree3DModelData.depth,
-              tree3DModelData.height,
+              gardenElement3DModelData.width,
+              gardenElement3DModelData.depth,
+              gardenElement3DModelData.height,
               element.name
             )
             break;
@@ -1989,6 +2266,40 @@ export class EngineService {
         console.error('Error loading fence model: ' + error);
         reject(error);
       });
+    });
+  }
+
+  private enableElementVisualisation(): void {
+    this.elementVisualisation!.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = child.material;
+        if (Array.isArray(material)) {
+          material.forEach((mat) => {
+            mat.transparent = true;
+            mat.opacity = 1;
+          });
+        } else {
+          material.transparent = true;
+          material.opacity = 1;
+        }
+      }
+    });
+  }
+
+  private disableElementVisualisation(): void {
+    this.elementVisualisation!.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = child.material;
+        if (Array.isArray(material)) {
+          material.forEach((mat) => {
+            mat.transparent = true;
+            mat.opacity = 0.5;
+          });
+        } else {
+          material.transparent = true;
+          material.opacity = 0.5;
+        }
+      }
     });
   }
 

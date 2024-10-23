@@ -199,19 +199,19 @@ namespace backend.Data
                         },
                         new Element
                         {
-                            Name = "Wooden",
+                            Name = "Wooden bench",
                             Category = "Bench"
                             // img link: https://www.istockphoto.com/pl/wektor/%C5%82awka-ogrodowa-kresk%C3%B3wkowe-drewniane-i-wiklinowe-meble-na-ulice-i-parki-zestaw-gm1331220354-414419829
                         },
                         new Element
                         {
-                            Name = "Modern",
+                            Name = "Modern bench",
                             Category = "Bench"
                             // img link: https://www.istockphoto.com/pl/wektor/%C5%82awka-ogrodowa-kresk%C3%B3wkowe-drewniane-i-wiklinowe-meble-na-ulice-i-parki-zestaw-gm1331220354-414419829
                         },
                         new Element
                         {
-                            Name = "Metal",
+                            Name = "Metal bench",
                             Category = "Bench"
                             // img link: https://www.istockphoto.com/pl/wektor/%C5%82awka-ogrodowa-kresk%C3%B3wkowe-drewniane-i-wiklinowe-meble-na-ulice-i-parki-zestaw-gm1331220354-414419829
                         }
