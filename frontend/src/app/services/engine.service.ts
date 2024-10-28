@@ -1293,7 +1293,7 @@ export class EngineService {
         this.elementVisualisation.position.set(point.x, 0.01, point.z);
       }
 
-      let isSaveElementPossible = false;
+      this.isSaveElementPossible = false;
 
       this.gardenElementsList.some(element => {
         let minDistanceDifferece: number = 0;
@@ -1343,7 +1343,7 @@ export class EngineService {
             && this.elementVisualisation!.position.z >= element.positionY - ConstantHelper.entranceWidth - .1
             && this.elementVisualisation!.position.z <= element.positionY - (ConstantHelper.entranceWidth / 2)
           ) {
-            isSaveElementPossible = true;
+            this.isSaveElementPossible = true;
             this.benchRotation = 0;
 
             this.elementVisualisation!.position.set(point.x, 0.01, element.positionY - (ConstantHelper.entranceWidth / 2) - (ConstantHelper.benchDepth / 2) - ConstantHelper.benchDistanceFromPavement);
@@ -1356,7 +1356,7 @@ export class EngineService {
             && this.elementVisualisation!.position.z <= element.positionY + ConstantHelper.entranceWidth + .1
             && this.elementVisualisation!.position.z >= element.positionY + (ConstantHelper.entranceWidth / 2)
           ) {
-            isSaveElementPossible = true;
+            this.isSaveElementPossible = true;
             this.benchRotation = 180;
 
             this.elementVisualisation!.position.set(point.x, 0.01, element.positionY + (ConstantHelper.entranceWidth / 2) + (ConstantHelper.benchDepth / 2) + ConstantHelper.benchDistanceFromPavement);
@@ -1369,7 +1369,7 @@ export class EngineService {
             && this.elementVisualisation!.position.z <= element.positionY + (ConstantHelper.entranceWidth / 2)
             && this.elementVisualisation!.position.z >= element.positionY - (ConstantHelper.entranceWidth / 2)
           ) {
-            isSaveElementPossible = true;
+            this.isSaveElementPossible = true;
             this.benchRotation = 270;
 
             this.elementVisualisation!.position.set(element.positionX + (ConstantHelper.entranceWidth / 2) + (ConstantHelper.benchDepth / 2) + ConstantHelper.benchDistanceFromPavement, 0.01, point.z);
@@ -1382,7 +1382,7 @@ export class EngineService {
             && this.elementVisualisation!.position.z <= element.positionY + (ConstantHelper.entranceWidth / 2)
             && this.elementVisualisation!.position.z >= element.positionY - (ConstantHelper.entranceWidth / 2)
           ) {
-            isSaveElementPossible = true;
+            this.isSaveElementPossible = true;
             this.benchRotation = 90;
 
             this.elementVisualisation!.position.set(element.positionX - (ConstantHelper.entranceWidth / 2) - (ConstantHelper.benchDepth / 2) - ConstantHelper.benchDistanceFromPavement, 0.01, point.z);
@@ -1395,8 +1395,6 @@ export class EngineService {
 
         return false;
       });
-
-      this.isSaveElementPossible = isSaveElementPossible;
     }
   }
 
@@ -1461,7 +1459,8 @@ export class EngineService {
       this.pavementVisualisation = undefined;
       this.raycaster = undefined;
       this.mouse = undefined;
-      this.tempPavementType = undefined;
+
+      this.initializePavementVisualisation(this.tempPavementType);
     }
   }
 
