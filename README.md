@@ -113,11 +113,11 @@ On 3D:
 
 ![pavements visualisation](https://github.com/user-attachments/assets/c9082e98-2c36-4a8e-be4e-533291179f0c)
 
-The pavement position is selected by using the tool. The algorithm recognises the places where a footpath can be added - the entrances to the garden and the continuation of established footpaths. 
+Pavement position is selected by using the tool. Algorithm recognises the places where a footpath can be added - the entrances to the garden or the continuation of already placed footpaths. When cursor is close enough, pavement itself adjusts to the existing pavement or entrance.
 
-Users can cancel the selection of the walkway at any time by pressing the ESC button.
+Once a single pavement is added, the tool doesn't deactivate, but gives the option of continuously adding more walkways until user clicks the "escape" button. Users can cancel the selection of the walkway at any time by pressing the ESC button.
 
-https://github.com/user-attachments/assets/7b75062d-1138-4eac-9ffc-e163d3190c57
+https://github.com/user-attachments/assets/4ebb1e93-e1df-4c0f-9a3b-b1d08f14a293
 
 <a name="trees"></a>
 ### Trees 🌳
