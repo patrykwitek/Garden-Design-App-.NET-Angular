@@ -694,6 +694,22 @@ export class EngineService {
     if (this.fenceType) this.setFence(this.fenceType);
   }
 
+  public getScene(): THREE.Scene {
+    return this.scene;
+  }
+
+  public getRenderer(): THREE.WebGLRenderer {
+    return this.renderer;
+  }
+
+  public getElementsForGarden(projectId: string | undefined): Observable<IGardenElement[]> {
+    return this.http.get<IGardenElement[]>(this.baseUrl + `solution/getElementsForProject/${projectId}`);
+  }
+
+  public getEntrancesForProject(projectId: string | undefined): Observable<IEntrance[]> {
+    return this.http.get<IEntrance[]>(this.baseUrl + `solution/getEntrancesForProject/${projectId}`);
+  }
+
   private closeElementTool(event: any): void {
     if (event.key === 'Escape') {
       this.clearElementVisualisation();
@@ -878,13 +894,11 @@ export class EngineService {
   }
 
   private set2DModeCamera(): void {
-    const zoomFactor: number = 58;
-
     this.camera = new THREE.OrthographicCamera(
-      -window.innerWidth / (2 * zoomFactor),
-      window.innerWidth / (2 * zoomFactor),
-      window.innerHeight / (2 * zoomFactor),
-      -window.innerHeight / (2 * zoomFactor),
+      -window.innerWidth / (2 * ConstantHelper.orthographicCameraZoomFactor),
+      window.innerWidth / (2 * ConstantHelper.orthographicCameraZoomFactor),
+      window.innerHeight / (2 * ConstantHelper.orthographicCameraZoomFactor),
+      -window.innerHeight / (2 * ConstantHelper.orthographicCameraZoomFactor),
       0.1,
       1000
     );
@@ -1576,10 +1590,6 @@ export class EngineService {
     );
   }
 
-  private getEntrancesForProject(projectId: string | undefined): Observable<IEntrance[]> {
-    return this.http.get<IEntrance[]>(this.baseUrl + `solution/getEntrancesForProject/${projectId}`);
-  }
-
   private async loadGardenElements() {
     await this.getElementsForGarden(this.currentProjectId).subscribe(
       (gardenElementsList: IGardenElement[]) => {
@@ -1590,10 +1600,6 @@ export class EngineService {
         console.error('Error loading garden elements: ', error);
       }
     );
-  }
-
-  private getElementsForGarden(projectId: string | undefined): Observable<IGardenElement[]> {
-    return this.http.get<IGardenElement[]>(this.baseUrl + `solution/getElementsForProject/${projectId}`);
   }
 
   private addElementsToGarden(): void {

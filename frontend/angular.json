@@ -44,7 +44,12 @@
               "node_modules/ngx-spinner/animations/line-spin-fade.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "dompurify",
+              "html2canvas",
+              "pako"
+            ]
           },
           "configurations": {
             "production": {

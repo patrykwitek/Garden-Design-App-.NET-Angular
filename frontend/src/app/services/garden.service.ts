@@ -10,7 +10,6 @@ import { IElementCategory } from '../models/interfaces/i-element-category';
 import { IElement } from '../models/interfaces/i-element';
 import { IEnvironment } from '../models/interfaces/i-environment';
 import { Environment } from '../models/types/environment';
-import { GardenElement } from '../models/types/garden-element';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +35,10 @@ export class GardenService {
 
   public setCurrentProject(project: IProject | undefined) {
     this.currentProject = project;
+  }
+
+  public getCurrentProject(): IProject | undefined {
+    return this.currentProject;
   }
 
   public initialize3DVisualisation() {
@@ -124,9 +127,5 @@ export class GardenService {
       this.engineService.setFence(fence.name.toLowerCase());
       this.currentFenceSource.next(fence.name);
     }
-  }
-
-  public getCurrentProject(): IProject | undefined {
-    return this.currentProject;
   }
 }
