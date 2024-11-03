@@ -40,6 +40,8 @@ export class ConstantHelper {
     public static readonly benchWidth: number = 3;
     public static readonly benchDepth: number = 1;
 
+    public static readonly orthographicCameraZoomFactor: number = 58;
+
     public static getFenceByType(fenceType: string) {
         if (fenceType == "wooden") return ConstantHelper.woodenFence;
         if (fenceType == "hedge") return ConstantHelper.hedge;
@@ -198,7 +200,7 @@ export class ConstantHelper {
         depth: .3,
         height: 1
     };
-    
+
     // narcissus model link: https://sketchfab.com/3d-models/generic-narcissus-flower-cf16e483ce7b4b9281b62366d9b1e52c
     private static readonly narcissus: GardenElement3DModelData = {
         fileName: 'narcissus',
@@ -207,7 +209,7 @@ export class ConstantHelper {
         depth: .6,
         height: 1
     };
-    
+
     // tulip model link: https://sketchfab.com/3d-models/tulip-5908b2665e58414a8dbc70e20c7ee021
     private static readonly tulip: GardenElement3DModelData = {
         fileName: 'tulip',

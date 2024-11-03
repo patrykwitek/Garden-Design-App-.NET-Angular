@@ -8,6 +8,7 @@ import { IGround } from 'src/app/models/interfaces/i-ground';
 import { Direction } from 'src/app/models/types/direction';
 import { EngineService } from 'src/app/services/engine.service';
 import { GardenService } from 'src/app/services/garden.service';
+import { PdfGeneratorService } from 'src/app/services/pdf-generator.service';
 import { EntranceToolService } from 'src/app/tools/entrance-tool.service';
 import { GardenElementToolService } from 'src/app/tools/garden-element-tool.service';
 import { ConstantHelper } from 'src/app/utils/constant-helper';
@@ -52,7 +53,8 @@ export class NavGardenOptionsComponent implements OnInit {
     public gardenService: GardenService,
     public engineService: EngineService,
     private entranceTool: EntranceToolService,
-    private gardenElementTool: GardenElementToolService
+    private gardenElementTool: GardenElementToolService,
+    private pdfGeneratorService: PdfGeneratorService
   ) { }
 
   ngOnInit(): void {
@@ -149,6 +151,10 @@ export class NavGardenOptionsComponent implements OnInit {
     this.engineService.setCamera(direction);
     this.entranceTool.initializeEntranceVisualisation(direction);
     this.isOpenEntranceTool.emit(direction);
+  }
+
+  public generatePDF() {
+    this.pdfGeneratorService.generatePDF();
   }
 
   private loadGrounds(): void {
