@@ -184,7 +184,11 @@ https://github.com/user-attachments/assets/30e5483a-f638-4552-838c-72cacb361712
 <a name="pdf"></a>
 ## 12. Generating PDF File 🗃️
 
-*This functionality will come in the future*
+Main purpose of the application is to generate documentation of garden project, including all informations about the design and garden elements. Once the garden has been designed as desired, user can click on the "PDF" button in the top navbar. After clicking it, the download of the design documentation in PDF form will start. Generated PDF also includes screenshots of different perspectives of the garden from the application.
+
+https://github.com/user-attachments/assets/1c00e00a-8b89-479c-acf9-4c0480d21d52
+
+[Download example PDF](https://github.com/user-attachments/files/17612464/city.mini.park.pdf)
 
 <a name="edit"></a>
 ## 13. Profile Edit ✍️
