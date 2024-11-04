@@ -52,11 +52,19 @@ First of all, clone the repository. You can do it using this URL:
 
 `https://github.com/patrykwitek/Garden-Design-App-.NET-Angular.git`
 
-You should have Angular installed
+In order for application to run properly, you need to install modules with the command:
 
-`npm install -g @angular/cli`
+`npm install --legacy-peer-deps`
 
-also install ASP.NET, I used version 6 and .NET SDK
+If an error appears, it means that there is probably no node.js on the computer. You can install it from [https://nodejs.org/en](https://nodejs.org/en).
+
+If you have node.js on your computer and continue to get errors when trying to install modules, run the command:
+
+`Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` 
+
+and retry with `npm install --legacy-peer-deps`.
+
+You should also install ASP.NET, I used version 6 and .NET SDK: [https://dotnet.microsoft.com/en-us/download/dotnet/6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
 After cloning the repository, you can launch the application with commands
 
@@ -65,6 +73,13 @@ After cloning the repository, you can launch the application with commands
 
 - on the backend:
 `dotnet watch`
+
+If application runs, but after trying to login or register errors pop up in the console ERR_CERT_AUTHORITY_INVALID:
+
+1. open new tab
+2. paste url https://localhost:5001/api/login/register
+3. click 'open anyway'
+4. have fun exploring the app
 
 <a name="register"></a>
 ## 3. Register & Login 🙋
