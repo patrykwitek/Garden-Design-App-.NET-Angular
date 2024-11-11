@@ -124,6 +124,10 @@ export class NavGardenOptionsComponent implements OnInit {
     );
   }
 
+  public openRemoveElementTool(): void {
+    this.engineService.initializeRemoveElementTool();
+  }
+
   public chooseElementToPlace(element: IElement): void {
     this.showChooseElementOptions = false;
     switch (element.category) {

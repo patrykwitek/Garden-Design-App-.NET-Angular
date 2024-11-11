@@ -143,6 +143,7 @@ public class SolutionController : BaseApiController
             PositionX = addGardenElementDto.PositionX,
             PositionY = addGardenElementDto.PositionY,
             Rotation = addGardenElementDto.Rotation,
+            IsDeleted = false,
             ProjectId = projectId
         };
 
@@ -155,6 +156,20 @@ public class SolutionController : BaseApiController
         }
 
         return BadRequest("Failed to add element: " + gardenElement.Name);
+    }
+
+    [HttpPut("removeGardenElement/{id}")]
+    public async Task<ActionResult> RemoveGardenElement(int id)
+    {
+        GardenElement element = await _unitOfWork.ElementRepository.GetElementByIdAsync(id);
+        element.IsDeleted = true;
+
+        if (await _unitOfWork.Complete())
+        {
+            return Ok();
+        }
+
+        return BadRequest("Failed to delete the element");
     }
 
     [HttpGet("getElementsForProject/{projectId}")]

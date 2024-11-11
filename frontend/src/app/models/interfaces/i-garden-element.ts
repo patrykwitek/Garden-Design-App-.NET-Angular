@@ -6,5 +6,6 @@ export interface IGardenElement {
     category: ElementCategory;
     positionX: number;
     positionY: number;
+    isDeleted: boolean;
     rotation?: number;
 }

@@ -9,5 +9,6 @@ namespace backend.Interfaces
         Task<List<Element>> GetElementsListByCategory(string category);
         void AddGardenElement(GardenElement gardenElement);
         Task<List<GardenElement>> GetElementListForGarden(int projectId);
+        Task<GardenElement> GetElementByIdAsync(int id);
     }
 }

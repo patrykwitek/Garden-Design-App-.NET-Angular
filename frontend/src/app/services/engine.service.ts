@@ -20,6 +20,7 @@ import { ForestElement } from '../models/types/forest-element';
 import { CityGeneratorService } from './city-generator.service';
 import { GardenElement3DModelData } from '../models/types/garden-element-3d-model-data';
 import { GardenElementToolService } from '../tools/garden-element-tool.service';
+import { element } from 'three/examples/jsm/nodes/Nodes';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,8 @@ export class EngineService {
   private pavementVisualisation: THREE.Mesh | undefined;
   private elementVisualisation: THREE.Group<THREE.Object3DEventMap> | undefined;
 
+  private chosenElementToRemove: THREE.Object3D | undefined;
+
   private tempPavementType: string | undefined;
   private tempBenchType: string | undefined;
 
@@ -69,6 +72,7 @@ export class EngineService {
 
   private entrancesList: IEntrance[] = [];
   private gardenElementsList: IGardenElement[] = [];
+  private gardenObjects3D: THREE.Object3D[] = [];
 
   private currentProjectId: string | undefined;
 
@@ -519,7 +523,7 @@ export class EngineService {
     });
   }
 
-  public initializeElementVisualisation(treeName: string): void {
+  public initializeElementVisualisation(elementName: string): void {
     if (this.elementVisualisation) {
       this.scene.remove(this.elementVisualisation);
       this.elementVisualisation = undefined;
@@ -528,7 +532,7 @@ export class EngineService {
       this.mouse = undefined;
     }
 
-    const tree: GardenElement3DModelData = ConstantHelper.get3DModelData(treeName);
+    const tree: GardenElement3DModelData = ConstantHelper.get3DModelData(elementName);
 
     this.get3DModelForTool(
       tree.fileName,
@@ -540,7 +544,7 @@ export class EngineService {
       tree.width,
       tree.depth,
       tree.height,
-      `${treeName}-garden-element`
+      `${elementName}-garden-element`
     );
 
     this.raycaster = new THREE.Raycaster();
@@ -613,6 +617,37 @@ export class EngineService {
     this.addEventListener('mousemove', this.changeBenchPositionOnMouseMove.bind(this));
     this.addEventListener('click', this.saveBenchPosition.bind(this));
     this.addEventListener('keydown', this.closeBenchTool.bind(this));
+  }
+
+  public initializeRemoveElementTool(): void {
+    if (this.elementVisualisation) {
+      this.scene.remove(this.elementVisualisation);
+      this.elementVisualisation = undefined;
+      this.removeAllEventListeners();
+      this.raycaster = undefined;
+      this.mouse = undefined;
+    }
+
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
+    gsap.to(this.camera.position, {
+      duration: 1,
+      x: 0,
+      y: 15,
+      z: -(this.depth! / 2) - (this.width! / 3),
+      onUpdate: () => {
+        this.camera.lookAt(0, 0, 0);
+      }
+    });
+
+    this.controls.enableRotate = false;
+    this.controls.enableZoom = false;
+    this.controls.enablePan = false;
+
+    this.addEventListener('mousemove', this.highlightElementOnHover.bind(this));
+    this.addEventListener('click', this.applyRemoveElement.bind(this));
+    this.addEventListener('keydown', this.closeElementTool.bind(this));
   }
 
   public clearElementVisualisation(): void {
@@ -710,8 +745,64 @@ export class EngineService {
     return this.http.get<IEntrance[]>(this.baseUrl + `solution/getEntrancesForProject/${projectId}`);
   }
 
+  private highlightElementOnHover(event: any) {
+    if (!this.raycaster || !this.mouse) return;
+
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    const intersects = this.raycaster.intersectObjects(this.gardenObjects3D, true);
+
+    if (intersects.length > 0) {
+      let intersectedObject = intersects[0].object;
+
+      while (intersectedObject.parent && intersectedObject.parent !== this.scene) {
+        intersectedObject = intersectedObject.parent;
+      }
+
+      if (this.chosenElementToRemove !== intersectedObject) {
+        if (this.chosenElementToRemove) {
+          this.setObjectOpacity(this.chosenElementToRemove, 1);
+        }
+
+        this.setObjectOpacity(intersectedObject, 0.5);
+
+        this.chosenElementToRemove = intersectedObject;
+      }
+    } else {
+      if (this.chosenElementToRemove) {
+        this.setObjectOpacity(this.chosenElementToRemove, 1);
+        this.chosenElementToRemove = undefined;
+      }
+    }
+  }
+
+  private setObjectOpacity(object: THREE.Object3D, opacity: number): void {
+    object.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const material = child.material;
+        if (Array.isArray(material)) {
+          material.forEach((mat) => {
+            mat.transparent = true;
+            mat.opacity = opacity;
+          });
+        } else {
+          material.transparent = true;
+          material.opacity = opacity;
+        }
+      }
+    });
+  }
+
   private closeElementTool(event: any): void {
     if (event.key === 'Escape') {
+      if (this.chosenElementToRemove) {
+        this.setObjectOpacity(this.chosenElementToRemove, 1);
+        this.chosenElementToRemove = undefined;
+      }
+
       this.clearElementVisualisation();
       this.removeAllEventListeners();
 
@@ -808,11 +899,11 @@ export class EngineService {
     this.objects.push(city.group);
   }
 
-  private loadGLTF3DModel(name: string, fileExtension: 'gltf' | 'glb', positionX: number, positionY: number, rotation: number, scale: number, width: number, depth: number, height: number, elementType: string): Promise<void> {
+  private loadGLTF3DModel(name: string, fileExtension: 'gltf' | 'glb', positionX: number, positionY: number, rotation: number, scale: number, width: number, depth: number, height: number, elementType: string, elementId?: number | undefined): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.modelCache[name]) {
         const modelClone = this.modelCache[name].clone();
-        this.addModelToScene(modelClone, positionX, positionY, rotation, scale, width, depth, height, elementType);
+        this.addModelToScene(modelClone, positionX, positionY, rotation, scale, width, depth, height, elementType, elementId);
         resolve();
       } else {
         const loader: GLTFLoader = new GLTFLoader();
@@ -821,7 +912,7 @@ export class EngineService {
           this.modelCache[name] = originModel;
 
           const modelClone = originModel.clone();
-          this.addModelToScene(modelClone, positionX, positionY, rotation, scale, width, depth, height, elementType);
+          this.addModelToScene(modelClone, positionX, positionY, rotation, scale, width, depth, height, elementType, elementId);
           resolve();
         }, undefined, (error) => {
           reject(error);
@@ -847,7 +938,7 @@ export class EngineService {
     });
   }
 
-  private addModelToScene(model: THREE.Group, positionX: number, positionY: number, rotation: number, scale: number, width: number, depth: number, height: number, elementType: string): void {
+  private addModelToScene(model: THREE.Group, positionX: number, positionY: number, rotation: number, scale: number, width: number, depth: number, height: number, elementType: string, elementId?: number | undefined): void {
     const boundingBox: THREE.Box3 = new THREE.Box3().setFromObject(model);
     const size: THREE.Vector3 = new THREE.Vector3();
     boundingBox.getSize(size);
@@ -860,10 +951,12 @@ export class EngineService {
     model.position.set(positionX, 0, positionY);
     model.rotation.y = rotation;
 
+    model.userData['id'] = elementId;
     model.userData['type'] = elementType;
 
     this.scene.add(model);
     this.objects.push(model);
+    this.gardenObjects3D.push(model);
   }
 
   private getRandomPositionOutsideGarden(placedTrees: { x: number, y: number }[]): { x: number, y: number } {
@@ -928,36 +1021,10 @@ export class EngineService {
     this.camera.lookAt(this.elementVisualisation.position.x, 2, this.elementVisualisation.position.z);
 
     if (this.isSaveElementPossible) {
-      this.elementVisualisation.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          const material = child.material;
-          if (Array.isArray(material)) {
-            material.forEach((mat) => {
-              mat.transparent = true;
-              mat.opacity = 1;
-            });
-          } else {
-            material.transparent = true;
-            material.opacity = 1;
-          }
-        }
-      });
+      this.setObjectOpacity(this.elementVisualisation, 1);
     }
     else {
-      this.elementVisualisation.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          const material = child.material;
-          if (Array.isArray(material)) {
-            material.forEach((mat) => {
-              mat.transparent = true;
-              mat.opacity = 0.5;
-            });
-          } else {
-            material.transparent = true;
-            material.opacity = 0.5;
-          }
-        }
-      });
+      this.setObjectOpacity(this.elementVisualisation, .5);
     }
 
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -1056,20 +1123,7 @@ export class EngineService {
         ) {
           this.isSaveElementPossible = false;
 
-          this.elementVisualisation!.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              const material = child.material;
-              if (Array.isArray(material)) {
-                material.forEach((mat) => {
-                  mat.transparent = true;
-                  mat.opacity = 0.5;
-                });
-              } else {
-                material.transparent = true;
-                material.opacity = 0.5;
-              }
-            }
-          });
+          this.setObjectOpacity(this.elementVisualisation!, .5);
         }
       });
     }
@@ -1412,6 +1466,42 @@ export class EngineService {
     }
   }
 
+  private applyRemoveElement(): void {
+    if (this.chosenElementToRemove) {
+      this.removeGardenElementFromDatabase(this.chosenElementToRemove);
+
+      this.removeAllEventListeners();
+
+      this.chosenElementToRemove = undefined;
+      this.raycaster = undefined;
+      this.mouse = undefined;
+
+      this.initializeRemoveElementTool();
+    }
+  }
+
+  private removeGardenElementFromDatabase(elementToRemove: THREE.Object3D<THREE.Object3DEventMap>) {
+    return this.http.put(this.baseUrl + `solution/removeGardenElement/${elementToRemove.userData['id']}`, null).subscribe(
+      () => {
+        this.scene.remove(elementToRemove);
+
+        const index = this.gardenObjects3D.indexOf(elementToRemove);
+        if (index > -1) {
+          this.gardenObjects3D.splice(index, 1);
+        }
+
+        const elementToRemoveId: number = elementToRemove.userData['id'];
+        const elementIndex = this.gardenElementsList.findIndex(element => element.id === elementToRemoveId);
+        if (elementIndex > -1) {
+          this.gardenElementsList.splice(elementIndex, 1);
+        }
+      },
+      error => {
+        console.error('Error during removing element: ', error);
+      }
+    );
+  }
+
   private saveElementPosition(): void {
     if (this.isSaveElementPossible && this.elementVisualisation) {
       this.removeAllEventListeners();
@@ -1441,6 +1531,7 @@ export class EngineService {
         name: this.tempBenchType!,
         positionX: this.elementVisualisation.position.x,
         positionY: this.elementVisualisation.position.z,
+        isDeleted: false,
         rotation: this.benchRotation
       };
 
@@ -1462,7 +1553,8 @@ export class EngineService {
         category: 'Pavement',
         name: this.tempPavementType,
         positionX: this.pavementVisualisation.position.x,
-        positionY: this.pavementVisualisation.position.z
+        positionY: this.pavementVisualisation.position.z,
+        isDeleted: false
       };
 
       this.gardenElementsList.push(pavement);
@@ -1593,7 +1685,7 @@ export class EngineService {
   private async loadGardenElements() {
     await this.getElementsForGarden(this.currentProjectId).subscribe(
       (gardenElementsList: IGardenElement[]) => {
-        this.gardenElementsList = gardenElementsList;
+        this.gardenElementsList = gardenElementsList.filter(element => !element.isDeleted);
         this.addElementsToGarden();
       },
       error => {
@@ -1612,15 +1704,23 @@ export class EngineService {
             texture.repeat.set(ConstantHelper.entranceWidth * 1.17, ConstantHelper.entranceWidth * 1.17);
 
             const pavementGeometry = new THREE.PlaneGeometry(ConstantHelper.entranceWidth, ConstantHelper.entranceWidth);
-            const pavementMaterial = new THREE.MeshStandardMaterial({ map: texture, roughness: 1, metalness: 0 });
+            const pavementMaterial = new THREE.MeshStandardMaterial({
+              map: texture,
+              roughness: 1,
+              metalness: 0,
+              transparent: true
+            });
 
             const pavementVisualisation = new THREE.Mesh(pavementGeometry, pavementMaterial);
             pavementVisualisation.rotation.x = -Math.PI / 2;
             pavementVisualisation.position.set(element.positionX, 0.01, element.positionY);
             pavementVisualisation.receiveShadow = true;
+            pavementVisualisation.userData['id'] = element.id;
+            pavementVisualisation.userData['type'] = element.name;
 
             this.scene.add(pavementVisualisation);
             this.objects.push(pavementVisualisation);
+            this.gardenObjects3D.push(pavementVisualisation);
           });
           break;
         }
@@ -1641,7 +1741,8 @@ export class EngineService {
               gardenElement3DModelData.width,
               gardenElement3DModelData.depth,
               gardenElement3DModelData.height,
-              element.name
+              element.name,
+              element.id
             )
             break;
           }
@@ -2275,37 +2376,11 @@ export class EngineService {
   }
 
   private enableElementVisualisation(): void {
-    this.elementVisualisation!.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        const material = child.material;
-        if (Array.isArray(material)) {
-          material.forEach((mat) => {
-            mat.transparent = true;
-            mat.opacity = 1;
-          });
-        } else {
-          material.transparent = true;
-          material.opacity = 1;
-        }
-      }
-    });
+    this.setObjectOpacity(this.elementVisualisation!, 1);
   }
 
   private disableElementVisualisation(): void {
-    this.elementVisualisation!.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        const material = child.material;
-        if (Array.isArray(material)) {
-          material.forEach((mat) => {
-            mat.transparent = true;
-            mat.opacity = 0.5;
-          });
-        } else {
-          material.transparent = true;
-          material.opacity = 0.5;
-        }
-      }
-    });
+    this.setObjectOpacity(this.elementVisualisation!, .5);
   }
 
   private addTemporaryCompass(): void {

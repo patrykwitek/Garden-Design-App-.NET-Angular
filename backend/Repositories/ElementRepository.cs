@@ -40,5 +40,11 @@ namespace backend.Repositories
                 .Where(element => element.ProjectId == projectId)
                 .ToListAsync();
         }
+
+        public async Task<GardenElement> GetElementByIdAsync(int id)
+        {
+            return await _context.GardenElements
+                .FirstOrDefaultAsync(element => element.Id == id);
+        }
     }
 }
