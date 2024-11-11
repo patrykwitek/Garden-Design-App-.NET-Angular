@@ -1,1 +1,17 @@
 gardendesign.db
+
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+
+*.nuget
+*.cache
+*.runtimeconfig.json
+*.csproj.nuget.*
+*.assets.json
+*.csproj.*
+
+*.deps.json
+*.staticwebassets.json

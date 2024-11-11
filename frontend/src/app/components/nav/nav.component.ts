@@ -246,6 +246,7 @@ export class NavComponent implements OnInit, OnDestroy {
       category: elementCategory,
       positionX: elementPosition.x,
       positionY: elementPosition.z,
+      isDeleted: false,
       rotation: elementRotation
     };
 
