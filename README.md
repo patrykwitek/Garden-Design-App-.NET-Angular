@@ -164,7 +164,11 @@ https://github.com/user-attachments/assets/1d838bd8-f2e1-4623-936f-8a2a526c4431
 <a name="remove"></a>
 ## 7. Removing Elements 🗑️
 
-*This functionality will come in the future*
+If user wants to remove a badly placed element or wants to change the garden, he can remove the placed elements. This can be done by selecting “Remove Element” button in the navbar. 
+
+When mouse cursor hovers over an item, it is highlighted. Then when you press right mouse button, it is removed. The delete tool is closed when you press Escape.
+
+https://github.com/user-attachments/assets/93654a3e-621b-45fd-a4eb-fcd3add8f256
 
 <a name="ground"></a>
 ## 8. Setting Ground 🏡
